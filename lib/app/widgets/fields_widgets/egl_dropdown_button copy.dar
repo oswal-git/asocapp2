@@ -1,0 +1,149 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+
+import 'package:asociaciones/res/color.dart';
+import 'package:asociaciones/utils/utils.dart';
+
+class EglDropdownButtonItem {
+  EglDropdownButtonItem({
+    required this.id,
+    required this.name,
+    required this.image,
+  });
+
+  int id;
+  String name;
+  String image;
+
+  factory EglDropdownButtonItem.clear() => EglDropdownButtonItem(
+        id: 0,
+        name: '',
+        image: '',
+      );
+}
+
+class EglDropdownButtonField extends StatefulWidget {
+  const EglDropdownButtonField({
+    Key? key,
+    required this.hint,
+    this.image = '',
+    required this.list,
+    required this.controller,
+    required this.focusNode,
+    required this.onFieldSubmitedValue,
+    required this.onValidator,
+    this.enable = true,
+    this.autofocus = false,
+  }) : super(key: key);
+
+  final String hint;
+  final String image;
+  final List<EglDropdownButtonItem> list;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final FormFieldSetter onFieldSubmitedValue;
+  final FormFieldValidator onValidator;
+
+  final bool enable, autofocus;
+
+  @override
+  State<EglDropdownButtonField> createState() => _EglDropdownButtonFieldState();
+}
+
+class _EglDropdownButtonFieldState extends State<EglDropdownButtonField> {
+  bool isOpen = false;
+  EglDropdownButtonItem selectedItem = EglDropdownButtonItem.clear();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              isOpen = !isOpen;
+              setState(() {});
+            },
+            child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: AppColors.whiteColor,
+                border: Border(
+                  bottom: BorderSide(
+                    color: AppColors.textFieldDefaultFocus,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      selectedItem.name == '' ? widget.hint : selectedItem.name,
+                      style: TextStyle(fontSize: selectedItem.name.length > 40 ? 12 : 14),
+                    ),
+                    Icon(isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (isOpen)
+            SizedBox(
+              height: 200,
+              child: Container(
+                decoration: BoxDecoration(color: AppColors.grayColor, borderRadius: BorderRadius.circular(15.0)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView(
+                    itemExtent: 30,
+                    primary: true,
+                    shrinkWrap: true,
+                    children: widget.list
+                        .map((e) => Container(
+                            decoration: BoxDecoration(
+                              color: selectedItem == e ? AppColors.secondaryTextColor : AppColors.grayColor,
+                              borderRadius: selectedItem == e ? BorderRadius.circular(5) : BorderRadius.circular(0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                  onTap: () {
+                                    selectedItem = e;
+                                    isOpen = !isOpen;
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    color: selectedItem == e ? AppColors.secondaryTextColor : AppColors.grayColor,
+                                    child: Row(children: [
+                                      e.image == ''
+                                          ? const SizedBox(
+                                              height: 30,
+                                              width: 30,
+                                            )
+                                          : Image(
+                                              image: NetworkImage(e.image),
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                      20.pw,
+                                      Text(
+                                        e.name,
+                                        style: TextStyle(fontSize: e.name.length > 50 ? 10 : 12),
+                                      ),
+                                      Visibility(visible: false, child: Text(e.id.toString())),
+                                    ]),
+                                  )),
+                            )))
+                        .toList(),
+                  ),
+                ),
+              ),
+            )
+        ],
+      ),
+    );
+  }
+}

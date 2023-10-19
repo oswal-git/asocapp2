@@ -1,0 +1,124 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+
+import 'package:asociaciones/res/color.dart';
+import 'package:asociaciones/res/theme.dart';
+
+class EglInputTextField extends StatelessWidget {
+  const EglInputTextField({
+    Key? key,
+    required this.controller,
+    required this.focusNode,
+    required this.onFieldSubmitedValue,
+    required this.onChanged,
+    required this.onValidator,
+    required this.keyboardType,
+    this.label = '',
+    required this.hint,
+    this.multiLine = false,
+    this.maxLength = TextField.noMaxLength,
+    this.icon,
+    this.obscureText = false,
+    this.enable = true,
+    this.autofocus = false,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final FormFieldSetter onFieldSubmitedValue;
+  final FormFieldSetter onChanged;
+  final FormFieldValidator onValidator;
+
+  final TextInputType keyboardType;
+  final String label;
+  final String hint;
+  final bool multiLine;
+  final int maxLength;
+  final Icon? icon;
+  final bool obscureText;
+  final bool enable;
+  final bool autofocus;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        onChanged: onChanged,
+        onFieldSubmitted: onFieldSubmitedValue,
+        obscureText: obscureText,
+        validator: onValidator,
+        keyboardType: keyboardType,
+        enableSuggestions: false,
+        autocorrect: false,
+        // showCursor: true,
+        maxLines: multiLine ? null : 1,
+        minLines: multiLine ? null : 1,
+        maxLength: maxLength,
+        textAlignVertical: TextAlignVertical.center,
+        showCursor: true,
+        cursorHeight: 0.0,
+        cursorWidth: 0.0,
+        cursorColor: Colors.red,
+        style: TextStyle(
+          height: multiLine ? null : 0.1,
+          decoration: TextDecoration.none,
+        ),
+        // style: AppTheme.bodyText2.copyWith(
+        //   fontSize: 18,
+        // ),
+        decoration: InputDecoration(
+          enabled: enable,
+          // hintText: focusNode.hasFocus ? '' : 'falso',
+          labelText: (focusNode.hasFocus || controller.text.isNotEmpty) ? label : hint,
+          //   labelStyle: const TextStyle(
+          //     fontSize: 18,
+          //     decoration: TextDecoration.none,
+          //   ),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          floatingLabelAlignment: FloatingLabelAlignment.start,
+          floatingLabelStyle: const TextStyle(
+            color: AppColors.labelColor,
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+          ),
+          hintStyle: AppTheme.bodyText2.copyWith(
+            height: 0.1,
+            color: AppColors.primaryTextTextColor.withOpacity(0.8),
+            fontSize: 18,
+            decoration: TextDecoration.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          prefixIcon: icon, // adjust size as needed
+          prefixIconColor: Colors.black,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 19, 19, 131),
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 161, 152, 143),
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.alertColor,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 225, 225, 223),
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
+    );
+  }
+}
