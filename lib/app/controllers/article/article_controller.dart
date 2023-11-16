@@ -1,11 +1,11 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/repositorys/articles_repository.dart';
+import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/auth/change/change_page.dart';
 import 'package:asocapp/app/views/auth/login/login_page.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:translator/translator.dart';
 
 class ArticleController extends GetxController {
   final SessionService session = Get.put(SessionService());
@@ -36,7 +36,10 @@ class ArticleController extends GetxController {
 
   final Logger logger = Logger();
 
-  final loading = false.obs;
+  final _loadingArticle = false.obs;
+  bool get loadingArticle => _loadingArticle.value;
+  set loadingArticle(value) => _loadingArticle.value = value;
+
   final articleList = <Article>[].obs;
 
   final _titleArticleTr = <String>[].obs;
@@ -78,15 +81,15 @@ class ArticleController extends GetxController {
 
     for (final articlePublicated in articlesPublicatedList) {
       //   if (languageUser != 'es') {
-      Translation tra1 = await _translator.translate(articlePublicated.titleArticle, languageUser);
-      if (tra1.text.trim() != '') {
-        articlePublicated.titleArticle = tra1.text.trim();
+      String tra1 = await _translator.translate(articlePublicated.titleArticle, languageUser);
+      if (tra1.trim() != '') {
+        articlePublicated.titleArticle = tra1.trim();
       }
 
-      Translation tra2 = await _translator.translate(articlePublicated.abstractArticle, languageUser);
+      String tra2 = await _translator.translate(articlePublicated.abstractArticle, languageUser);
 
-      if (tra2.text.trim() != '') {
-        articlePublicated.abstractArticle = tra2.text.trim();
+      if (tra2.trim() != '') {
+        articlePublicated.abstractArticle = tra2.trim();
       }
       list.add(articlePublicated);
       //   } else {
@@ -95,6 +98,31 @@ class ArticleController extends GetxController {
     }
 
     return list;
+  }
+
+  Future<Article> getArticlePublicated(Article article) async {
+    List<ItemArticle> list = List.filled(article.itemsArticle.length, ItemArticle.clear());
+
+    for (var i = 0; i < article.itemsArticle.length; i++) {
+      String text = article.itemsArticle[i].textItemArticle.trim();
+      Helper.eglLogger('i', 'text[$i].length: ${text.length}');
+      Helper.eglLogger('i', 'text[$i]: $text');
+      //
+      //   i == 0
+      //       ? text =
+      //           '<h2 style="margin-left:0px;"><a href="https://cadascu.wordpress.com/2011/11/18/cmo-recuperar-un-samsung-galaxy-s-que-no-arranca-incluso-bloqueado-de-fbrica/"><strong>Cómo recuperar un Samsung Galaxy S que no arranca, incluso bloqueado de fábrica</strong></a></h2><p style="margin-left:0px;"><span style="background-color:transparent;">Publicado el</span> <a href="https://cadascu.wordpress.com/2011/11/18/cmo-recuperar-un-samsung-galaxy-s-que-no-arranca-incluso-bloqueado-de-fbrica/"><span style="background-color:transparent;">18 noviembre, 2011</span></a><span style="background-color:transparent;">por</span> <a href="https://cadascu.wordpress.com/author/rqvalencia/"><span style="background-color:transparent;">Rafael Quintana</span></a></p><p style="margin-left:0px;">14 Votes</p><h4 style="margin-left:0px;">Ha pasado bastantes días desde el último post. Han sido semanas de muchas pruebas y disfrute del teléfono, pero desafortunadamente también de un gran susto. Y es que hace una semana, por accidente y una fatídica coincidencia, mi Samsung Galaxy S quedó convertido en un ladrillo (<i>bricked</i>, como dicen los angloparlantes).</h4>'
+      //       : 0;
+      if (text != '') {
+        String tra1 = await _translator.translate(text, languageUser);
+        if (tra1.trim() != '') {
+          Helper.eglLogger('i', 'tra1[$i]: $tra1');
+          text = tra1.trim();
+        }
+        list[i] = article.itemsArticle[i].copyWith(textItemArticle: text);
+      }
+    }
+    Article transArticle = article.copyWith(itemsArticle: list);
+    return transArticle;
   }
 
   Future<Article> getSingleArticle(int idarticle) async {

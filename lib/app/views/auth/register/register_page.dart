@@ -120,7 +120,9 @@ class _RegisterPageState extends State<RegisterPage> {
             },
             onValidator: (value) {
               if (value!.isEmpty) return 'Introduzca su nombre de usuario';
-              if (value.length < 4) return 'El nombre de usuario ha de tener 4 carácteres como mínimo ';
+              if (value.length < 4) {
+                return 'El nombre de usuario ha de tener 4 carácteres como mínimo ';
+              }
               return null;
             },
           ),

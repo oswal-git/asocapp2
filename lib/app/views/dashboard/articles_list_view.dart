@@ -1,3 +1,4 @@
+import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/controllers/article/article_controller.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
@@ -85,31 +86,27 @@ class _ArticlesListViewState extends State<ArticlesListView> {
       displacement: 40.0,
       strokeWidth: 4,
       onRefresh: articleController.getArticles,
-      child: Obx(() => FutureBuilder(
-          future: articleController.getArticlesPublicatedList(),
+      child: Obx(() {
+        return FutureBuilder(
+          future: articleController.getArticlesPublicatedList(), // getArticlesPublicatedList(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                // separatorBuilder: (context, index) {
-                //   return const Divider(
-                //     height: 1.0,
-                //   );
-                // },
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   return EglArticleListTile(
+                    index: index,
                     leadingImage: snapshot.data[index].coverImageArticle.src,
                     title: snapshot.data[index].titleArticle,
-                    subtitle: snapshot.data[index].abstractArticle.length > 100
-                        ? '   ${snapshot.data[index].abstractArticle.substring(0, 96)} ...'
-                        : '   ${snapshot.data[index].abstractArticle}',
+                    subtitle: snapshot.data[index].abstractArticle,
                     category: snapshot.data[index].categoryArticle,
                     subcategory: snapshot.data[index].subcategoryArticle,
                     logo: '',
                     trailingImage: '',
-                    onTap: () {
+                    onTap: () async {
+                      Article article = await articleController.getArticlePublicated(snapshot.data[index]);
                       IArticleArguments args = IArticleArguments(
-                        snapshot.data[index],
+                        article,
                       );
                       Get.to(ArticlePage(articleArguments: args));
                     },
@@ -124,10 +121,18 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                   );
                 },
               );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  '${snapshot.error}',
+                ),
+              );
             } else {
               return const Center(child: CircularProgressIndicator());
             }
-          })),
+          },
+        );
+      }),
     );
   }
 }

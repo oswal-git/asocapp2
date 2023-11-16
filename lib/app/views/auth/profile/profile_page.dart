@@ -1,6 +1,7 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/controllers/auth/profile/profile_controller.dart';
 import 'package:asocapp/app/models/models.dart';
+import 'package:asocapp/app/translations/language_model.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:get/get.dart';
@@ -102,22 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     ];
 
-    List<dynamic> listLanguages = [
-      {
-        'id': 'es',
-        'name': 'cSpanish'.tr,
-      },
-      {
-        'id': 'ca',
-        'name': 'cValencian'.tr,
-      },
-      {
-        'id': 'en',
-        'name': 'cEnglish'.tr,
-      },
-    ];
-
-    // Map<dynamic, dynamic> resolutionDevice = Utils.getResolutionDevice();
+    List<dynamic> listLanguages = Language.getLanguageList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),

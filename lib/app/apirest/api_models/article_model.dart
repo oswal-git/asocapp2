@@ -426,6 +426,22 @@ class ItemArticle {
       dateCreatedItemArticle: '',
     );
   }
+
+  ItemArticle copyWith({
+    int? idItemArticle,
+    int? idArticleItemArticle,
+    String? textItemArticle,
+    ImageArticle? imageItemArticle,
+    String? dateCreatedItemArticle,
+  }) {
+    return ItemArticle(
+      idItemArticle: idItemArticle ?? this.idItemArticle,
+      idArticleItemArticle: idArticleItemArticle ?? this.idArticleItemArticle,
+      textItemArticle: textItemArticle ?? this.textItemArticle,
+      imageItemArticle: imageItemArticle ?? this.imageItemArticle,
+      dateCreatedItemArticle: dateCreatedItemArticle ?? this.dateCreatedItemArticle,
+    );
+  }
 }
 
 // **************************************************

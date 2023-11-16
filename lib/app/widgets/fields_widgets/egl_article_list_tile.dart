@@ -1,25 +1,65 @@
-import 'package:asocapp/app/utils/utils.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:asocapp/app/utils/utils.dart';
 
 import '../../resources/resources.dart';
 
-class EglArticleListTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String logo;
-  final String category;
-  final String subcategory;
-  final String leadingImage;
-  final String? trailingImage;
-  final VoidCallback onTap;
-  final VoidCallback onTapCategory;
-  final VoidCallback onTapSubcategory;
-  final Color color;
-  final Color gradient;
+// class EglArticleListTileController extends GetxController {
+//   final SessionService session = Get.put<SessionService>(SessionService());
+//   final EglTranslatorAiService _translator = EglTranslatorAiService();
 
-  EglArticleListTile({
+//   final _titleController = <String>[].obs;
+//   List<String> get titleController => _titleController;
+//   set titleController(value) => _titleController.value = value;
+//   final _subtitleController = <String>[].obs;
+//   List<String> get subtitleController => _subtitleController;
+//   set subtitleController(value) => _subtitleController.value = value;
+
+//   final _loading = true.obs;
+//   bool get loading => _loading.value;
+//   set loading(value) => _loading.value = value;
+
+//   String languageTo = '';
+
+//   @override
+//   void onInit() {
+//     super.onInit();
+//     languageTo = session.userConnected.languageUser;
+//   }
+
+//   void translate(int index, String title, String subtitle) {
+//     _titleController[index] = title;
+//     _subtitleController[index] = subtitle;
+
+//     var text = '';
+
+//     text = title;
+
+//     _translator.translate(text, languageTo).then((value) {
+//       if (value.trim() != '') {
+//         _titleController[index] = value.trim();
+//       }
+//       text = subtitle;
+//       return _translator.translate(text, languageTo);
+//     }).then((value) {
+//       if (value.trim() != '') _subtitleController[index] = value.trim();
+//       _titleController.refresh();
+//       _subtitleController.refresh();
+
+//       loading = false;
+//     }).catchError((error, stackTrace) {
+//       Helper.eglLogger('e', 'translate: $text');
+//       Helper.eglLogger('e', 'translate -> error :$error');
+//       Helper.eglLogger('e', 'translate -> stackTrace :$stackTrace');
+//       loading = false;
+//     });
+//   }
+// }
+
+class EglArticleListTile extends StatelessWidget {
+  const EglArticleListTile({
     Key? key,
+    required this.index,
     required this.title,
     required this.subtitle,
     required this.logo,
@@ -34,7 +74,22 @@ class EglArticleListTile extends StatelessWidget {
     required this.gradient,
   }) : super(key: key);
 
-  final Logger logger = Logger();
+// input data
+  final int index;
+  final String title;
+  final String subtitle;
+  final String logo;
+  final String category;
+  final String subcategory;
+  final String leadingImage;
+  final String? trailingImage;
+  final VoidCallback onTap;
+  final VoidCallback onTapCategory;
+  final VoidCallback onTapSubcategory;
+  final Color color;
+  final Color gradient;
+
+  // local variables
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +158,7 @@ class EglArticleListTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              subtitle,
+                              subtitle.length > 100 ? '   ${subtitle.substring(0, 96)} ...' : '   $subtitle',
                               maxLines: 3,
                               textAlign: TextAlign.justify,
                               style: AppTheme.bodyText2.copyWith(

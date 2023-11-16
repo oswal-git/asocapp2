@@ -241,12 +241,12 @@ class Helper {
     String fragmento = message;
 
     do {
-      if (fragmento.length <= 1000) {
+      if (fragmento.length <= 950) {
         resto = '';
         fragmento = fragmento;
       } else {
-        resto = fragmento.substring(1000);
-        fragmento = fragmento.substring(0, 1000);
+        resto = fragmento.substring(950);
+        fragmento = fragmento.substring(0, 950);
       }
       switch (type) {
         case 'i':

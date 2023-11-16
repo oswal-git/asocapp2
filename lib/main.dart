@@ -7,6 +7,7 @@ import 'package:asocapp/app/views/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:intl/number_symbols.dart';
 import 'package:intl/number_symbols_data.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
@@ -68,6 +69,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     initializeDateFormatting(country == '' ? language : '${language}_$country', null);
+    Intl.defaultLocale = country == '' ? language : '${language}_$country';
     final esES = numberFormatSymbols['es_ES'] as NumberSymbols;
     final caVL = numberFormatSymbols['ca'] as NumberSymbols;
     final enGB = numberFormatSymbols['en_GB'] as NumberSymbols;
