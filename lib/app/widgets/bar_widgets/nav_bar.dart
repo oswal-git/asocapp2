@@ -56,6 +56,7 @@ class NavBar extends StatelessWidget {
               decoration: const BoxDecoration(
                 color: Colors.blue,
                 image: DecorationImage(
+                  // background bar
                   image: NetworkImage(
                     'https://thumbs.dreamstime.com/b/vista-del-paisaje-mediterr%C3%A1neo-hermoso-del-mar-y-del-cielo-soleado-67838267.jpg',
                     // 'https://artelista.s3.amazonaws.com/obras/big/6/7/3/4326362245540364.jpg',

@@ -115,7 +115,7 @@ class QuestionListUser {
 class QuestionList {
   String status;
   String question;
-  List<String> questions;
+  List<Map<String, dynamic>> questions;
   bool showClave;
 
   QuestionList({

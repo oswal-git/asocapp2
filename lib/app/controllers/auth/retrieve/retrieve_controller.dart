@@ -111,7 +111,7 @@ class RetrieveController extends GetxController {
     void fillQuestion(List<QuestionListUser> value) {
       value
           .map((item) => {
-                questionList.questions.add(item.questionUser),
+                questionList.questions.add({'option': item.questionUser, 'texto': item.questionUser, 'icon': Icons.question_mark}),
               })
           .toList();
     }

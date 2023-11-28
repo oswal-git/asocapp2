@@ -36,7 +36,7 @@ class Helper {
   }
 
   static dynamic showMultChoiceDialog(
-    List<String> questions,
+    List<Map<String, dynamic>> questions,
     String question, {
     required BuildContext context,
     required ValueChanged<String> onChanged,
@@ -53,21 +53,21 @@ class Helper {
                   .map(
                     (e) => InkWell(
                       onTap: () {
-                        onChanged(e);
+                        onChanged(e['option']);
                       },
                       child: Column(
                         children: [
                           Row(
                             // mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const Expanded(
+                              Expanded(
                                 flex: 1,
                                 child: Column(
                                   children: [
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Icon(
-                                        Icons.question_mark,
+                                        e['icon'],
                                         size: 20,
                                       ),
                                     ),
@@ -78,16 +78,19 @@ class Helper {
                                 flex: 9,
                                 child: Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            e,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 5,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10.0),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              e['texto'],
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 5,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -229,7 +232,10 @@ class Helper {
   static Future<String> parseApiUrlBody(String responseBody) async {
     try {
       String apiUrl = await Helper.apiURL();
-      return responseBody.replaceAll(Config.apiURLBD, apiUrl);
+      //   eglLogger('w', 'responseBody: $responseBody');
+      String replacedBody = responseBody.replaceAll(Config.apiURLBD, apiUrl);
+      //   eglLogger('w', 'replacedBody: $replacedBody');
+      return replacedBody;
     } catch (_) {
       return responseBody;
     }

@@ -17,6 +17,7 @@ class Config {
   static const String apiListPending = 'list-pending.php';
   static const String apiUserLogin = 'user-login.php';
   static const String apiUserProfile = 'profile.php';
+  static const String apiUserProfileAvatar = 'profile-upload.php';
   static const String apiValidateKey = 'validate-answer.php';
   static const String apiCreateUser = 'create';
   static const String apiRegister = 'register.php';

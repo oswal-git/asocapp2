@@ -1,6 +1,7 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/apirest/network/network.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserRepository {
   AuthApiRest authApiRest = Get.put(AuthApiRest());
@@ -39,5 +40,10 @@ class UserRepository {
   Future<HttpResult<UserAsocResponse>?> updateProfile(
       int idUser, String userName, int asociationId, int intervalNotifications, String languageUser, String dateUpdatedUser) async {
     return userApiRest.updateProfile(idUser, userName, asociationId, intervalNotifications, languageUser, dateUpdatedUser);
+  }
+
+  Future<HttpResult<UserAsocResponse>?> updateProfileAvatar(int idUser, String userName, int asociationId, int intervalNotifications,
+      String languageUser, XFile imageAvatar, String dateUpdatedUser) async {
+    return userApiRest.updateProfileAvatar(idUser, userName, asociationId, intervalNotifications, languageUser, imageAvatar, dateUpdatedUser);
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/controllers/asociation/asociation_controller.dart';
@@ -9,6 +10,7 @@ import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/dashboard/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
 class ProfileController extends GetxController {
@@ -41,11 +43,20 @@ class ProfileController extends GetxController {
   final _isFormValid = false.obs;
   bool get isFormValid => _isFormValid.value;
 
-  bool checkIsFormValid() => _isFormValid.value = ((formKey.currentState?.validate() ?? false) &&
-      (userConnected.value.idAsociationUser != userConnectedLast.value.idAsociationUser ||
-          userConnected.value.userNameUser != userConnectedLast.value.userNameUser ||
-          userConnected.value.timeNotificationsUser != userConnectedLast.value.timeNotificationsUser ||
-          userConnected.value.languageUser != userConnectedLast.value.languageUser));
+  final _imageAvatar = Rx<XFile?>(XFile(''));
+  XFile? get imageAvatar => _imageAvatar.value;
+  set imageAvatar(XFile? value) => _imageAvatar.value = value;
+
+  bool checkIsFormValid() {
+    // logger.i('checkIsFormValid: ${_imageAvatar.value!.path}');
+    // logger.i('checkIsFormValid: ${_imageAvatar.value!.path != ''}');
+    return _isFormValid.value = ((formKey.currentState?.validate() ?? false) &&
+        (userConnected.value.idAsociationUser != userConnectedLast.value.idAsociationUser ||
+            userConnected.value.userNameUser != userConnectedLast.value.userNameUser ||
+            userConnected.value.timeNotificationsUser != userConnectedLast.value.timeNotificationsUser ||
+            (_imageAvatar.value == null ? false : _imageAvatar.value!.path != '') ||
+            userConnected.value.languageUser != userConnectedLast.value.languageUser));
+  }
 
   @override
   void onClose() {
@@ -111,11 +122,89 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<HttpResult<UserAsocResponse>?> updateProfileAvatar(
+    int idUser,
+    String userName,
+    int asociationId,
+    int intervalNotifications,
+    String languageUser,
+    XFile imageAvatar,
+    String dateUpdatedUser,
+  ) async {
+    loading.value = true;
+
+    try {
+      final Future<HttpResult<UserAsocResponse>?> response =
+          userRepository.updateProfileAvatar(idUser, userName, asociationId, intervalNotifications, languageUser, imageAvatar, dateUpdatedUser);
+      loading.value = false;
+      return response;
+    } catch (e) {
+      Helper.toastMessage(e.toString());
+      loading.value = false;
+      return null;
+    }
+  }
+
   Future<void> updateUserConnected(UserConnected value, bool loadTask) async {
     return session.updateUserConnected(value, loadTask: loadTask);
   }
 
   int setIdAsocAdmin(String profile, int asocId) {
     return session.setIdAsocAdmin(profile, asocId);
+  }
+
+  final _imageWidget = Rx<Widget>(
+    const Image(
+      image: AssetImage('assets/images/icons_user_profile_circle.png'),
+      fit: BoxFit.scaleDown,
+      color: Colors.amberAccent,
+    ),
+  );
+
+  Widget get imageWidget => _imageWidget.value;
+  setImageWidget(XFile? imagePick) {
+    _imageAvatar.value = imagePick;
+    // const double widthOval = 200.0;
+    // const double heightOval = 200.0;
+
+    if (imagePick == null) {
+      // ignore: curly_braces_in_flow_control_structures
+      if (userConnected.value.avatarUser == '') {
+        _imageWidget.value = const ClipOval(
+          child: Image(
+            image: AssetImage('assets/images/icons_user_profile_circle.png'),
+            //   fit: BoxFit.cover,
+            color: Colors.amberAccent,
+          ),
+        );
+      } else {
+        _imageWidget.value = ClipOval(
+          child: Image.network(
+            userConnected.value.avatarUser,
+            //   width: widthOval,
+            //   height: heightOval,
+            fit: BoxFit.cover,
+          ),
+        );
+      }
+    } else if (imagePick.path.substring(0, 4) == 'http') {
+      _imageWidget.value = ClipOval(
+        child: Image.network(
+          imagePick.path,
+          //   width: widthOval,
+          //   height: heightOval,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      _imageWidget.value = ClipOval(
+        child: Image.file(
+          File(imagePick.path).absolute,
+          //   width: widthOval,
+          //   height: heightOval,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
   }
 }
