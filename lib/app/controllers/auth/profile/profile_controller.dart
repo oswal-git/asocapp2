@@ -82,7 +82,7 @@ class ProfileController extends GetxController {
         Get.to(DashboardPage);
         return false;
       }
-      userConnected.value = session.userConnected;
+      userConnected.value = session.userConnected.clone();
       userConnectedIni.value = userConnected.value.clone();
       userConnectedLast.value = userConnected.value.clone();
       logger.i('isLogin: ${userConnectedIni.value.idAsociationUser}');

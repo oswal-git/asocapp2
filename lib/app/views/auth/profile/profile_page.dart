@@ -31,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void dispose() {
     profileController.clearAsociations();
+    profileController.userConnected.value = profileController.userConnectedLast.value.clone();
 
     super.dispose();
   }
