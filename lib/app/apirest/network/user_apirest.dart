@@ -315,4 +315,76 @@ class UserApiRest {
       );
     }
   }
+
+  Future<HttpResult<UsersListResponse>?> getAllUsers() async {
+    int? statusCode;
+    dynamic data;
+
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer ${session.getAuthToken}',
+    };
+
+    final url = await Config.uri(apiUser, Config.apiListAll);
+    try {
+      final response = await http.get(url, headers: requestHeaders);
+
+      statusCode = response.statusCode;
+
+      // print('Response status: ${response.statusCode}');
+      //   Helper.eglLogger('i', 'Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        final UsersListResponse usersListResponse = usersListUserResponseFromJson(await Helper.parseApiUrlBody(response.body));
+
+        // print('Asociations Response body: ${asociationsResponse.result.records}');
+        // return userAsocResponse;
+        return HttpResult<UsersListResponse>(
+          data: usersListResponse,
+          statusCode: statusCode,
+          error: null,
+        );
+      } else if (statusCode > 400) {
+        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        return HttpResult<UsersListResponse>(
+          data: null,
+          error: HttpError(
+            data: data,
+            exception: null,
+            stackTrace: StackTrace.current,
+          ),
+          statusCode: statusCode,
+        );
+      } else {
+        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        String message = data['message'];
+        return HttpResult<UsersListResponse>(
+          data: null,
+          error: HttpError(
+            data: message,
+            exception: null,
+            stackTrace: StackTrace.current,
+          ),
+          statusCode: statusCode,
+        );
+      }
+    } catch (e, s) {
+      if (e is HttpError) {
+        return HttpResult<UsersListResponse>(
+          data: null,
+          error: e,
+          statusCode: statusCode!,
+        );
+      }
+
+      return HttpResult<UsersListResponse>(
+        data: null,
+        error: HttpError(
+          exception: e,
+          stackTrace: s,
+          data: data,
+        ),
+        statusCode: statusCode ?? -1,
+      );
+    }
+  }
 }

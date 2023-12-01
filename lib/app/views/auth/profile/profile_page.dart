@@ -284,6 +284,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 profileController.userConnected.value.languageUser,
                                 profileController.userConnected.value.dateUpdatedUser);
                           }
+
                           if (httpResult!.data != null) {
                             if (httpResult.statusCode == 200) {
                               //   Utils.eglLogger('i', 'userapp: ${httpResult.data.toString()}');
@@ -341,6 +342,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               return;
                             }
                           }
+
                           Helper.popMessage(
                               //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
                               _context!,

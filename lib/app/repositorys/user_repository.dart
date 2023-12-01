@@ -46,4 +46,8 @@ class UserRepository {
       String languageUser, XFile imageAvatar, String dateUpdatedUser) async {
     return userApiRest.updateProfileAvatar(idUser, userName, asociationId, intervalNotifications, languageUser, imageAvatar, dateUpdatedUser);
   }
+
+  Future<HttpResult<UsersListResponse>?> getAllUsers() async {
+    return userApiRest.getAllUsers();
+  }
 }

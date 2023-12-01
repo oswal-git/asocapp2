@@ -3,6 +3,7 @@ import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/views/auth/change/change_page.dart';
 import 'package:asocapp/app/views/auth/login/login_page.dart';
 import 'package:asocapp/app/views/auth/profile/profile_page.dart';
+import 'package:asocapp/app/views/users/list_users_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -66,21 +67,15 @@ class NavBar extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Favorites'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Friends'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('Share'),
-              onTap: () {},
-            ),
+            if (session.userConnected.profileUser == 'admin')
+              ListTile(
+                leading: const Icon(Icons.person_3),
+                title: const Text('Users'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Get.to(() => const ListUsersPage());
+                },
+              ),
             ListTile(
               leading: const Icon(Icons.notifications),
               title: const Text('Request'),
@@ -118,7 +113,7 @@ class NavBar extends StatelessWidget {
               leading: const Icon(Icons.key),
               title: const Text('Cambio de contraseña'),
               onTap: () {
-                Get.offAll(ChangePage);
+                Get.offAll(() => const ChangePage());
               },
             ),
             const Divider(),
