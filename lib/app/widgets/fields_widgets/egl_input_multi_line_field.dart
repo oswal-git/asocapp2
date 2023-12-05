@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class EglInputMultiLineField extends StatefulWidget {
   const EglInputMultiLineField({
-    Key? key,
+    super.key,
     required this.focusNode,
     required this.nextFocusNode,
     required this.onChanged,
@@ -19,7 +19,7 @@ class EglInputMultiLineField extends StatefulWidget {
     this.iconLabel,
     this.ronudIconBorder = false,
     this.label = false,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String> onValidator;

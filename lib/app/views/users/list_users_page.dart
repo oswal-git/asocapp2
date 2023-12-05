@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ListUsersPage extends StatefulWidget {
-  const ListUsersPage({Key? key}) : super(key: key);
+  const ListUsersPage({super.key});
 
   @override
   State<ListUsersPage> createState() => _ListUsersPageState();

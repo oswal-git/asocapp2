@@ -12,9 +12,9 @@ import 'package:get/get.dart';
 
 class ArticleNotifiedPage extends StatefulWidget {
   const ArticleNotifiedPage({
-    Key? key,
+    super.key,
     required this.articleNotifiedArguments,
-  }) : super(key: key);
+  });
 
   final IArticleNotifiedArguments articleNotifiedArguments;
 
@@ -38,7 +38,7 @@ class _ArticleNotifiedPageState extends State<ArticleNotifiedPage> {
     getSingleArticle().then((Article value) {
       if (value.idArticle == 0) {
         articleNotifiedController.exitSession();
-        Get.to(LoginPage);
+        Get.to(() => LoginPage);
       }
 
       setState(() {

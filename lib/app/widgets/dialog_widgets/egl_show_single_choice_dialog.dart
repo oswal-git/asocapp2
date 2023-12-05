@@ -27,7 +27,7 @@ class ShowSingleChoiceDialog extends StatelessWidget {
   final double fontSizeButton;
 
   const ShowSingleChoiceDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     required this.onPressed,
@@ -47,7 +47,7 @@ class ShowSingleChoiceDialog extends StatelessWidget {
     required this.colorButton,
     required this.edgeInsetsButton,
     required this.fontSizeButton,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

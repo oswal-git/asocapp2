@@ -19,7 +19,7 @@ class EglTranslatorAiService {
         //   {'error': '$e'}
         // } as Translation;
         // translation.targetLanguage.code == 'error' ? Helper.eglLogger('e', 'idAsoc') : null;
-        Helper.eglLogger('e', 'translate: ${e.toString()}');
+        Helper.eglLogger('e', 'translate -> $textTrnaslated: ${e.toString()}');
         return Future.value(textTrnaslated);
       }
     } else {

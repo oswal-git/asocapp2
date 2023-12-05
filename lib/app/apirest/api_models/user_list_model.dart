@@ -73,32 +73,33 @@ class UserItem {
   String nameContactAsociation;
   String phoneAsociation;
 
-  UserItem(
-      {required this.idUser,
-      required this.idAsociationUser,
-      required this.userNameUser,
-      required this.emailUser,
-      required this.recoverPasswordUser,
-      required this.tokenUser,
-      required this.tokenExpUser,
-      required this.profileUser,
-      required this.statusUser,
-      required this.nameUser,
-      required this.lastNameUser,
-      required this.avatarUser,
-      required this.phoneUser,
-      required this.dateDeletedUser,
-      required this.dateCreatedUser,
-      required this.dateUpdatedUser,
-      required this.languageUser,
-      required this.longNameAsociation,
-      required this.shortNameAsociation,
-      required this.logoAsociation,
-      required this.emailAsociation,
-      required this.nameContactAsociation,
-      required this.phoneAsociation});
+  UserItem({
+    this.idUser = 0,
+    this.idAsociationUser = 0,
+    this.userNameUser = '',
+    this.emailUser = '',
+    this.recoverPasswordUser = 0,
+    this.tokenUser = '',
+    this.tokenExpUser = 0,
+    this.profileUser = '',
+    this.statusUser = '',
+    this.nameUser = '',
+    this.lastNameUser = '',
+    this.avatarUser = '',
+    this.phoneUser = '',
+    this.dateDeletedUser = '',
+    this.dateCreatedUser = '',
+    this.dateUpdatedUser = '',
+    this.languageUser = '',
+    this.longNameAsociation = '',
+    this.shortNameAsociation = '',
+    this.logoAsociation = '',
+    this.emailAsociation = '',
+    this.nameContactAsociation = '',
+    this.phoneAsociation = '',
+  });
 
-  factory UserItem.fromJson(Map<String, dynamic> json) => UserItem(
+  static UserItem fromJson(Map<String, dynamic> json) => UserItem(
         idUser: int.parse(json["id_user"]),
         idAsociationUser: int.parse(json["id_asociation_user"]),
         userNameUser: json['user_name_user'],
@@ -152,5 +153,141 @@ class UserItem {
     };
 
     return toJson;
+  }
+
+  @override
+  String toString() {
+    String cadena = '';
+
+    cadena = '$cadena UserItem { ';
+    cadena = '$cadena idUser: $idUser,';
+    cadena = '$cadena idAsociationUser: ${idAsociationUser.toString()},';
+    cadena = '$cadena userNameUser: $userNameUser,';
+    cadena = '$cadena emailUser: $emailUser,';
+    cadena = '$cadena recoverPasswordUser: ${recoverPasswordUser.toString()},';
+    cadena = '$cadena tokenUser: $tokenUser,';
+    cadena = '$cadena tokenExpUser: ${tokenExpUser.toString()},';
+    cadena = '$cadena profileUser: $profileUser,';
+    cadena = '$cadena statusUser: $statusUser,';
+    cadena = '$cadena nameUser: $nameUser,';
+    cadena = '$cadena lastNameUser: $lastNameUser,';
+    cadena = '$cadena avatarUser: $avatarUser,';
+    cadena = '$cadena phoneUser: $phoneUser,';
+    cadena = '$cadena dateDeletedUser: $dateDeletedUser,';
+    cadena = '$cadena dateCreatedUser: $dateCreatedUser,';
+    cadena = '$cadena dateUpdatedUser: $dateUpdatedUser,';
+    cadena = '$cadena languageUser: $languageUser,';
+    cadena = '$cadena longNameAsociation: $longNameAsociation,';
+    cadena = '$cadena shortNameAsociation: $shortNameAsociation,';
+    cadena = '$cadena logoAsociation: $logoAsociation,';
+    cadena = '$cadena emailAsociation: $emailAsociation,';
+    cadena = '$cadena nameContactAsociation: $nameContactAsociation,';
+    cadena = '$cadena phoneAsociation: $phoneAsociation,';
+
+    return cadena;
+  }
+
+  factory UserItem.clear() => UserItem(
+        idUser: 0,
+        idAsociationUser: 0,
+        userNameUser: '',
+        emailUser: '',
+        recoverPasswordUser: 0,
+        tokenUser: '',
+        tokenExpUser: 0,
+        profileUser: '',
+        statusUser: '',
+        nameUser: '',
+        lastNameUser: '',
+        avatarUser: '',
+        phoneUser: '',
+        dateDeletedUser: '',
+        dateCreatedUser: '',
+        dateUpdatedUser: '',
+        languageUser: 'es',
+        longNameAsociation: '',
+        shortNameAsociation: '',
+        logoAsociation: '',
+        emailAsociation: '',
+        nameContactAsociation: '',
+        phoneAsociation: '',
+      );
+
+  UserItem clone() => UserItem(
+        idUser: idUser,
+        idAsociationUser: idAsociationUser,
+        userNameUser: userNameUser,
+        emailUser: emailUser,
+        recoverPasswordUser: recoverPasswordUser,
+        tokenUser: tokenUser,
+        tokenExpUser: tokenExpUser,
+        profileUser: profileUser,
+        statusUser: statusUser,
+        nameUser: nameUser,
+        lastNameUser: lastNameUser,
+        avatarUser: avatarUser,
+        phoneUser: phoneUser,
+        dateDeletedUser: dateDeletedUser,
+        dateCreatedUser: dateCreatedUser,
+        dateUpdatedUser: dateUpdatedUser,
+        languageUser: languageUser,
+        longNameAsociation: longNameAsociation,
+        shortNameAsociation: shortNameAsociation,
+        logoAsociation: logoAsociation,
+        emailAsociation: emailAsociation,
+        nameContactAsociation: nameContactAsociation,
+        phoneAsociation: phoneAsociation,
+      );
+
+  UserItem copyWith({
+    int? idUser,
+    int? idAsociationUser,
+    String? userNameUser,
+    String? emailUser,
+    int? recoverPasswordUser,
+    String? tokenUser,
+    int? tokenExpUser,
+    String? profileUser,
+    String? statusUser,
+    String? nameUser,
+    String? lastNameUser,
+    String? avatarUser,
+    String? phoneUser,
+    String? dateDeletedUser,
+    String? dateCreatedUser,
+    String? dateUpdatedUser,
+    String? languageUser,
+    String? longNameAsociation,
+    String? shortNameAsociation,
+    String? logoAsociation,
+    String? emailAsociation,
+    String? nameContactAsociation,
+    String? phoneAsociation,
+  }) {
+    return UserItem(
+      idUser: idUser ?? this.idUser,
+      idAsociationUser: idAsociationUser ?? this.idAsociationUser,
+      userNameUser: userNameUser ?? this.userNameUser,
+      emailUser: emailUser ?? this.emailUser,
+      recoverPasswordUser: recoverPasswordUser ?? this.recoverPasswordUser,
+      tokenUser: tokenUser ?? this.tokenUser,
+      tokenExpUser: tokenExpUser ?? this.tokenExpUser,
+      profileUser: profileUser ?? this.profileUser,
+      statusUser: statusUser ?? this.statusUser,
+      nameUser: nameUser ?? this.nameUser,
+      lastNameUser: lastNameUser ?? this.lastNameUser,
+      avatarUser: avatarUser ?? this.avatarUser,
+      phoneUser: phoneUser ?? this.phoneUser,
+      dateDeletedUser: dateDeletedUser ?? this.dateDeletedUser,
+      dateCreatedUser: dateCreatedUser ?? this.dateCreatedUser,
+      dateUpdatedUser: dateUpdatedUser ?? this.dateUpdatedUser,
+      languageUser: languageUser ?? this.languageUser,
+      longNameAsociation: longNameAsociation ?? this.longNameAsociation,
+      shortNameAsociation: shortNameAsociation ?? this.shortNameAsociation,
+      logoAsociation: logoAsociation ?? this.logoAsociation,
+      emailAsociation: emailAsociation ?? this.emailAsociation,
+      nameContactAsociation: nameContactAsociation ?? this.nameContactAsociation,
+      phoneAsociation: phoneAsociation ?? this.phoneAsociation,
+    );
   }
 }

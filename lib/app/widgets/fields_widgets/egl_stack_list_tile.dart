@@ -11,7 +11,7 @@ class EglStackListTile extends StatelessWidget {
   final Color gradient;
 
   const EglStackListTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.logo,
@@ -19,7 +19,7 @@ class EglStackListTile extends StatelessWidget {
     required this.onTab,
     required this.color,
     required this.gradient,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

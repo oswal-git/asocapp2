@@ -3,7 +3,6 @@ import 'package:asocapp/app/controllers/auth/change/change_controller.dart';
 import 'package:asocapp/app/models/models.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/auth/login/login_page.dart';
-import 'package:asocapp/app/views/dashboard/dashboard_page.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -189,7 +188,9 @@ class _ChangePageState extends State<ChangePage> {
                       languageUser: userAsocData.result!.dataUser.languageUser,
                     ));
 
-                    Get.offAll(() => const DashboardPage());
+                    changeController.exitSession();
+                    Get.offAll(() => const LoginPage());
+                    // Get.offAll(() => const DashboardPage());
                     // setState(() {});
                     return;
                   }

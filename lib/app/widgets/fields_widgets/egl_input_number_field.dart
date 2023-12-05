@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 class EglInputNumberField extends StatefulWidget {
   const EglInputNumberField({
-    Key? key,
+    super.key,
     required this.focusNode,
     required this.nextFocusNode,
     required this.onChanged,
@@ -16,7 +16,7 @@ class EglInputNumberField extends StatefulWidget {
     this.hintText = '',
     this.maxLength = 10,
     this.icon,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String> onValidator;

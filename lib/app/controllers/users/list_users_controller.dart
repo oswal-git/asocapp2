@@ -1,11 +1,15 @@
+import 'package:asocapp/app/models/models.dart';
 import 'package:asocapp/app/repositorys/repositorys.dart';
+import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/auth/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../apirest/api_models/api_models.dart';
 
 class ListUsersController extends GetxController {
+  final SessionService session = Get.put<SessionService>(SessionService());
   final UserRepository userRepository = Get.put(UserRepository());
   final BuildContext? _context = Get.context;
 
@@ -45,15 +49,54 @@ class ListUsersController extends GetxController {
           return users;
         }
       }
-      Helper.popMessage(
-          //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
+
+      if (httpResult.error!.data == 'Expired token') {
+        Helper.showPopMessage(
           _context!,
-          MessageType.info,
-          'Actualización no realizada',
-          httpResult.error?.data);
+          'mExpiredtoken'.tr,
+          'mLoginIn'.tr,
+          title2: '',
+          message2: '',
+          styleMessage: const TextStyle(fontSize: 30, fontWeight: FontWeight.normal),
+          edgeInsetsPop: const EdgeInsets.fromLTRB(10, 150, 10, 20),
+          textButton: 'bAccept'.tr,
+          avatarUser: '',
+          styleAvatarUser: StyleAvatarUser().copyWith(),
+          edgeInsetsButton: const EdgeInsets.fromLTRB(32.0, 6.0, 32.0, 16.0),
+          fontSizeButton: 40.0,
+          onPressed: () {
+            session.exitSession();
+            Get.offAll(() => const LoginPage());
+            // Navigator.of(context).pop();
+          },
+        );
+      } else {
+        Helper.popMessage(
+            //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
+            _context!,
+            MessageType.info,
+            'mNoRefresh'.tr,
+            httpResult.error?.data);
+      }
     }
     _loading.value = false;
     return users;
+  }
+
+  Future<void> updateListUsers(UserItem userItem) async {
+    List<UserItem> usersTemp = _users;
+
+    usersTemp = _users.map((e) {
+      if (e.idUser == userItem.idUser) {
+        e.profileUser = userItem.profileUser;
+        e.statusUser = userItem.statusUser;
+        e.dateUpdatedUser = userItem.dateUpdatedUser;
+      }
+      return e;
+    }).toList();
+
+    _users.value = usersTemp;
+    _users.refresh();
   }
 
   final _imageWidget = Rx<ImageProvider>(const AssetImage('assets/images/icons_user_profile_circle.png'));
@@ -87,22 +130,18 @@ class ListUsersController extends GetxController {
   getImageWidget2(String imageAvatar) {
     if (imageAvatar == '') {
       // ignore: curly_braces_in_flow_control_structures
-      return const ClipOval(
+      return ClipOval(
         child: SizedBox(
-          width: 20,
-          height: 20,
-          child: Image(
-            image: AssetImage('assets/images/icons_user_profile_circle.png'),
+          child: Image.asset(
+            'assets/images/icons_user_profile_circle.png',
             //   fit: BoxFit.cover,
-            color: Colors.amberAccent,
+            color: Colors.amberAccent[700],
           ),
         ),
       );
     } else {
       return ClipOval(
         child: SizedBox(
-          width: 20,
-          height: 20,
           child: Image.network(
             imageAvatar,
             fit: BoxFit.cover,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class EglDropdownList extends StatelessWidget {
   const EglDropdownList({
-    Key? key,
+    super.key,
     required this.context,
     required this.focusNode,
     required this.nextFocusNode,
@@ -43,7 +43,7 @@ class EglDropdownList extends StatelessWidget {
     this.icon,
     this.iconLabel,
     this.ronudIconBorder = false,
-  }) : super(key: key);
+  });
 
   final BuildContext context;
   final FocusNode? focusNode;

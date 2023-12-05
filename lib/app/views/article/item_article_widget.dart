@@ -10,9 +10,9 @@ import 'package:asocapp/app/utils/utils.dart';
 
 class ItemArticleWidget extends StatefulWidget {
   const ItemArticleWidget({
-    Key? key,
+    super.key,
     required this.item,
-  }) : super(key: key);
+  });
 
   final ItemArticle item;
 
@@ -39,9 +39,9 @@ class _ItemArticleWidgetState extends State<ItemArticleWidget> {
 
 class ImageItem extends StatelessWidget {
   const ImageItem({
-    Key? key,
+    super.key,
     required this.image,
-  }) : super(key: key);
+  });
 
   final ImageArticle image;
 
@@ -59,9 +59,9 @@ class ImageItem extends StatelessWidget {
 
 class ImageItem2 extends StatelessWidget {
   const ImageItem2({
-    Key? key,
+    super.key,
     required this.image,
-  }) : super(key: key);
+  });
 
   final ImageArticle image;
 
@@ -88,9 +88,9 @@ class TextItem extends StatelessWidget {
   final String text;
 
   const TextItem({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

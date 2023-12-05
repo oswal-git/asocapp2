@@ -42,6 +42,10 @@ class UserRepository {
     return userApiRest.updateProfile(idUser, userName, asociationId, intervalNotifications, languageUser, dateUpdatedUser);
   }
 
+  Future<HttpResult<UserAsocResponse>?> updateProfileStatus(int idUser, String profileUser, String statusUser, String dateUpdatedUser) async {
+    return userApiRest.updateProfileStatus(idUser, profileUser, statusUser, dateUpdatedUser);
+  }
+
   Future<HttpResult<UserAsocResponse>?> updateProfileAvatar(int idUser, String userName, int asociationId, int intervalNotifications,
       String languageUser, XFile imageAvatar, String dateUpdatedUser) async {
     return userApiRest.updateProfileAvatar(idUser, userName, asociationId, intervalNotifications, languageUser, imageAvatar, dateUpdatedUser);

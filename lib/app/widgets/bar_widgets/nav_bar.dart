@@ -37,7 +37,8 @@ class NavBar extends StatelessWidget {
               ),
               currentAccountPicture: InkWell(
                 onTap: () {
-                  Get.to(const ProfilePage());
+                  Navigator.pop(context);
+                  Get.to(() => const ProfilePage());
                 },
                 child: CircleAvatar(
                   backgroundColor: Colors.grey,
@@ -113,7 +114,8 @@ class NavBar extends StatelessWidget {
               leading: const Icon(Icons.key),
               title: const Text('Cambio de contraseña'),
               onTap: () {
-                Get.offAll(() => const ChangePage());
+                Navigator.pop(context);
+                Get.to(() => const ChangePage());
               },
             ),
             const Divider(),
@@ -122,6 +124,7 @@ class NavBar extends StatelessWidget {
               title: const Text('Exit'),
               onTap: () {
                 session.exitSession();
+                Navigator.pop(context);
                 Get.offAll(() => const LoginPage());
               },
             ),

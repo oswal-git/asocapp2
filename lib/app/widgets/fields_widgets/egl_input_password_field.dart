@@ -7,7 +7,7 @@ import '../../resources/resources.dart';
 
 class EglInputPasswordField extends StatefulWidget {
   const EglInputPasswordField({
-    Key? key,
+    super.key,
     required this.focusNode,
     required this.nextFocusNode,
     required this.onChanged,
@@ -17,7 +17,7 @@ class EglInputPasswordField extends StatefulWidget {
     this.icon,
     this.iconLabel,
     this.ronudIconBorder = false,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String> onValidator;

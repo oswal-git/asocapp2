@@ -199,7 +199,7 @@ class NotificationService extends GetxService {
         IArticleNotifiedArguments args = IArticleNotifiedArguments(
           int.parse(receivedAction.payload?['idArticle'] ?? '0'),
         );
-        Get.to(ArticleNotifiedPage(articleNotifiedArguments: args));
+        Get.to(() => ArticleNotifiedPage(articleNotifiedArguments: args));
         //     MyApp.navigatorKey.currentState
         //         ?.pushNamedAndRemoveUntil(RouteName.articleNotified, (route) => (route.settings.name != RouteName.articleNotified) || route.isFirst,
         //             arguments: IArticleNotifiedArguments(

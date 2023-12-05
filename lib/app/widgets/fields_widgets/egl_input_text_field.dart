@@ -6,7 +6,7 @@ import 'package:logger/logger.dart';
 
 class EglInputTextField extends StatefulWidget {
   const EglInputTextField({
-    Key? key,
+    super.key,
     required this.focusNode,
     required this.nextFocusNode,
     required this.onChanged,
@@ -18,7 +18,7 @@ class EglInputTextField extends StatefulWidget {
     this.iconLabel,
     this.ronudIconBorder = false,
     this.readOnly = false,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String> onValidator;

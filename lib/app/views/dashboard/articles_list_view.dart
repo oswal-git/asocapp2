@@ -10,8 +10,8 @@ import 'package:get/get.dart';
 
 class ArticlesListView extends StatefulWidget {
   const ArticlesListView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ArticlesListView> createState() => _ArticlesListViewState();
@@ -108,7 +108,7 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                       IArticleArguments args = IArticleArguments(
                         article,
                       );
-                      Get.to(ArticlePage(articleArguments: args));
+                      Get.to(() => ArticlePage(articleArguments: args));
                     },
                     onTapCategory: () {
                       // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}');

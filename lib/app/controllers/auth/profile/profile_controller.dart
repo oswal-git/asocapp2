@@ -9,7 +9,9 @@ import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/dashboard/dashboard_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
@@ -34,6 +36,12 @@ class ProfileController extends GetxController {
   final _timeNotificationsFocusNode = FocusNode().obs;
   FocusNode get timeNotificationsFocusNode => _timeNotificationsFocusNode.value;
 
+  final _profileUserFocusNode = FocusNode().obs;
+  FocusNode get profileUserFocusNode => _profileUserFocusNode.value;
+
+  final _statusUserFocusNode = FocusNode().obs;
+  FocusNode get statusUserFocusNode => _statusUserFocusNode.value;
+
   Rx<UserConnected> userConnected = Rx<UserConnected>(UserConnected.clear());
   Rx<UserConnected> userConnectedIni = Rx<UserConnected>(UserConnected.clear());
   Rx<UserConnected> userConnectedLast = Rx<UserConnected>(UserConnected.clear());
@@ -42,6 +50,18 @@ class ProfileController extends GetxController {
 
   final _isFormValid = false.obs;
   bool get isFormValid => _isFormValid.value;
+
+  // Crop code
+  final cropImagePath = ''.obs;
+  final cropImageSize = ''.obs;
+
+  // Image code
+  final selectedImagePath = ''.obs;
+  final selectedImageSize = ''.obs;
+
+  // Compress code
+  final compressedImagePath = ''.obs;
+  final compressedImageSize = ''.obs;
 
   final _imageAvatar = Rx<XFile?>(XFile(''));
   XFile? get imageAvatar => _imageAvatar.value;
@@ -59,18 +79,21 @@ class ProfileController extends GetxController {
   }
 
   @override
+  void onInit() async {
+    super.onInit();
+    await refreshAsociationsList();
+  }
+
+  @override
   void onClose() {
     _asociationsFocusNode.value.dispose();
     _languageUserFocusNode.value.dispose();
     _timeNotificationsFocusNode.value.dispose();
     _userNameFocusNode.value.dispose();
+    _profileUserFocusNode.value.dispose();
+    _statusUserFocusNode.value.dispose();
 
-//     idAsociationTextController.dispose();
-//     userNameTextController.dispose();
-//     passwordTextController.dispose();
-//     questionTextController.dispose();
-//     answerTextController.dispose();
-//     super.onClose();
+    super.onClose();
   }
 
   bool isLogin() {
@@ -79,7 +102,7 @@ class ProfileController extends GetxController {
     try {
       if (!session.isLogin) {
         // Timer(const Duration(seconds: 3), () => Navigator.pushNamed(context, RouteName.register));
-        Get.to(DashboardPage);
+        Get.to(() => DashboardPage);
         return false;
       }
       userConnected.value = session.userConnected.clone();
@@ -92,8 +115,16 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> exitSession() async {
+    return session.exitSession();
+  }
+
   Future<List<dynamic>> refreshAsociationsList() async {
     return asociationController.refreshAsociationsList();
+  }
+
+  Asociation getAsociationById(int idAsociation) {
+    return asociationController.getAsociationById(idAsociation);
   }
 
   Future<void> clearAsociations() async {
@@ -206,5 +237,41 @@ class ProfileController extends GetxController {
         ),
       );
     }
+  }
+
+  pickImage(String option) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: option == 'camera' ? ImageSource.camera : ImageSource.gallery);
+    if (pickedFile != null) {
+      //   selectedImagePath = File(pickedFile.path);
+      selectedImagePath.value = pickedFile.path;
+      selectedImageSize.value = "${(File(selectedImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // Crop
+      final cropImageFile =
+          await ImageCropper().cropImage(sourcePath: selectedImagePath.value, maxWidth: 512, maxHeight: 512, compressFormat: ImageCompressFormat.png);
+      cropImagePath.value = cropImageFile!.path;
+      cropImageSize.value = "${(File(cropImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // Compress
+      final dir = Directory.systemTemp;
+      final targetPath = '${dir.absolute.path}/tempimage.png';
+
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        cropImagePath.value,
+        targetPath,
+        quality: 90,
+        format: CompressFormat.png,
+      );
+      compressedImagePath.value = compressedFile!.path;
+      compressedImageSize.value = "${(File(compressedImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // final String imageBase64 = base64Encode(imageFile.readAsBytesSync());
+      Helper.eglLogger('i', 'isLogin: $userConnected');
+      setImageWidget(compressedFile);
+    }
+    //   Helper.eglLogger('i', 'isLogin: ${profileController.imageAvatar!.path}');
+    //   Helper.eglLogger('i', 'isLogin: ${profileController.imageAvatar!.path != ''}');
+    checkIsFormValid();
   }
 }

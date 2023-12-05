@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class Logo extends StatelessWidget {
   const Logo({
-    Key? key,
+    super.key,
     required this.logo,
-  }) : super(key: key);
+  });
 
   final String logo;
 

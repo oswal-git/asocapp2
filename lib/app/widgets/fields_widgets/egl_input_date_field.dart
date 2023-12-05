@@ -8,12 +8,12 @@ class EglInputDateField extends StatelessWidget {
   static const _100_YEAR = Duration(days: 365 * 100);
 
   EglInputDateField({
-    Key? key,
+    super.key,
     required this.onChanged,
     required this.currentValue,
     required this.onValidator,
     required this.label,
-  }) : super(key: key);
+  });
 
   final ValueChanged<DateTime> onChanged;
   final DateTime? currentValue;

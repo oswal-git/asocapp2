@@ -5,14 +5,14 @@ import '../../resources/resources.dart';
 
 class EglPopButton extends StatelessWidget {
   const EglPopButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.textButton,
     required this.edgeInsets,
     required this.textColor,
     required this.color,
     required this.fontSize,
-  }) : super(key: key);
+  });
 
   final VoidCallback onPressed;
   final String textButton;

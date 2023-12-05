@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class EglInputEmailField extends StatefulWidget {
   const EglInputEmailField({
-    Key? key,
+    super.key,
     required this.focusNode,
     required this.nextFocusNode,
     required this.onChanged,
@@ -17,7 +17,7 @@ class EglInputEmailField extends StatefulWidget {
     this.icon,
     this.iconLabel,
     this.ronudIconBorder = false,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String> onValidator;

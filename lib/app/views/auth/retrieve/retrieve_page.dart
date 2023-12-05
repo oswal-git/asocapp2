@@ -14,9 +14,9 @@ import 'package:logger/logger.dart';
 
 class RetrievePage extends StatefulWidget {
   const RetrievePage({
-    Key? key,
+    super.key,
     this.model,
-  }) : super(key: key);
+  });
 
   final UserConnected? model;
 
