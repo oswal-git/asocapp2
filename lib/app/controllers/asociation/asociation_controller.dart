@@ -70,4 +70,12 @@ class AsociationController extends GetxController {
 
     await asociationRepository.storageWrite(selectIdAsociationKey, idAsociation.toString());
   }
+
+  Asociation getAsociationById(int idAsociation) {
+    Asociation searchedAsociation = _asociations.firstWhere((element) => idAsociation == element.idAsociation);
+
+    Helper.eglLogger('d', 'getAsociationById: ${searchedAsociation.longNameAsociation}');
+
+    return searchedAsociation;
+  }
 }

@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/controllers/auth/profile/profile_controller.dart';
 import 'package:asocapp/app/models/models.dart';
@@ -11,7 +8,6 @@ import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -25,8 +21,6 @@ class _ProfilePageState extends State<ProfilePage> {
   ProfileController profileController = Get.put<ProfileController>(ProfileController());
 
   BuildContext? _context;
-  XFile? pickedFile = XFile('');
-  String imageBase64 = '';
 
   @override
   void dispose() {
@@ -96,20 +90,6 @@ class _ProfilePageState extends State<ProfilePage> {
       {'option': 'gallery', 'texto': 'Galería', 'icon': Icons.browse_gallery}
     ];
 
-    pickImage(String option) async {
-      final ImagePicker picker = ImagePicker();
-      pickedFile = await picker.pickImage(source: option == 'camera' ? ImageSource.camera : ImageSource.gallery);
-      if (pickedFile != null) {
-        final imageFile = File(pickedFile!.path);
-        imageBase64 = base64Encode(imageFile.readAsBytesSync());
-        Helper.eglLogger('i', 'isLogin: ${profileController.userConnected.value}');
-        profileController.setImageWidget(pickedFile!);
-      }
-      //   Helper.eglLogger('i', 'isLogin: ${profileController.imageAvatar!.path}');
-      //   Helper.eglLogger('i', 'isLogin: ${profileController.imageAvatar!.path != ''}');
-      profileController.checkIsFormValid();
-    }
-
     return Obx(
       () => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 'tQuestions'.tr,
                 context: context,
                 onChanged: (value) async {
-                  pickImage(value);
+                  profileController.pickImage(value);
                   Get.back();
                 },
               );
@@ -284,8 +264,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 profileController.userConnected.value.languageUser,
                                 profileController.userConnected.value.dateUpdatedUser);
                           }
-                          if (httpResult!.data != null) {
-                            if (httpResult.statusCode == 200) {
+
+                          if (httpResult!.statusCode == 200) {
+                            if (httpResult.data != null) {
                               //   Utils.eglLogger('i', 'userapp: ${httpResult.data.toString()}');
                               final UserConnected userConnected = UserConnected(
                                 idUser: httpResult.data!.result!.dataUser.idUser,
@@ -340,12 +321,21 @@ class _ProfilePageState extends State<ProfilePage> {
                               Helper.toastMessage(httpResult.error.toString());
                               return;
                             }
+                          } else if (httpResult.statusCode == 404) {
+                            Helper.popMessage(
+                                //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
+                                _context!,
+                                MessageType.info,
+                                '${'mUnexpectedError'.tr}.',
+                                '${'mNoScriptAvailable'.tr}.');
+                            Helper.eglLogger('e', httpResult.error?.data);
+                            return;
                           }
                           Helper.popMessage(
                               //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
                               _context!,
                               MessageType.info,
-                              'Actualización no realizada',
+                              '${'mNoUpdateProfile'.tr}.',
                               httpResult.error?.data);
                           return;
                         } else {

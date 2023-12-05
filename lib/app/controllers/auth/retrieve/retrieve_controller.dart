@@ -95,7 +95,7 @@ class RetrieveController extends GetxController {
   Future<void> isLogin(context) async {
     if (!session.isLogin) {
       // Timer(const Duration(seconds: 3), () => Navigator.pushNamed(context, RouteName.register));
-      Timer(const Duration(seconds: 3), () => Get.to(DashboardPage));
+      Timer(const Duration(seconds: 3), () => Get.to(() => DashboardPage));
     }
   }
 

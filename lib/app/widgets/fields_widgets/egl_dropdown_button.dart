@@ -26,7 +26,7 @@ class EglDropdownButtonItem {
 
 class EglDropdownButtonField extends StatefulWidget {
   const EglDropdownButtonField({
-    Key? key,
+    super.key,
     required this.hint,
     this.image = '',
     required this.list,
@@ -39,7 +39,7 @@ class EglDropdownButtonField extends StatefulWidget {
     this.enable = false,
     this.autofocus = false,
     required this.onWidgetChanged,
-  }) : super(key: key);
+  });
 
   final String hint;
   final String image;

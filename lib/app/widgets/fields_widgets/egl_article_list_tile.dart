@@ -58,7 +58,7 @@ import '../../resources/resources.dart';
 
 class EglArticleListTile extends StatelessWidget {
   const EglArticleListTile({
-    Key? key,
+    super.key,
     required this.index,
     required this.title,
     required this.subtitle,
@@ -72,7 +72,7 @@ class EglArticleListTile extends StatelessWidget {
     required this.onTapSubcategory,
     required this.color,
     required this.gradient,
-  }) : super(key: key);
+  });
 
 // input data
   final int index;

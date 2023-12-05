@@ -66,10 +66,10 @@ class LoginController extends GetxController {
   Future<void> isLogin() async {
     if (session.isLogin) {
       if (session.userConnected.recoverPasswordUser == 0) {
-        Timer(const Duration(seconds: 3), () => Get.to(const DashboardPage()));
+        Timer(const Duration(seconds: 3), () => Get.to(() => const DashboardPage()));
       }
       // Timer(const Duration(seconds: 3), () => Navigator.pushNamed(context, RouteName.register));
-      Timer(const Duration(seconds: 3), () => Get.to(const ChangePage()));
+      Timer(const Duration(seconds: 3), () => Get.to(() => const ChangePage()));
     }
   }
 

@@ -15,7 +15,7 @@ class EglListTileCopy extends StatelessWidget {
   final Color gradient;
 
   EglListTileCopy({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.logo,
@@ -26,7 +26,7 @@ class EglListTileCopy extends StatelessWidget {
     required this.onTab,
     required this.color,
     required this.gradient,
-  }) : super(key: key);
+  });
 
   final Logger logger = Logger();
 

@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 
 class ArticlePage extends StatefulWidget {
   const ArticlePage({
-    Key? key,
+    super.key,
     required this.articleArguments,
-  }) : super(key: key);
+  });
 
   final IArticleArguments articleArguments;
 

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class EglInputLabelText extends StatelessWidget {
   const EglInputLabelText({
-    Key? key,
+    super.key,
     this.isLabelFilled = true,
     this.label = "",
     this.fontSize = 10,
     this.fontWeight = FontWeight.bold,
-  }) : super(key: key);
+  });
 
   final bool isLabelFilled;
   final String label;

@@ -6,7 +6,7 @@ import 'package:asocapp/app/widgets/widgets.dart';
 
 class EglAsociationsDropdown extends StatelessWidget {
   EglAsociationsDropdown({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.hintText,
     required this.focusNode,
@@ -15,7 +15,7 @@ class EglAsociationsDropdown extends StatelessWidget {
     required this.onValidate,
     required this.future,
     required this.currentValue,
-  }) : super(key: key);
+  });
 
   final String labelText;
   final String hintText;
