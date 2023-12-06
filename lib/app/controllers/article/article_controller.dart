@@ -105,8 +105,8 @@ class ArticleController extends GetxController {
 
     for (var i = 0; i < article.itemsArticle.length; i++) {
       String text = article.itemsArticle[i].textItemArticle.trim();
-      Helper.eglLogger('i', 'text[$i].length: ${text.length}');
-      Helper.eglLogger('i', 'text[$i]: $text');
+      EglHelper.eglLogger('i', 'text[$i].length: ${text.length}');
+      EglHelper.eglLogger('i', 'text[$i]: $text');
       //
       //   i == 0
       //       ? text =
@@ -115,7 +115,7 @@ class ArticleController extends GetxController {
       if (text != '') {
         String tra1 = await _translator.translate(text, languageUser);
         if (tra1.trim() != '') {
-          Helper.eglLogger('i', 'tra1[$i]: $tra1');
+          EglHelper.eglLogger('i', 'tra1[$i]: $tra1');
           text = tra1.trim();
         }
         list[i] = article.itemsArticle[i].copyWith(textItemArticle: text);

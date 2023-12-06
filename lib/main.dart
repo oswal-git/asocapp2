@@ -22,14 +22,14 @@ Future<void> main() async {
   await Get.putAsync(() => NotificationService().initialize());
   await Get.putAsync(() => SessionService().initialize());
 
-  Helper.eglLogger('i', 'main: Workmanager().initialize:');
+  EglHelper.eglLogger('i', 'main: Workmanager().initialize:');
 
   Workmanager().initialize(
     callbackDispatcher,
     // isInDebugMode: true,
   );
 
-  Helper.eglLogger('i', 'main: Workmanager().cancelAll');
+  EglHelper.eglLogger('i', 'main: Workmanager().cancelAll');
   // Cancelar todas las tareas programadas previamente
   Workmanager().cancelAll();
 
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // Only after at least the action method is set, the notification events are delivered
-    Helper.eglLogger('i', '_MyAppState - initState: AwesomeNotifications().setListeners:');
+    EglHelper.eglLogger('i', '_MyAppState - initState: AwesomeNotifications().setListeners:');
 
     NotificationService.setListeners(context);
 
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
 
     if (session.isLogin) {
       language = session.userConnected.languageUser;
-      country = Helper.getAppCountryLocale(language);
+      country = EglHelper.getAppCountryLocale(language);
     }
 
     initializeDateFormatting(country == '' ? language : '${language}_$country', null);
@@ -118,22 +118,22 @@ void callbackDispatcher() {
     if (Platform.isAndroid) SharedPreferencesAndroid.registerWith();
 
     DateTime now = DateTime.now();
-    Helper.eglLogger('i', 'callbackDispatcher: task:', object: task);
+    EglHelper.eglLogger('i', 'callbackDispatcher: task:', object: task);
     switch (task) {
       case simplePeriodicTask:
 
         // Code to run in background
-        Helper.eglLogger('i', "Native called background task: $task"); //simpleTask will be emitted here.
+        EglHelper.eglLogger('i', "Native called background task: $task"); //simpleTask will be emitted here.
         if (now.hour >= 0 && now.hour <= 24) {
           // if (now.hour >= 10 && now.hour <= 22) {
           Map<dynamic, dynamic> response = await notificationService.getPendingNotifyArticlesList();
-          Helper.eglLogger('i', 'callbackDispatcher: task: Datos cargados - response.toString:', object: response.toString());
+          EglHelper.eglLogger('i', 'callbackDispatcher: task: Datos cargados - response.toString:', object: response.toString());
 
           // Recorriendo la lista con un bucle for
           if (response['list'].isNotEmpty) {
             for (int i = 0; i < response['list'].length; i++) {
               dynamic item = response['list'][i];
-              Helper.eglLogger('i', 'callbackDispatcher: task: createArticleNotification - item:', object: item);
+              EglHelper.eglLogger('i', 'callbackDispatcher: task: createArticleNotification - item:', object: item);
 
               await NotificationService.createArticleNotification(item);
 
@@ -141,7 +141,7 @@ void callbackDispatcher() {
             }
           }
         } else {
-          Helper.eglLogger('i', 'callbackDispatcher: task: createArticleNotification -> no message (${now.hour})');
+          EglHelper.eglLogger('i', 'callbackDispatcher: task: createArticleNotification -> no message (${now.hour})');
         }
 
         break;

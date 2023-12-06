@@ -21,7 +21,7 @@ class ArticlesApiRest {
       'Authorization': 'Bearer $authToken',
     };
 
-    final url = await Config.uri(apiArticles, '${Config.apiSingleArticle}?id_article=$idarticle');
+    final url = await EglConfig.uri(apiArticles, '${EglConfig.apiSingleArticle}?id_article=$idarticle');
     // Helper.eglLogger('i', 'Response body: ${url.toString()}');
 
     final response = await http.get(url, headers: requestHeaders);
@@ -42,7 +42,7 @@ class ArticlesApiRest {
       'Authorization': 'Bearer ${_session.getAuthToken}',
     };
 
-    final url = await Config.uri(apiArticles, Config.apiListAll);
+    final url = await EglConfig.uri(apiArticles, EglConfig.apiListAll);
     // Helper.eglLogger('i', 'Response body: ${url.toString()}');
 
     final response = await http.get(url, headers: requestHeaders);
@@ -66,7 +66,7 @@ class ArticlesApiRest {
         'Authorization': 'Bearer $authToken',
       };
 
-      final Uri url = await Config.uri(apiNotifications, Config.apiListPending);
+      final Uri url = await EglConfig.uri(apiNotifications, EglConfig.apiListPending);
       // Helper.eglLogger('i', 'requestHeaders: ${requestHeaders.toString()}');
       // Helper.eglLogger('i', 'url: ${url.toString()}');
       // Helper.eglLogger('i', 'ArticlesApiRest: getPendingNotifyArticlesList -> getAuthToken -> tokenUser: $authToken');
@@ -83,11 +83,11 @@ class ArticlesApiRest {
       return Future.value(notificationArticleListResponse);
     } on FormatException catch (error) {
       // print('Response status: ${response.statusCode}');
-      Helper.eglLogger('e', 'Response try error: ${error.message}', object: error);
+      EglHelper.eglLogger('e', 'Response try error: ${error.message}', object: error);
       return Future.value(NotificationArticleListResponse.clear());
     } catch (error) {
       // print('Response status: ${response.statusCode}');
-      Helper.eglLogger('e', 'Response try error: ', object: error);
+      EglHelper.eglLogger('e', 'Response try error: ', object: error);
       return Future.value(NotificationArticleListResponse.clear());
     }
   }

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:asocapp/app/controllers/users/user_item_controller.dart';
+import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -44,11 +45,9 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        // automaticallyImplyLeading: true,
-        title: Text('tUserProfile'.tr),
-        centerTitle: true,
+      appBar: EglAppBar(
+        showBackArrow: true,
+        title: 'tUserProfile'.tr,
       ),
       body: SafeArea(
         child: Padding(
@@ -236,16 +235,16 @@ class _UserPageState extends State<UserPage> {
                             } else {
                               isOk = false;
 
-                              Helper.toastMessage(httpResult.error.toString());
+                              EglHelper.toastMessage(httpResult.error.toString());
                               return;
                             }
                           } else if (httpResult.statusCode == 404) {
-                            Helper.popMessage(_context!, MessageType.info, '${'mUnexpectedError'.tr}.', '${'mNoScriptAvailable'.tr}.');
-                            Helper.eglLogger('e', httpResult.error?.data);
+                            EglHelper.popMessage(_context!, MessageType.info, '${'mUnexpectedError'.tr}.', '${'mNoScriptAvailable'.tr}.');
+                            EglHelper.eglLogger('e', httpResult.error?.data);
                             isOk = false;
                             return;
                           } else {
-                            Helper.popMessage(
+                            EglHelper.popMessage(
                                 //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
                                 _context!,
                                 MessageType.info,
@@ -255,13 +254,14 @@ class _UserPageState extends State<UserPage> {
                             return;
                           }
                         } else {
-                          Helper.popMessage(_context!, MessageType.info, 'No han habido cambios', 'Nada para modificar');
+                          EglHelper.popMessage(_context!, MessageType.info, 'No han habido cambios', 'Nada para modificar');
                           isOk = false;
                           return;
                           // Utils.eglLogger('i', 'EglRoundButton: userConnected: ${userItemController.userItem.value}');
                         }
                       } else {
-                        Helper.popMessage(context, MessageType.info, 'Faltan campos por rellenar', 'No se ha podido modificar el perfil del usuario');
+                        EglHelper.popMessage(
+                            context, MessageType.info, 'Faltan campos por rellenar', 'No se ha podido modificar el perfil del usuario');
                         isOk = false;
                         return;
                       }

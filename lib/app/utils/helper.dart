@@ -16,7 +16,7 @@ import 'package:intl/intl.dart';
 
 enum MessageType { info, warning, error }
 
-class Helper {
+class EglHelper {
   static void fieldFocus(BuildContext context, FocusNode currentNode, FocusNode nextFocus) {
     currentNode.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
@@ -222,7 +222,7 @@ class Helper {
     String apiURL = '';
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    androidInfo.isPhysicalDevice ? apiURL = Config.apiURLPhysicalDevice : apiURL = Config.apiURLEmulatorDevice;
+    androidInfo.isPhysicalDevice ? apiURL = EglConfig.apiURLPhysicalDevice : apiURL = EglConfig.apiURLEmulatorDevice;
 
     // IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
     // print('Is simulator: ${iosInfo.isPhysicalDevice}');
@@ -231,9 +231,9 @@ class Helper {
 
   static Future<String> parseApiUrlBody(String responseBody) async {
     try {
-      String apiUrl = await Helper.apiURL();
+      String apiUrl = await EglHelper.apiURL();
       //   eglLogger('w', 'responseBody: $responseBody');
-      String replacedBody = responseBody.replaceAll(Config.apiURLBD, apiUrl);
+      String replacedBody = responseBody.replaceAll(EglConfig.apiURLBD, apiUrl);
       //   eglLogger('w', 'replacedBody: $replacedBody');
       return replacedBody;
     } catch (_) {
@@ -334,5 +334,23 @@ class Helper {
 
     return resolutionDevice;
   }
+
+  static String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      String respText = '${text.substring(0, maxLength)}...';
+      return respText;
+    }
+  }
+
+  static bool osDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
+
+  static Size screnSize() => MediaQuery.of(Get.context!).size;
+
+  static double screnHeight() => MediaQuery.of(Get.context!).size.height;
+
+  static double screnWidth() => MediaQuery.of(Get.context!).size.width;
+
   // end class
 }

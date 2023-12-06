@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                     ));
 
                     String language = userAsocData.result!.dataUser.languageUser;
-                    String country = Helper.getAppCountryLocale(language);
+                    String country = EglHelper.getAppCountryLocale(language);
 
                     var locale = Locale(language, country);
                     Get.updateLocale(locale);
@@ -210,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                     return;
                   }
                 }
-                Helper.popMessage(_context!, MessageType.info, 'No se ha encontrado el usuario', 'Usuario, asociación o clave erroneas');
+                EglHelper.popMessage(_context!, MessageType.info, 'No se ha encontrado el usuario', 'Usuario, asociación o clave erroneas');
               }
             },
           ),

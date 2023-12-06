@@ -26,7 +26,7 @@ class AsociationsApiRest {
     };
 
     try {
-      final url = await Config.uri(apiAsoc, Config.apiListAll);
+      final url = await EglConfig.uri(apiAsoc, EglConfig.apiListAll);
 
       final response = await http.get(url, headers: requestHeaders).timeout(
             const Duration(
@@ -36,7 +36,7 @@ class AsociationsApiRest {
 
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
-      final AsociationsResponse asociationsResponse = asociationsResponseFromJson(await Helper.parseApiUrlBody(response.body));
+      final AsociationsResponse asociationsResponse = asociationsResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
       // print('Asociations Response body: ${asociationsResponse.result.records}');
       return Future.value(asociationsResponse.result.records);
     } on SocketException {

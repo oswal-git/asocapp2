@@ -83,7 +83,7 @@ class ChangeController extends GetxController {
       _loading.value = false;
       return userAsocData;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       _loading.value = false;
       return null;
     }
@@ -100,7 +100,7 @@ class ChangeController extends GetxController {
       _loading.value = false;
       return userAsocData;
     } catch (e) {
-      Helper.toastMessage((e.toString()));
+      EglHelper.toastMessage((e.toString()));
       _loading.value = false;
       return null;
     }

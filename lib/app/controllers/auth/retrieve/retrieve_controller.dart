@@ -70,7 +70,7 @@ class RetrieveController extends GetxController {
   @override
   onInit() {
     super.onInit();
-    Helper.eglLogger('i', '$runtimeType');
+    EglHelper.eglLogger('i', '$runtimeType');
   }
 
   @override
@@ -88,7 +88,7 @@ class RetrieveController extends GetxController {
     passwordTextController.dispose();
     questionTextController.dispose();
     userNameTextController.dispose();
-    Helper.eglLogger('i', '$runtimeType');
+    EglHelper.eglLogger('i', '$runtimeType');
     super.onClose();
   }
 
@@ -104,7 +104,7 @@ class RetrieveController extends GetxController {
   }
 
   Future<QuestionList> retrieveQuestion(BuildContext context, String username, int asociationId) async {
-    Helper.toastMessage('Data save successfully: $username from ${asociationId.toString()}');
+    EglHelper.toastMessage('Data save successfully: $username from ${asociationId.toString()}');
     loading.value = true;
     QuestionList questionList = QuestionList.clear();
 
@@ -122,7 +122,7 @@ class RetrieveController extends GetxController {
       // print('Response body: ${result}');
       if (questionListUserResponse != null && questionListUserResponse.status == 200) {
         if (questionListUserResponse.result.numRecords == 0) {
-          Helper.toastMessage('No se ha encontrado el usuario');
+          EglHelper.toastMessage('No se ha encontrado el usuario');
           loading.value = false;
           questionList.showClave = false;
           questionList.status = 'No se ha encontrado el usuario';
@@ -150,7 +150,7 @@ class RetrieveController extends GetxController {
       // ignore: use_build_context_synchronously
       // Navigator.pushNamed(context, RouteName.dashboard);
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
 
       loading.value = false;
       questionList.status = 'e.toString()';
@@ -169,7 +169,7 @@ class RetrieveController extends GetxController {
       loading.value = false;
       return userPassResponse;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }
@@ -194,7 +194,7 @@ class RetrieveController extends GetxController {
       loading.value = false;
       return userResetResponse;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }

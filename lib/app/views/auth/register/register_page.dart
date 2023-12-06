@@ -240,11 +240,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       Get.offAll(() => const DashboardPage());
                       return;
                     }
-                    Helper.toastMessage('mCantRegister'.tr);
+                    EglHelper.toastMessage('mCantRegister'.tr);
                   } else if (httpResult?.statusCode == 400) {
-                    Helper.toastMessage(httpResult!.error!.data['message']);
+                    EglHelper.toastMessage(httpResult!.error!.data['message']);
                   } else {
-                    Helper.toastMessage(httpResult!.error.toString());
+                    EglHelper.toastMessage(httpResult!.error.toString());
                   }
 
                   registerController.loading = false;

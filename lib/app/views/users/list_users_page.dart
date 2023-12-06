@@ -1,5 +1,6 @@
 import 'package:asocapp/app/controllers/users/list_users_controller.dart';
 import 'package:asocapp/app/views/users/user_list_view.dart';
+import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,10 +17,9 @@ class _ListUsersPageState extends State<ListUsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        automaticallyImplyLeading: true,
-        title: const Text("Users"),
+      appBar: EglAppBar(
+        showBackArrow: true,
+        title: "tUserList".tr,
       ),
       body: Obx(
         () => Container(

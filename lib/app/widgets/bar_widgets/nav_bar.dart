@@ -1,3 +1,4 @@
+import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/views/auth/change/change_page.dart';
@@ -59,11 +60,7 @@ class NavBar extends StatelessWidget {
                 color: Colors.blue,
                 image: DecorationImage(
                   // background bar
-                  image: NetworkImage(
-                    'https://thumbs.dreamstime.com/b/vista-del-paisaje-mediterr%C3%A1neo-hermoso-del-mar-y-del-cielo-soleado-67838267.jpg',
-                    // 'https://artelista.s3.amazonaws.com/obras/big/6/7/3/4326362245540364.jpg',
-                    // 'https://artelista.s3.amazonaws.com/obras/fichas/4/9/3/6821947658369943.jpg',
-                  ),
+                  image: NetworkImage(EglImagesPath.iconBackgroundDrawer),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -71,12 +68,20 @@ class NavBar extends StatelessWidget {
             if (session.userConnected.profileUser == 'admin')
               ListTile(
                 leading: const Icon(Icons.person_3),
-                title: const Text('Users'),
+                title: Text('cUsersList'.tr),
                 onTap: () {
                   Navigator.pop(context);
                   Get.to(() => const ListUsersPage());
                 },
               ),
+            ListTile(
+              leading: const Icon(Icons.note_add_outlined),
+              title: Text('cNewArticle'.tr),
+              onTap: () {
+                Navigator.pop(context);
+                Get.to(() => const ListUsersPage());
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.notifications),
               title: const Text('Request'),
@@ -101,18 +106,21 @@ class NavBar extends StatelessWidget {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {},
+              title: Text('cSettings'.tr),
+              onTap: () {
+                Navigator.pop(context);
+                Get.to(() => const ProfilePage());
+              },
             ),
             ListTile(
               leading: const Icon(Icons.description),
-              title: const Text('Polices'),
+              title: Text('cPolices'.tr),
               onTap: () {},
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.key),
-              title: const Text('Cambio de contraseña'),
+              title: Text('cChangePassword'.tr),
               onTap: () {
                 Navigator.pop(context);
                 Get.to(() => const ChangePage());
@@ -121,7 +129,7 @@ class NavBar extends StatelessWidget {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.exit_to_app),
-              title: const Text('Exit'),
+              title: Text('cExit'.tr),
               onTap: () {
                 session.exitSession();
                 Navigator.pop(context);

@@ -129,9 +129,9 @@ class TextItemController extends GetxController {
         if (value.trim() != '') textController = TextEditingController(text: value.trim());
         loading = false;
       }).catchError((error, stackTrace) {
-        Helper.eglLogger('e', 'translate: $text');
-        Helper.eglLogger('e', 'translate -> error :$error');
-        Helper.eglLogger('e', 'translate -> stackTrace :$stackTrace');
+        EglHelper.eglLogger('e', 'translate: $text');
+        EglHelper.eglLogger('e', 'translate -> error :$error');
+        EglHelper.eglLogger('e', 'translate -> stackTrace :$stackTrace');
         loading = false;
       });
     } else {

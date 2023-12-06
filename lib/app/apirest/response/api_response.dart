@@ -30,7 +30,7 @@ class ApiResponse<T> {
         // final AsociationsResponse asociationsResponse = asociationsResponseFromJson(response.body);
         // final dynamic responseJson = jsonDecode(response.body);
         // return responseJson;
-        return await Helper.parseApiUrlBody(utf8.decode(response.bodyBytes));
+        return await EglHelper.parseApiUrlBody(utf8.decode(response.bodyBytes));
 
       case 400:
         return response.body;

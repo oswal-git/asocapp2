@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/asociation/asociation_controller.dart';
 import 'package:asocapp/app/models/models.dart';
 import 'package:asocapp/app/repositorys/user_repository.dart';
@@ -147,7 +148,7 @@ class ProfileController extends GetxController {
       loading.value = false;
       return response;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }
@@ -170,7 +171,7 @@ class ProfileController extends GetxController {
       loading.value = false;
       return response;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }
@@ -186,7 +187,7 @@ class ProfileController extends GetxController {
 
   final _imageWidget = Rx<Widget>(
     const Image(
-      image: AssetImage('assets/images/icons_user_profile_circle.png'),
+      image: AssetImage(EglImagesPath.iconUserDefaultProfile),
       fit: BoxFit.scaleDown,
       color: Colors.amberAccent,
     ),
@@ -203,7 +204,7 @@ class ProfileController extends GetxController {
       if (userConnected.value.avatarUser == '') {
         _imageWidget.value = const ClipOval(
           child: Image(
-            image: AssetImage('assets/images/icons_user_profile_circle.png'),
+            image: AssetImage(EglImagesPath.iconUserDefaultProfile),
             //   fit: BoxFit.cover,
             color: Colors.amberAccent,
           ),
@@ -267,7 +268,7 @@ class ProfileController extends GetxController {
       compressedImageSize.value = "${(File(compressedImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
 
       // final String imageBase64 = base64Encode(imageFile.readAsBytesSync());
-      Helper.eglLogger('i', 'isLogin: $userConnected');
+      EglHelper.eglLogger('i', 'isLogin: $userConnected');
       setImageWidget(compressedFile);
     }
     //   Helper.eglLogger('i', 'isLogin: ${profileController.imageAvatar!.path}');

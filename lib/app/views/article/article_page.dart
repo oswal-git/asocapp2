@@ -4,6 +4,7 @@ import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/item_article_widget.dart';
+import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -34,12 +35,10 @@ class _ArticlePageState extends State<ArticlePage> {
 
     return Scaffold(
       // drawer: const NavBar(),
-      appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        automaticallyImplyLeading: true,
-        title: Text(
-          'tArticles'.tr,
-        ),
+      appBar: EglAppBar(
+        // backgroundColor: Colors.redAccent,
+        showBackArrow: true,
+        title: 'tArticle'.tr,
       ),
       body: SingleChildScrollView(
         child: Column(

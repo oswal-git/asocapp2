@@ -43,7 +43,7 @@ class LoginController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    Helper.eglLogger('i', '$runtimeType');
+    EglHelper.eglLogger('i', '$runtimeType');
 
     await isLogin();
 
@@ -54,7 +54,7 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    Helper.eglLogger('i', '$runtimeType');
+    EglHelper.eglLogger('i', '$runtimeType');
 
     _asociationsFocusNode.value.dispose();
     _passwordFocusNode.value.dispose();
@@ -97,7 +97,7 @@ class LoginController extends GetxController {
       loading = false;
       return userAsocData;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading = false;
       return null;
     }

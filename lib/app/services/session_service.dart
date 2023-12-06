@@ -78,18 +78,18 @@ class SessionService extends GetxService {
 
   Future<void> registerTask(bool loadTask) async {
     if (isLogin) {
-      Helper.eglLogger('i', 'Session -> loadDataUser: isLogin? ${isLogin.toString()}');
+      EglHelper.eglLogger('i', 'Session -> loadDataUser: isLogin? ${isLogin.toString()}');
       //   if (!isThereTask) {
       if (loadTask) {
-        Helper.eglLogger('i', 'Session -> loadDataUser: isThereTask? ${_isThereTask.value.toString()}');
+        EglHelper.eglLogger('i', 'Session -> loadDataUser: isThereTask? ${_isThereTask.value.toString()}');
         Workmanager().cancelAll();
         if (userConnected.timeNotificationsUser != 99) {
           final int frequency = userConnected.timeNotificationsUser * 60;
           final int initialDelay = calcInitialDelay(userConnected.timeNotificationsUser);
 
-          Helper.eglLogger('i', 'Session -> loadDataUser: timeNotificationsUser? ${userConnected.timeNotificationsUser.toString()}');
+          EglHelper.eglLogger('i', 'Session -> loadDataUser: timeNotificationsUser? ${userConnected.timeNotificationsUser.toString()}');
           isThereTask = true;
-          Helper.eglLogger('i', 'Session -> loadDataUser: Workmanager().registerPeriodicTask');
+          EglHelper.eglLogger('i', 'Session -> loadDataUser: Workmanager().registerPeriodicTask');
 
           Workmanager().registerPeriodicTask(
             "5", simplePeriodicTask,
@@ -151,7 +151,7 @@ class SessionService extends GetxService {
 
     int secondsDifference = targetDateTime.difference(now).inSeconds;
 
-    Helper.eglLogger('i', 'Session: calcInitialDelay -> secondsDifference: $secondsDifference');
+    EglHelper.eglLogger('i', 'Session: calcInitialDelay -> secondsDifference: $secondsDifference');
     // return 4;
     return secondsDifference;
   }

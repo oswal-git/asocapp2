@@ -83,8 +83,9 @@ class _ArticlesListViewState extends State<ArticlesListView> {
     // List<TextEditingController> titleController = [];
 
     return RefreshIndicator(
-      displacement: 40.0,
+      displacement: 80.0,
       strokeWidth: 4,
+      edgeOffset: 40,
       onRefresh: articleController.getArticles,
       child: Obx(() {
         return FutureBuilder(
@@ -128,7 +129,14 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                 ),
               );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                  ],
+                ),
+              );
             }
           },
         );
