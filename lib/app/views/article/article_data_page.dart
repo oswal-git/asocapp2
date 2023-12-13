@@ -77,7 +77,7 @@ class ArticleDataPage extends StatelessWidget {
             hintText: 'hArticleSubcategory'.tr,
             contentPaddingLeft: 20,
             focusNode: articleEditController.subcategoryFocusNode,
-            nextFocusNode: articleEditController.subcategoryFocusNode,
+            nextFocusNode: articleEditController.stateFocusNode,
             lstData: articleEditController.listSubcategory,
             value: articleEditController.newArticle.subcategoryArticle != ''
                 ? articleEditController.newArticle.subcategoryArticle
@@ -91,6 +91,41 @@ class ArticleDataPage extends StatelessWidget {
             onValidate: (onValidateVal) {
               if (onValidateVal == null) {
                 return 'iselectSubcategory'.tr;
+              }
+              return null;
+            },
+            borderFocusColor: Theme.of(context).primaryColor,
+            borderColor: Theme.of(context).primaryColor,
+            paddingTop: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingBottom: 0,
+            borderRadius: 10,
+            optionValue: "value",
+            optionLabel: "name",
+            iconLabel: Icons.category,
+          ),
+          20.ph,
+          EglDropdownList(
+            context: context,
+            labelText: 'lArticleState'.tr,
+            hintText: 'hArticleState'.tr,
+            contentPaddingLeft: 20,
+            focusNode: articleEditController.stateFocusNode,
+            nextFocusNode: articleEditController.stateFocusNode,
+            lstData: articleEditController.listArticleState,
+            value: articleEditController.newArticle.stateArticle != ''
+                ? articleEditController.newArticle.stateArticle
+                : articleEditController.listArticleState.isNotEmpty
+                    ? articleEditController.listSubcategory[0]['value']
+                    : '',
+            onChanged: (onChangedVal) {
+              articleEditController.newArticle.stateArticle = onChangedVal;
+              articleEditController.checkIsFormValid();
+            },
+            onValidate: (onValidateVal) {
+              if (onValidateVal == null) {
+                return 'iSelectState'.tr;
               }
               return null;
             },

@@ -22,8 +22,12 @@ class ArticleEditController extends GetxController {
   final _subcategoryFocusNode = FocusNode().obs;
   FocusNode get subcategoryFocusNode => _subcategoryFocusNode.value;
 
+  final _stateFocusNode = FocusNode().obs;
+  FocusNode get stateFocusNode => _stateFocusNode.value;
+
   List<dynamic> listArticleCategory = ArticleCategory.getListArticleCategory();
   List<dynamic> listArticleSubcategory = ArticleSubcategory.getListArticleSubcategory();
+  List<dynamic> listArticleState = ArticleState.getListArticleState();
 
   final _listSubcategory = Rx<List<dynamic>>([]);
   List<dynamic> get listSubcategory => _listSubcategory.value;
@@ -58,6 +62,7 @@ class ArticleEditController extends GetxController {
   void onClose() {
     _categoryFocusNode.value.dispose();
     _subcategoryFocusNode.value.dispose();
+    _stateFocusNode.value.dispose();
     super.onClose();
   }
 }
