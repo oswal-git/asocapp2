@@ -5,3 +5,5 @@ export 'app_theme.dart';
 export 'egl_input_theme.dart';
 export 'egl_user_profiles.dart';
 export 'egl_user_status.dart';
+export 'egl_article_category.dart';
+export 'egl_article_subcategory.dart';

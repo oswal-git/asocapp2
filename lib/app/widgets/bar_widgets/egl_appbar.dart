@@ -17,9 +17,12 @@ class EglAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingOnPressed,
     this.backgroundColor = EglColorsApp.backGroundBarColor,
     this.leadingWidget,
+    this.bottom,
+    this.toolbarHeight,
   });
 
   final Color backgroundColor;
+  final double? toolbarHeight;
   final String title;
   final Widget? titleWidget;
   final double titleFontSize;
@@ -28,6 +31,7 @@ class EglAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final Widget? leadingWidget;
   final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
   final VoidCallback? leadingOnPressed;
 
   @override
@@ -35,31 +39,35 @@ class EglAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0),
       child: AppBar(
-          backgroundColor: backgroundColor,
-          automaticallyImplyLeading: false,
-          leading: showBackArrow
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Get.back(),
-                )
-              : leadingIcon != null
-                  ? Builder(builder: (context) {
-                      return IconButton(
-                        onPressed: leadingOnPressed,
-                        icon: Icon(leadingIcon),
-                      );
-                    })
-                  : leadingWidget,
-          title: title == ''
-              ? titleWidget
-              : Text(
-                  title,
-                  style: TextStyle(fontSize: titleFontSize, fontWeight: titleFontWeight),
-                ),
-          actions: actions),
+        toolbarHeight: toolbarHeight,
+        backgroundColor: backgroundColor,
+        automaticallyImplyLeading: false,
+        leading: showBackArrow
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Get.back(),
+              )
+            : leadingIcon != null
+                ? Builder(builder: (context) {
+                    return IconButton(
+                      onPressed: leadingOnPressed,
+                      icon: Icon(leadingIcon),
+                    );
+                  })
+                : leadingWidget,
+        title: title == ''
+            ? titleWidget
+            : Text(
+                title,
+                style: TextStyle(fontSize: titleFontSize, fontWeight: titleFontWeight),
+              ),
+        actions: actions,
+        bottom: bottom,
+      ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(EglDataConfig.kToolbarHeigh);
+//   Size get preferredSize => const Size.fromHeight(EglDataConfig.kToolbarHeigh);
+  Size get preferredSize => Size.fromHeight(toolbarHeight ?? EglDataConfig.kToolbarHeigh);
 }

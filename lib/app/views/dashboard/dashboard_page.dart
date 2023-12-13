@@ -1,4 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/services/session_service.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/article/new_article_page.dart';
 import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +20,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final DashboardController dashboardController = Get.put(DashboardController());
+  final SessionService session = Get.put<SessionService>(SessionService());
 
 //   @override
 //   void initState() {
@@ -48,26 +53,28 @@ class _DashboardPageState extends State<DashboardPage> {
             );
           }),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 5.0),
-              child: Container(
-                alignment: Alignment.center,
-                width: 35,
-                height: 35,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.note_add,
-                    color: Colors.red,
-                    size: 20,
+            if (session.userConnected.profileUser == 'admin')
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => const NewArticlePage());
+                },
+                child: Card(
+                  //   color: Colors.tealAccent[400],
+                  color: EglColorsApp.backGroundBarColor,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.antiAlias,
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.note_add,
+                      color: Colors.indigo[900],
+                      size: 22,
+                    ),
                   ),
                 ),
               ),
-            ),
+            5.pw,
           ],
         ),
         body: Obx(() => dashboardController.loading

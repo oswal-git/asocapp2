@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 ArticleListResponse articleListResponseFromJson(String str) => ArticleListResponse.fromJson(json.decode(str));
 
 String articleListResponseToJson(ArticleListResponse data) => json.encode(data.toJson());
@@ -220,9 +222,9 @@ class Article {
       categoryArticle: '',
       subcategoryArticle: '',
       classArticle: '',
-      stateArticle: '',
-      publicationDateArticle: '',
-      effectiveDateArticle: '',
+      stateArticle: 'redacción',
+      publicationDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      effectiveDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       expirationDateArticle: '',
       coverImageArticle: ImageArticle.clear(),
       titleArticle: '',

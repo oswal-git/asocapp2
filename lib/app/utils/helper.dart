@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:asocapp/app/config/config.dart';
@@ -9,10 +11,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:timezone/data/latest.dart' as tzl;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:intl/intl.dart';
 
 enum MessageType { info, warning, error }
 
@@ -351,6 +353,8 @@ class EglHelper {
   static double screnHeight() => MediaQuery.of(Get.context!).size.height;
 
   static double screnWidth() => MediaQuery.of(Get.context!).size.width;
+
+  static Uint8List stringToUint8List(String dataImage) => const Base64Decoder().convert(dataImage);
 
   // end class
 }
