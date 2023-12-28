@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/new_article_page.dart';
 import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
+import 'package:asocapp/app/widgets/button_widgets/egl_check_button_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,61 +35,73 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        extendBodyBehindAppBar: false,
-        drawer: const NavBar(),
-        appBar: EglAppBar(
-          //   elevation: 5,
-          title: "tArticles".tr,
-          //   titleWidget: Text("tArticles".tr),
-          //   leadingWidget: const Icon(Icons.menu),
-          //   hasDrawer: false,
-          showBackArrow: false,
-          leadingIcon: null,
-          leadingOnPressed: () {},
-          leadingWidget: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(Icons.menu_rounded),
-            );
-          }),
-          actions: [
-            if (session.userConnected.profileUser == 'admin')
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => const NewArticlePage());
+      child: Obx(
+        () => Scaffold(
+          extendBodyBehindAppBar: false,
+          drawer: const NavBar(),
+          appBar: EglAppBar(
+            //   elevation: 5,
+            title: "tArticles".tr,
+            //   titleWidget: Text("tArticles".tr),
+            //   leadingWidget: const Icon(Icons.menu),
+            //   hasDrawer: false,
+            // toolbarHeight: 80,
+            showBackArrow: false,
+            leadingIcon: null,
+            leadingOnPressed: () {},
+            leadingWidget: Builder(builder: (context) {
+              return IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
                 },
-                child: Card(
-                  //   color: Colors.tealAccent[400],
-                  color: EglColorsApp.backGroundBarColor,
-                  shape: const CircleBorder(),
-                  clipBehavior: Clip.antiAlias,
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Icon(
-                      Icons.note_add,
-                      color: Colors.indigo[900],
-                      size: 22,
-                    ),
+                icon: const Icon(Icons.menu_rounded),
+              );
+            }),
+            actions: [
+              if (session.userConnected.profileUser == 'admin' && session.checkEdit)
+                EglCircleIconButton(
+                  color: EglColorsApp.iconColor,
+                  backgroundColor: EglColorsApp.backgroundIconColor,
+                  icon: Icons.note_add, // Cambiar a tu icono correspondiente
+                  size: 30,
+                  onPressed: () {
+                    IArticleArguments args = IArticleArguments(
+                      hasArticle: false,
+                      ArticleUser.clear(),
+                    );
+                    Get.to(() => NewArticlePage(articleArguments: args));
+                  },
+                ),
+              10.pw,
+              if (session.userConnected.profileUser == 'admin')
+                EglCheckboxButton(
+                  isChecked: session.checkEdit,
+                  width: 60.0,
+                  height: 30.0,
+                  onChanged: (value) async {
+                    if (value) {
+                      await Future.delayed(const Duration(milliseconds: 250));
+                    }
+                    session.checkEdit = value;
+                  },
+                ),
+              5.pw,
+            ],
+          ),
+          body: Obx(() => dashboardController.loading
+              ? const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                    ],
                   ),
-                ),
-              ),
-            5.pw,
-          ],
+                )
+              : const Padding(
+                  padding: EdgeInsets.all(2.0),
+                  child: ArticlesListView(),
+                )),
         ),
-        body: Obx(() => dashboardController.loading
-            ? const Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              )
-            : const ArticlesListView()),
       ),
     );
   }

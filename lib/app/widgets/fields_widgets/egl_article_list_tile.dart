@@ -4,58 +4,6 @@ import 'package:asocapp/app/utils/utils.dart';
 
 import '../../resources/resources.dart';
 
-// class EglArticleListTileController extends GetxController {
-//   final SessionService session = Get.put<SessionService>(SessionService());
-//   final EglTranslatorAiService _translator = EglTranslatorAiService();
-
-//   final _titleController = <String>[].obs;
-//   List<String> get titleController => _titleController;
-//   set titleController(value) => _titleController.value = value;
-//   final _subtitleController = <String>[].obs;
-//   List<String> get subtitleController => _subtitleController;
-//   set subtitleController(value) => _subtitleController.value = value;
-
-//   final _loading = true.obs;
-//   bool get loading => _loading.value;
-//   set loading(value) => _loading.value = value;
-
-//   String languageTo = '';
-
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     languageTo = session.userConnected.languageUser;
-//   }
-
-//   void translate(int index, String title, String subtitle) {
-//     _titleController[index] = title;
-//     _subtitleController[index] = subtitle;
-
-//     var text = '';
-
-//     text = title;
-
-//     _translator.translate(text, languageTo).then((value) {
-//       if (value.trim() != '') {
-//         _titleController[index] = value.trim();
-//       }
-//       text = subtitle;
-//       return _translator.translate(text, languageTo);
-//     }).then((value) {
-//       if (value.trim() != '') _subtitleController[index] = value.trim();
-//       _titleController.refresh();
-//       _subtitleController.refresh();
-
-//       loading = false;
-//     }).catchError((error, stackTrace) {
-//       Helper.eglLogger('e', 'translate: $text');
-//       Helper.eglLogger('e', 'translate -> error :$error');
-//       Helper.eglLogger('e', 'translate -> stackTrace :$stackTrace');
-//       loading = false;
-//     });
-//   }
-// }
-
 class EglArticleListTile extends StatelessWidget {
   const EglArticleListTile({
     super.key,
@@ -65,13 +13,16 @@ class EglArticleListTile extends StatelessWidget {
     required this.logo,
     required this.category,
     required this.subcategory,
+    this.state = '',
     required this.leadingImage,
     required this.trailingImage,
     required this.onTap,
     required this.onTapCategory,
     required this.onTapSubcategory,
-    required this.color,
-    required this.gradient,
+    required this.backgroundColor,
+    required this.colorBorder,
+    this.colorState = Colors.transparent,
+    this.gradient = Colors.transparent,
   });
 
 // input data
@@ -81,12 +32,15 @@ class EglArticleListTile extends StatelessWidget {
   final String logo;
   final String category;
   final String subcategory;
+  final String state;
   final String leadingImage;
   final String? trailingImage;
   final VoidCallback onTap;
   final VoidCallback onTapCategory;
   final VoidCallback onTapSubcategory;
-  final Color color;
+  final Color backgroundColor;
+  final Color colorBorder;
+  final Color colorState;
   final Color gradient;
 
   // local variables
@@ -99,13 +53,16 @@ class EglArticleListTile extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-              // borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-              // gradient: LinearGradient(colors: [color, gradient], begin: Alignment.topCenter, end: Alignment.topRight),
-              border: Border(
-                  bottom: BorderSide(
-            color: Colors.grey.shade800,
-            width: 1,
-          ))),
+            color: backgroundColor,
+            // borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+            // gradient: LinearGradient(colors: [color, gradient], begin: Alignment.topCenter, end: Alignment.topRight),
+            border: Border(
+              bottom: BorderSide(
+                color: colorBorder,
+                width: 1,
+              ),
+            ),
+          ),
           child: Row(
             children: [
               Column(
@@ -175,25 +132,46 @@ class EglArticleListTile extends StatelessWidget {
                       ),
                       4.ph,
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: onTapCategory,
-                            child: Text(
-                              category,
-                              style: const TextStyle(fontSize: 10),
-                            ),
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: onTapCategory,
+                                    child: Text(
+                                      category,
+                                      style: const TextStyle(fontSize: 10),
+                                    ),
+                                  ),
+                                  const Text(
+                                    '/',
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                  InkWell(
+                                    onTap: onTapSubcategory,
+                                    child: Text(
+                                      subcategory,
+                                      style: const TextStyle(fontSize: 10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          const Text(
-                            '/',
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          InkWell(
-                            onTap: onTapSubcategory,
-                            child: Text(
-                              subcategory,
-                              style: const TextStyle(fontSize: 10),
-                            ),
-                          ),
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    state,
+                                    style: TextStyle(fontSize: 10, color: colorState),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ],

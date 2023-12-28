@@ -1,0 +1,187 @@
+import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class ArticleEditionPage extends StatefulWidget {
+  const ArticleEditionPage({super.key});
+
+  @override
+  State<ArticleEditionPage> createState() => _ArticleEditionPageState();
+}
+
+class _ArticleEditionPageState extends State<ArticleEditionPage> {
+  final articleEditController = Get.put<ArticleEditController>(ArticleEditController());
+
+  @override
+  void initState() {
+    super.initState();
+
+    articleEditController.setImageWidget(null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // return const Center(child: Text('ArticleEditionPage'));
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          20.ph,
+          Form(
+            key: articleEditController.formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction, // Habilita la validación cuando el usuario interactúa con el formulario
+            onChanged: () {},
+            child: _formUI(context, articleEditController),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _formUI(BuildContext context, ArticleEditController articleEditController) {
+    bool titleFocus = false;
+    bool abstractFocus = false;
+
+    List<Map<String, dynamic>> optionsGetImage = [
+      {'option': 'camera', 'texto': 'Camara', 'icon': Icons.camera_alt_outlined},
+      {'option': 'gallery', 'texto': 'Galería', 'icon': Icons.browse_gallery}
+    ];
+
+    return Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          20.ph,
+          EglInputMultiLineField(
+            focusNode: articleEditController.titleArticleFocusNode,
+            nextFocusNode: articleEditController.abstractArticleFocusNode,
+            currentValue: articleEditController.newArticle.titleArticle,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            iconLabel: Icons.person_pin,
+            // ronudIconBorder: true,
+            labelText: 'lTitleArticle'.tr,
+            hintText: 'hTitleArticle'.tr,
+            maxLines: null,
+            maxLength: 100,
+            // icon: Icons.person_pin,
+            onChanged: (value) {
+              articleEditController.newArticle.titleArticle = value;
+              titleFocus = articleEditController.titleArticleFocusNode.hasFocus;
+              //   titleKey.currentState?.validate();
+            },
+            onValidator: (value) {
+              if (titleFocus) {
+                if (value!.isEmpty) return 'Introduzca el título del artículo';
+                if (value.length < 4) return 'El título ha de tener 4 carácteres como mínimo ';
+                if (value.length > 10) return 'El título ha de tener 4 carácteres como mínimo ';
+              }
+              return null;
+            },
+          ),
+          20.ph,
+          EglInputMultiLineField(
+            focusNode: articleEditController.abstractArticleFocusNode,
+            nextFocusNode: articleEditController.abstractArticleFocusNode,
+            currentValue: articleEditController.newArticle.titleArticle,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            iconLabel: Icons.person_pin,
+            // ronudIconBorder: true,
+            labelText: 'lAbstractArticle'.tr,
+            hintText: 'hAbstractArticle'.tr,
+            maxLines: null,
+            maxLength: 200,
+            // icon: Icons.person_pin,
+            onChanged: (value) {
+              articleEditController.newArticle.titleArticle = value;
+              abstractFocus = articleEditController.abstractArticleFocusNode.hasFocus;
+              //   abstractKey.currentState?.validate();
+            },
+            onValidator: (value) {
+              if (abstractFocus) {
+                if (value!.isEmpty) return 'Introduzca el abstract del artículo';
+                if (value.length < 4) return 'El abstract ha de tener 4 carácteres como mínimo ';
+                if (value.length > 10) return 'El abstract ha de tener 4 carácteres como mínimo ';
+              }
+              return null;
+            },
+          ),
+          20.ph,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  EglHelper.showMultChoiceDialog(
+                    optionsGetImage,
+                    'tQuestions'.tr,
+                    context: context,
+                    onChanged: (value) async {
+                      Get.back();
+                      await articleEditController.pickImage(value);
+                      articleEditController.imageWidget.refresh();
+                    },
+                  );
+                },
+                child: articleEditController.imageWidget.value,
+              ),
+              //   if (articleEditController.imageCoverChanged)
+              Positioned(
+                top: -10.0, // Ajusta según sea necesario
+                right: 10.0, // Ajusta según sea necesario
+                child: CircleIconButton(
+                  icon: Icons.disabled_by_default_outlined, // Cambiar a tu icono correspondiente
+                  onPressed: () {
+                    // Lógica para recuperar la imagen original
+                    articleEditController.imageCoverChanged = false;
+                  },
+                ),
+              ),
+              //   if (articleEditController.imageCoverChanged)
+              Positioned(
+                top: -10.0, // Ajusta según sea necesario
+                right: 45.0, // Ajusta según sea necesario
+                child: CircleIconButton(
+                  icon: Icons.restore, // Cambiar a tu icono correspondiente
+                  onPressed: () {
+                    // Lógica para restaurar la imagen por defecto
+                    setState(() {
+                      // Implementa la lógica para restaurar la imagen por defecto aquí
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CircleIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  const CircleIconButton({super.key, required this.icon, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.all(4.0),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.blue, // Ajusta según sea necesario
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white, // Ajusta según sea necesario
+          size: 20,
+        ),
+      ),
+    );
+  }
+}

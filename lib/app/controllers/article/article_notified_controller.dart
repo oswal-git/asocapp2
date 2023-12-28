@@ -15,17 +15,17 @@ class ArticleNotifiedController extends ChangeNotifier {
 
   Future<bool> isLogin() async => session.isLogin;
 
-  final _article = Rx<Article>(Article.clear());
-  Article get article => _article.value;
+  final _article = Rx<ArticleUser>(ArticleUser.clear());
+  ArticleUser get article => _article.value;
 
-  Future<Article> getSingleArticle(int idarticle) async {
+  Future<ArticleUser> getSingleArticle(int idarticle) async {
     final ArticleResponse articlesResponse = await articlesRepository.getSingleArticle(idarticle);
 
     // print('Response body: ${result}');
     if (articlesResponse.status == 200) {
       _article.value = articlesResponse.result;
     } else {
-      _article.value = Article.clear();
+      _article.value = ArticleUser.clear();
     }
     return _article.value;
   }

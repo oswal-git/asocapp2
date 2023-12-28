@@ -1,6 +1,8 @@
 export 'bar_widgets/nav_bar.dart';
+export 'button_widgets/egl_circle_icon_button.dart';
 export 'button_widgets/egl_pop_button.dart';
 export 'button_widgets/egl_round_button.dart';
+export 'dialog_widgets/egl_show_single_choice_dialog.dart';
 export 'fields_widgets/egl_article_list_tile.dart';
 export 'fields_widgets/egl_asociations_dropdown.dart';
 export 'fields_widgets/egl_dropdown_button.dart';
@@ -14,6 +16,5 @@ export 'fields_widgets/egl_input_password_field.dart';
 export 'fields_widgets/egl_input_text_field.dart';
 export 'fields_widgets/egl_label_input_text.dart';
 export 'fields_widgets/egl_list_tile_copy.dart';
-export 'fields_widgets/egl_stack_list_tile.dart';
 export 'fields_widgets/egl_logo.dart';
-export 'dialog_widgets/egl_show_single_choice_dialog.dart';
+export 'fields_widgets/egl_stack_list_tile.dart';

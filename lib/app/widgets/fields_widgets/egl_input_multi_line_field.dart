@@ -6,29 +6,31 @@ import 'package:flutter/material.dart';
 class EglInputMultiLineField extends StatefulWidget {
   const EglInputMultiLineField({
     super.key,
-    required this.focusNode,
-    required this.nextFocusNode,
     required this.onChanged,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
     required this.onValidator,
-    required this.currentValue,
+    this.label = false,
     this.labelText = '',
     this.hintText = '',
-    this.maxLines = 3,
+    required this.currentValue,
     this.maxLength = TextField.noMaxLength,
+    this.maxLines = 3,
+    required this.focusNode,
+    required this.nextFocusNode,
     this.icon,
     this.iconLabel,
     this.ronudIconBorder = false,
-    this.label = false,
-  });
+  }); //articleEditController.formKey;
 
   final ValueChanged<String> onChanged;
+  final AutovalidateMode autovalidateMode;
   final FormFieldValidator<String> onValidator;
   final bool label;
   final String labelText;
   final String hintText;
   final String? currentValue;
   final int maxLength;
-  final int maxLines;
+  final int? maxLines;
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
   final IconData? icon;
@@ -46,6 +48,8 @@ class _EglInputMultiLineFieldState extends State<EglInputMultiLineField> {
       minLines: null,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
+      keyboardType: TextInputType.multiline,
+      autovalidateMode: widget.autovalidateMode,
       focusNode: widget.focusNode,
       onFieldSubmitted: (_) {
         widget.nextFocusNode?.requestFocus();

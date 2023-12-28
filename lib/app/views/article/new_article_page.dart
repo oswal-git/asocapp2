@@ -1,11 +1,41 @@
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_data_page.dart';
 import 'package:asocapp/app/views/article/article_edition_page.dart';
 import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NewArticlePage extends StatefulWidget {
-  const NewArticlePage({super.key});
+  NewArticlePage({
+    super.key,
+    required this.articleArguments,
+  }) {
+    articleEditController.oldArticle = articleArguments.article.copyWith();
+    articleEditController.newArticle = articleArguments.article.copyWith();
+    if (articleArguments.hasArticle) {
+      articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
+    } else {
+      articleEditController.oldArticle.coverImageArticle.modify(
+        src: EglImagesPath.appIconUserDefault,
+        nameFile: EglImagesPath.nameIconUserDefaultProfile,
+        isDefault: true,
+      );
+      articleEditController.newArticle.coverImageArticle.modify(
+        src: EglImagesPath.appIconUserDefault,
+        nameFile: EglImagesPath.nameIconUserDefaultProfile,
+        isDefault: true,
+      );
+
+      articleEditController.imagePropertie.value = Image.asset(EglImagesPath.appIconUserDefault);
+    }
+  }
+
+  final IArticleArguments articleArguments;
+  final articleEditController = Get.put<ArticleEditController>(ArticleEditController());
 
   @override
   State<NewArticlePage> createState() => _NewArticlePageState();
@@ -28,18 +58,30 @@ class _NewArticlePageState extends State<NewArticlePage> {
           showBackArrow: true,
           leadingIcon: null,
           leadingOnPressed: () {},
-          leadingWidget: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(Icons.menu_rounded),
-            );
-          }),
+          leadingWidget: null,
           bottom: TabBar(
             controller: _tabs.controller,
             tabs: _tabs.articleTabs,
           ),
+          actions: [
+            // if (session.userConnected.profileUser == 'admin')
+            EglCircleIconButton(
+              color: EglColorsApp.iconColor,
+              backgroundColor: EglColorsApp.transparent,
+              icon: Icons.save, // Cambiar a tu icono correspondiente
+              size: 30,
+              onPressed: () {},
+            ),
+            5.pw,
+            EglCircleIconButton(
+              color: Colors.indigo.shade900,
+              backgroundColor: EglColorsApp.transparent,
+              icon: Icons.monitor, // Cambiar a tu icono correspondiente
+              size: 30,
+              onPressed: () {},
+            ),
+            5.pw,
+          ],
         ),
         body: TabBarView(
           controller: _tabs.controller,

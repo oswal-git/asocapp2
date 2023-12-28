@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:asocapp/app/models/image_article_model.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
-import 'package:intl/intl.dart';
 
 Article articleRequestFromJson(String str) => Article.fromJson(json.decode(str));
 
@@ -134,8 +133,8 @@ class Article {
       subcategoryArticle: '',
       classArticle: '',
       stateArticle: 'redacción',
-      publicationDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-      effectiveDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      publicationDateArticle: '', // DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      effectiveDateArticle: '',
       expirationDateArticle: '',
       coverImageArticle: ImageArticle.clear(),
       titleArticle: '',

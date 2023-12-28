@@ -15,7 +15,7 @@ class ArticlePage extends StatefulWidget {
     required this.articleArguments,
   });
 
-  final IArticleArguments articleArguments;
+  final IArticleUserArguments articleArguments;
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();

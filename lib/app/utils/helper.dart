@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -304,6 +306,22 @@ class EglHelper {
     return formatter.parse(formatter.format(now));
   }
 
+  static DateTime aaaammddToDatetime(String aaaammdd) {
+    final year = int.parse(aaaammdd.substring(0, 4));
+    final month = int.parse(aaaammdd.substring(5, 7));
+    final day = int.parse(aaaammdd.substring(8, 10));
+
+    return DateTime(year, month, day);
+  }
+
+  static String datetimeToAaaammdd(DateTime date) {
+    final year = date.year;
+    final month = date.month;
+    final day = date.day;
+
+    return '$year-$month-$day';
+  }
+
   static Map<dynamic, dynamic> getResolutionDevice() {
     // ignore: deprecated_member_use
     SingletonFlutterWindow window = WidgetsBinding.instance.window;
@@ -337,6 +355,35 @@ class EglHelper {
     return resolutionDevice;
   }
 
+  static Future<Map<dynamic, dynamic>> getSizeImage(Image image, double? maxWidth) async {
+    double rMaxWidth = maxWidth ?? Get.width;
+    double iWidth = rMaxWidth;
+    double iHeight = rMaxWidth / 2.0;
+
+    Completer completer = Completer();
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo info, bool _) {
+          completer.complete(info.image);
+          iWidth = info.image.width.toDouble();
+          iHeight = info.image.height.toDouble();
+
+          final factor = rMaxWidth / iWidth;
+          iHeight = factor * iHeight;
+        },
+      ),
+    );
+    final factor = rMaxWidth / iWidth;
+    iHeight = factor * iHeight;
+
+    Map<dynamic, dynamic> sizeImage = {
+      'width': rMaxWidth,
+      'height': iHeight,
+    };
+
+    return sizeImage;
+  }
+
   static String truncateText(String text, int maxLength) {
     if (text.length <= maxLength) {
       return text;
@@ -355,6 +402,38 @@ class EglHelper {
   static double screnWidth() => MediaQuery.of(Get.context!).size.width;
 
   static Uint8List stringToUint8List(String dataImage) => const Base64Decoder().convert(dataImage);
+
+  static String generateChain({int length = 8, String type = 'all'}) {
+    String keyspace = '';
+
+    switch (type) {
+      case 'number':
+        keyspace = EglKeysConfig.KEYSPACE_NUMBER;
+        break;
+
+      case 'letters':
+        keyspace = EglKeysConfig.KEYSPACE_LETTERS;
+        break;
+
+      case 'all':
+      default:
+        keyspace = EglKeysConfig.KEYSPACE_ALL;
+        break;
+    }
+
+    String str = '';
+    int max = keyspace.length;
+    Random rng = Random();
+    if (max < 1) {
+      eglLogger('e', 'keyspace must be at least two characters long');
+      return '';
+    }
+    for (int i = 0; i < length; ++i) {
+      str = '$str${keyspace[rng.nextInt(max)]}';
+    }
+
+    return str;
+  }
 
   // end class
 }

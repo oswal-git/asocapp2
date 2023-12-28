@@ -25,6 +25,10 @@ class SessionService extends GetxService {
   bool get isLogin => _isLogin.value;
   set isLogin(value) => _isLogin.value = value;
 
+  final _checkEdit = false.obs;
+  bool get checkEdit => _checkEdit.value;
+  set checkEdit(bool value) => _checkEdit.value = value;
+
   final _userConnected = Rx<UserConnected>(UserConnected.clear());
   UserConnected get userConnected => _userConnected.value;
 
@@ -66,6 +70,7 @@ class SessionService extends GetxService {
         await registerTask(true);
       }
     }
+    _checkEdit.value = false;
     return this;
   }
 
@@ -73,6 +78,7 @@ class SessionService extends GetxService {
   void userClear() {
     _hasData.value = false;
     _isLogin.value = false;
+    _checkEdit.value = false;
     _userConnected.value = UserConnected.clear();
   }
 

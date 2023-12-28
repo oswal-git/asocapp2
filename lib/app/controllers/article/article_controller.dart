@@ -1,9 +1,12 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/repositorys/articles_repository.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/auth/change/change_page.dart';
 import 'package:asocapp/app/views/auth/login/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -12,27 +15,31 @@ class ArticleController extends GetxController {
   final ArticlesRepository articlesRepository = Get.put(ArticlesRepository());
   final EglTranslatorAiService _translator = EglTranslatorAiService();
 
-  final _articles = <Article>[].obs; // Lista de artículos
-  List<Article> get articles => _articles;
+  final _articles = <ArticleUser>[].obs; // Lista de artículos
+  List<ArticleUser> get articles => _articles;
   set articles(value) => _articles.value = value;
-  List<Article> get articlesList => _articles.toList();
+  List<ArticleUser> get articlesList => _articles.toList();
   List<dynamic> get articlesAbstractList => _articles
       .map((item) => {
             'id': item.idArticle,
             'name': item.abstractArticle,
           })
       .toList();
-  List<Article> get articlesPublicatedList => _articles
-      .where((Article article) =>
+  List<ArticleUser> get articlesPublicatedList => _articles
+      .where((ArticleUser article) =>
           article.stateArticle == 'publicado' &&
           (article.idAsociationArticle == session.userConnected.idAsociationUser || article.idAsociationArticle == 999999999))
       .toList();
+  List<ArticleUser> get allArticlesList => _articles
+      .where((ArticleUser article) =>
+          (article.idAsociationArticle == session.userConnected.idAsociationUser || article.idAsociationArticle == 999999999))
+      .toList();
 
-  final _article = Rx<Article>(Article.clear()); // Artículo
-  Article get article => _article.value;
+  final _article = Rx<ArticleUser>(ArticleUser.clear()); // Artículo
+  ArticleUser get article => _article.value;
 
-  final _selectedArticle = Rx<Article>(Article.clear());
-  Article get selectedArticle => _selectedArticle.value;
+  final _selectedArticle = Rx<ArticleUser>(ArticleUser.clear());
+  ArticleUser get selectedArticle => _selectedArticle.value;
 
   final Logger logger = Logger();
 
@@ -40,7 +47,7 @@ class ArticleController extends GetxController {
   bool get loadingArticle => _loadingArticle.value;
   set loadingArticle(value) => _loadingArticle.value = value;
 
-  final articleList = <Article>[].obs;
+  final articleList = <ArticleUser>[].obs;
 
   final _titleArticleTr = <String>[].obs;
   List<String> get titleArticleTr => _titleArticleTr;
@@ -65,6 +72,26 @@ class ArticleController extends GetxController {
     }
   }
 
+  Color getColorState(ArticleUser article) {
+    if (session.userConnected.profileUser == 'admin' && session.checkEdit && session.userConnected.idAsociationUser == article.idAsociationArticle) {
+      switch (article.stateArticle) {
+        case 'redacción':
+          return EglColorsApp.workingColor;
+        case 'publicado':
+          return EglColorsApp.backgroundTileColor;
+        case 'revisión':
+          return EglColorsApp.warningColor;
+        case 'expirado':
+          return EglColorsApp.infoColor;
+        case 'anulado':
+          return EglColorsApp.alertColor;
+
+        default:
+      }
+    }
+    return EglColorsApp.backgroundTileColor;
+  }
+
   Future<void> getArticles() async {
     final ArticleListResponse articlesListResponse = await articlesRepository.getArticles();
 
@@ -76,31 +103,63 @@ class ArticleController extends GetxController {
     // return _articles;
   }
 
-  Future<List<Article>> getArticlesPublicatedList() async {
-    List<Article> list = [];
+// Devuelve una lista de Artículos sin traducir
+  Future<List<ArticleUser>> getAllArticlesList() async {
+    List<ArticleUser> list = [];
 
-    for (final articlePublicated in articlesPublicatedList) {
-      //   if (languageUser != 'es') {
-      String tra1 = await _translator.translate(articlePublicated.titleArticle, languageUser);
-      if (tra1.trim() != '') {
-        articlePublicated.titleArticle = tra1.trim();
+    for (final article in allArticlesList) {
+      if (session.userConnected.idAsociationUser == article.idAsociationArticle ||
+          (article.idAsociationArticle == 999999999 && article.stateArticle == 'publicado')) {
+        list.add(article);
       }
-
-      String tra2 = await _translator.translate(articlePublicated.abstractArticle, languageUser);
-
-      if (tra2.trim() != '') {
-        articlePublicated.abstractArticle = tra2.trim();
-      }
-      list.add(articlePublicated);
-      //   } else {
-      //     list.add(articlePublicated);
-      //   }
     }
-
     return list;
   }
 
-  Future<Article> getArticlePublicated(Article article) async {
+// Devuelve una lista de Artículos con stateArticle 'publicado' con título y abstract traducidos
+  Future<List<ArticleUser>> getArticlesPublicatedList() async {
+    List<ArticleUser> translatedArticles = [];
+
+    await Future.wait(articlesPublicatedList.map((article) async {
+      String tra1 = await _translator.translate(article.titleArticle, languageUser);
+      String tra2 = await _translator.translate(article.abstractArticle, languageUser);
+
+      translatedArticles.add(article.copyWith(
+        titleArticle: tra1.trim() == '' ? article.titleArticle : tra1.trim(),
+        abstractArticle: tra2.trim() == '' ? article.abstractArticle : tra2.trim(),
+      ));
+    }));
+
+    return translatedArticles;
+  }
+
+// Devuelve un artículo completamente traducido
+  Future<ArticleUser> getArticleUserPublicated(ArticleUser article) async {
+    ArticleUser transArticle = article.copyWith();
+
+    await Future.wait(transArticle.itemsArticle.map((item) async {
+      String text = item.textItemArticle.trim();
+      EglHelper.eglLogger('i', 'text.length: ${text.length}');
+      EglHelper.eglLogger('i', 'text: $text');
+
+      if (text.isNotEmpty) {
+        try {
+          String tra1 = await _translator.translate(text, languageUser);
+          if (tra1.trim().isNotEmpty) {
+            EglHelper.eglLogger('i', 'tra1: $tra1');
+            item.textItemArticle = tra1.trim();
+          }
+        } catch (e) {
+          EglHelper.eglLogger('i', 'e: $e');
+        }
+      }
+    }));
+
+    return Future.value(transArticle);
+  }
+
+// No se usa
+  Future<ArticleUser> getArticle(ArticleUser article) async {
     List<ItemArticle> list = List.filled(article.itemsArticle.length, ItemArticle.clear());
 
     for (var i = 0; i < article.itemsArticle.length; i++) {
@@ -121,11 +180,11 @@ class ArticleController extends GetxController {
         list[i] = article.itemsArticle[i].copyWith(textItemArticle: text);
       }
     }
-    Article transArticle = article.copyWith(itemsArticle: list);
+    ArticleUser transArticle = article.copyWith(itemsArticle: list);
     return transArticle;
   }
 
-  Future<Article> getSingleArticle(int idarticle) async {
+  Future<ArticleUser> getSingleArticle(int idarticle) async {
     final ArticleResponse articlesResponse = await articlesRepository.getSingleArticle(idarticle);
 
     // print('Response body: ${result}');

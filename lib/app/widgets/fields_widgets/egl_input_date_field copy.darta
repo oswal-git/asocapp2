@@ -1,0 +1,203 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class EglInputDateField extends StatelessWidget {
+  // ignore: constant_identifier_names
+//   static const _100_YEAR = Duration(days: 365 * 100);
+
+  const EglInputDateField({
+    super.key,
+    required this.onChanged,
+    this.currentValue = '',
+    required this.onValidator,
+    this.labelText = '',
+    this.paddingLeft = 20,
+    this.paddingRight = 20,
+    this.paddingTop = 0,
+    this.paddingBottom = 0,
+    this.contentPaddingLeft = 6,
+    this.contentPaddingRight = 6,
+    this.contentPaddingTop = 6,
+    this.contentPaddingBottom = 6,
+    this.focusNode,
+    this.nextFocusNode,
+    this.icon,
+    this.iconLabel,
+    this.ronudIconBorder = false,
+    this.readOnly = false,
+    this.borderRadius = 30,
+    this.borderColor = Colors.redAccent,
+    this.enabledBorderWidth = 1,
+    this.borderWidth = 1,
+    this.borderFocusColor = Colors.redAccent,
+    this.focusedBorderWidth = 2,
+    this.prefixIconPaddingLeft = 30,
+    this.prefixIconPaddingRight = 10,
+    this.prefixIconPaddingTop = 0,
+    this.prefixIconPaddingBottom = 0,
+  });
+
+  final ValueChanged<String> onChanged;
+//   final VoidCallback onTap;
+  final String currentValue;
+  final FormFieldValidator<String> onValidator;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+  final IconData? icon;
+  final IconData? iconLabel;
+  final bool ronudIconBorder;
+  final bool readOnly;
+  final String labelText;
+  final double paddingLeft;
+  final double paddingRight;
+  final double paddingTop;
+  final double paddingBottom;
+
+  final double borderRadius;
+  final Color borderColor;
+  final double enabledBorderWidth;
+  final double borderWidth;
+  final Color borderFocusColor;
+  final double focusedBorderWidth;
+  final double contentPaddingLeft;
+  final double contentPaddingRight;
+  final double contentPaddingTop;
+  final double contentPaddingBottom;
+  final double prefixIconPaddingLeft;
+  final double prefixIconPaddingRight;
+  final double prefixIconPaddingTop;
+  final double prefixIconPaddingBottom;
+
+  @override
+  Widget build(BuildContext context) {
+    final EglDatePickerController controller = Get.put(EglDatePickerController());
+
+    Future<void> selectDate() async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: EglHelper.aaaammddToDatetime(controller.datePickerController),
+        firstDate: DateTime(2023),
+        lastDate: DateTime(2024),
+        currentDate: EglHelper.aaaammddToDatetime(currentValue),
+      );
+      if (pickedDate != null) {
+        controller.datePickerController = EglHelper.datetimeToAaaammdd(pickedDate);
+      }
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: paddingLeft,
+        right: paddingRight,
+        top: paddingTop,
+        bottom: paddingBottom,
+      ),
+      child: TextFormField(
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.black,
+        ),
+        readOnly: true,
+        focusNode: focusNode,
+        onFieldSubmitted: (_) {
+          nextFocusNode?.requestFocus();
+        },
+        initialValue: currentValue,
+        validator: onValidator,
+        onChanged: onChanged,
+        onTap: () async {
+          selectDate();
+        },
+        decoration: InputDecoration(
+          isDense: false,
+
+          label: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (iconLabel != null)
+              Container(
+                decoration: ronudIconBorder
+                    ? BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                      )
+                    : null,
+                child: Icon(
+                  iconLabel,
+                  size: ronudIconBorder ? 16.0 : 22.0,
+                  color: Colors.black,
+                ),
+              ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: iconLabel == null ? 0.0 : 8.0,
+              ),
+              child: Text(
+                labelText,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          ]),
+          contentPadding: EdgeInsets.only(
+            left: contentPaddingLeft,
+            right: contentPaddingRight,
+            top: contentPaddingTop,
+            bottom: contentPaddingBottom,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: enabledBorderWidth,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: borderWidth,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: borderFocusColor,
+              width: focusedBorderWidth,
+            ),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          helperText: '',
+          helperMaxLines: 2,
+          prefixIcon: icon == null
+              ? null
+              : IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    icon,
+                    color: Colors.blue,
+                  )), // adjust size as needed
+          errorMaxLines: 2,
+          errorStyle: const TextStyle(
+            height: 1,
+            fontSize: 11,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Definición del controlador
+class EglDatePickerController extends GetxController {
+  final _datePickerController = ''.obs;
+  String get datePickerController => _datePickerController.value;
+
+  set datePickerController(String value) {
+    _datePickerController.value = value;
+  }
+}

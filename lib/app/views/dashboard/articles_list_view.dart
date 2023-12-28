@@ -1,8 +1,11 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/article/article_controller.dart';
-import 'package:asocapp/app/resources/resources.dart';
+import 'package:asocapp/app/models/article_model.dart';
+import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_page.dart';
+import 'package:asocapp/app/views/article/new_article_page.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +22,7 @@ class ArticlesListView extends StatefulWidget {
 
 class _ArticlesListViewState extends State<ArticlesListView> {
   ArticleController articleController = Get.put(ArticleController());
+  final SessionService session = Get.put<SessionService>(SessionService());
 
   String languageTo = 'es';
 
@@ -89,36 +93,81 @@ class _ArticlesListViewState extends State<ArticlesListView> {
       onRefresh: articleController.getArticles,
       child: Obx(() {
         return FutureBuilder(
-          future: articleController.getArticlesPublicatedList(), // getArticlesPublicatedList(),
+          future: session.checkEdit
+              ? articleController.getAllArticlesList()
+              : articleController.getArticlesPublicatedList(), // getArticlesPublicatedList(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
-                  return EglArticleListTile(
-                    index: index,
-                    leadingImage: snapshot.data[index].coverImageArticle.src,
-                    title: snapshot.data[index].titleArticle,
-                    subtitle: snapshot.data[index].abstractArticle,
-                    category: snapshot.data[index].categoryArticle,
-                    subcategory: snapshot.data[index].subcategoryArticle,
-                    logo: '',
-                    trailingImage: '',
-                    onTap: () async {
-                      Article article = await articleController.getArticlePublicated(snapshot.data[index]);
-                      IArticleArguments args = IArticleArguments(
-                        article,
-                      );
-                      Get.to(() => ArticlePage(articleArguments: args));
-                    },
-                    onTapCategory: () {
-                      // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}');
-                    },
-                    onTapSubcategory: () {
-                      // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}/${snapshot.data.subcategoryArticle}');
-                    },
-                    color: AppColors.otpHintColor,
-                    gradient: AppColors.otpBackgroundColor,
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      EglArticleListTile(
+                        index: index,
+                        leadingImage: snapshot.data[index].coverImageArticle.src,
+                        title: snapshot.data[index].titleArticle,
+                        subtitle: snapshot.data[index].abstractArticle,
+                        category: snapshot.data[index].categoryArticle,
+                        subcategory: snapshot.data[index].subcategoryArticle,
+                        state: snapshot.data[index].stateArticle,
+                        colorState: session.checkEdit ? EglColorsApp.primaryTextTextColor : Colors.transparent,
+                        logo: '',
+                        trailingImage: '',
+                        onTap: () async {
+                          ArticleUser article = await articleController.getArticleUserPublicated(snapshot.data[index]);
+                          IArticleUserArguments args = IArticleUserArguments(
+                            article,
+                          );
+                          Get.to(() => ArticlePage(articleArguments: args));
+                        },
+                        onTapCategory: () {
+                          // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}');
+                        },
+                        onTapSubcategory: () {
+                          // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}/${snapshot.data.subcategoryArticle}');
+                        },
+                        backgroundColor: articleController.getColorState(snapshot.data[index]),
+                        colorBorder: EglColorsApp.borderTileArticleColor,
+                      ),
+                      if (session.userConnected.profileUser == 'admin' &&
+                          session.checkEdit &&
+                          session.userConnected.idAsociationUser == snapshot.data[index].idAsociationArticle)
+                        Positioned(
+                          top: 4.0, // Ajusta según sea necesario
+                          left: 20.0, // Ajusta según sea necesario
+                          child: EglCircleIconButton(
+                            color: EglColorsApp.iconColor,
+                            backgroundColor: EglColorsApp.backgroundIconColor,
+                            icon: Icons.edit_document, // Cambiar a tu icono correspondiente
+                            size: 20,
+                            onPressed: () async {
+                              Article article = snapshot.data[index] as Article;
+                              IArticleArguments args = IArticleArguments(
+                                article,
+                              );
+                              Get.to(() => NewArticlePage(articleArguments: args));
+                            },
+                          ),
+                        ),
+                      if (session.userConnected.profileUser == 'admin' &&
+                          session.checkEdit &&
+                          session.userConnected.idAsociationUser == snapshot.data[index].idAsociationArticle)
+                        Positioned(
+                          top: 4.0, // Ajusta según sea necesario
+                          left: 60.0, // Ajusta según sea necesario
+                          child: EglCircleIconButton(
+                            color: EglColorsApp.iconColor,
+                            backgroundColor: EglColorsApp.backgroundIconColor,
+                            icon: Icons.delete, // Cambiar a tu icono correspondiente
+                            size: 20,
+                            onPressed: () {
+                              // Lógica para recuperar la imagen por defecto
+                            },
+                          ),
+                        ),
+                    ],
                   );
                 },
               );

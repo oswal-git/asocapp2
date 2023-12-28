@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:asocapp/app/models/image_article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 
-import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/services/egl_translator_ai_service.dart';
 import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';

@@ -15,7 +15,7 @@ class EglAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.actions,
     this.leadingOnPressed,
-    this.backgroundColor = EglColorsApp.backGroundBarColor,
+    this.backgroundColor = EglColorsApp.backgroundBarColor,
     this.leadingWidget,
     this.bottom,
     this.toolbarHeight,

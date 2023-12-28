@@ -27,7 +27,7 @@ class ImageArticle {
         src: json["src"],
         nameFile: json["nameFile"],
         filePath: json["filePath"],
-        fileImage: json["fileImage"],
+        fileImage: json["fileImage"] == '' ? null : json["fileImage"],
         isSelectedFile: json["isSelectedFile"],
         isDefault: json["isDefault"],
         isChange: json["isChange"],
@@ -37,7 +37,7 @@ class ImageArticle {
         "src": src,
         "nameFile": nameFile,
         "filePath": filePath,
-        "fileImage": fileImage,
+        "fileImage": fileImage ?? '',
         "isSelectedFile": isSelectedFile,
         "isDefault": isDefault,
         "isChange": isChange,
@@ -51,7 +51,7 @@ class ImageArticle {
     cadena = '$cadena src $src';
     cadena = '$cadena nameFile $nameFile';
     cadena = '$cadena filePath $filePath';
-    cadena = '$cadena fileImage $fileImage';
+    cadena = '$cadena fileImage ${fileImage ?? ''}';
     cadena = '$cadena isSelectedFile $isSelectedFile';
     cadena = '$cadena isDefault $isDefault';
     cadena = '$cadena isChange $isChange';
@@ -64,10 +64,48 @@ class ImageArticle {
       src: '',
       nameFile: '',
       filePath: '',
-      fileImage: '',
+      fileImage: null,
       isSelectedFile: false,
       isDefault: false,
       isChange: false,
     );
+  }
+
+  ImageArticle copyWith({
+    String? src,
+    String? nameFile,
+    String? filePath,
+    dynamic fileImage,
+    bool? isSelectedFile,
+    bool? isDefault,
+    bool? isChange,
+  }) {
+    return ImageArticle(
+      src: src ?? this.src,
+      nameFile: nameFile ?? this.nameFile,
+      filePath: filePath ?? this.filePath,
+      fileImage: fileImage == '' ? null : this.fileImage,
+      isSelectedFile: isSelectedFile ?? this.isSelectedFile,
+      isDefault: isDefault ?? this.isDefault,
+      isChange: isChange ?? this.isChange,
+    );
+  }
+
+  void modify({
+    String? src,
+    String? nameFile,
+    String? filePath,
+    dynamic fileImage,
+    bool? isSelectedFile,
+    bool? isDefault,
+    bool? isChange,
+  }) {
+    this.src = src ?? this.src;
+    this.nameFile = nameFile ?? this.nameFile;
+    this.filePath = filePath ?? this.filePath;
+    this.fileImage = fileImage == '' ? null : this.fileImage;
+    this.isSelectedFile = isSelectedFile ?? this.isSelectedFile;
+    this.isDefault = isDefault ?? this.isDefault;
+    this.isChange = isChange ?? this.isChange;
   }
 }
