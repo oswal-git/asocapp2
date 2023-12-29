@@ -5,12 +5,12 @@ class EglTranslatorAiService {
   final translator = GoogleTranslator();
 
   Future<String> translate(String text, String languageTo) async {
-    var textTrnaslated = text.trim();
+    var textTranslated = text.trim();
 
-    if (textTrnaslated != '') {
+    if (textTranslated != '') {
       try {
-        textTrnaslated = (await translator.translate(text.trim(), to: languageTo)).text;
-        return Future.value(textTrnaslated);
+        textTranslated = (await translator.translate(text.trim(), to: languageTo)).text;
+        return Future.value(textTranslated);
       } catch (e) {
         // Translation translation = {
         //   '',
@@ -19,11 +19,11 @@ class EglTranslatorAiService {
         //   {'error': '$e'}
         // } as Translation;
         // translation.targetLanguage.code == 'error' ? Helper.eglLogger('e', 'idAsoc') : null;
-        EglHelper.eglLogger('e', 'translate -> $textTrnaslated: ${e.toString()}');
-        return Future.value(textTrnaslated);
+        EglHelper.eglLogger('e', 'translate -> $textTranslated: ${e.toString()}');
+        return Future.value(textTranslated);
       }
     } else {
-      return Future.value(textTrnaslated);
+      return Future.value(textTranslated);
     }
   }
 }

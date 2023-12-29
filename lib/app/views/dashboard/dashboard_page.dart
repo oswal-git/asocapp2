@@ -73,7 +73,22 @@ class _DashboardPageState extends State<DashboardPage> {
                   },
                 ),
               10.pw,
-              if (session.userConnected.profileUser == 'admin')
+              if (session.userConnected.profileUser == 'admin' && session.listUserMessages.isNotEmpty)
+                EglCircleIconButton(
+                  text: session.listUserMessages.isEmpty ? '' : session.listUserMessages.length.toString(),
+                  color: EglColorsApp.iconColor,
+                  backgroundColor: EglColorsApp.transparent,
+                  icon: Icons.notifications_rounded, // Cambiar a tu icono correspondiente
+                  size: 30,
+                  onPressed: () {
+                    IArticleArguments args = IArticleArguments(
+                      hasArticle: false,
+                      ArticleUser.clear(),
+                    );
+                    Get.to(() => NewArticlePage(articleArguments: args));
+                  },
+                ),
+              if (session.userConnected.profileUser == 'admin' && !session.isExpired)
                 EglCheckboxButton(
                   isChecked: session.checkEdit,
                   width: 60.0,

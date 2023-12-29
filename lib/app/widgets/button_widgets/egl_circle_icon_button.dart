@@ -7,6 +7,7 @@ class EglCircleIconButton extends StatelessWidget {
   final Color color;
   final Color backgroundColor;
   final double size;
+  final String text;
 
   const EglCircleIconButton({
     super.key,
@@ -15,6 +16,7 @@ class EglCircleIconButton extends StatelessWidget {
     this.color = Colors.black,
     this.backgroundColor = Colors.transparent,
     this.size = 30.0,
+    this.text = '',
   });
 
   @override
@@ -27,11 +29,25 @@ class EglCircleIconButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: backgroundColor, // Ajusta según sea necesario
         ),
-        child: Icon(
-          icon,
-          color: color, // Ajusta según sea necesario
-          size: size,
-        ),
+        child: Stack(children: [
+          Icon(
+            icon,
+            color: color, // Ajusta según sea necesario
+            size: size,
+          ),
+          if (text.isNotEmpty)
+            Positioned(
+              top: 6.0, // Ajusta según sea necesario
+              right: text.trim().length == 1 ? 12.0 : 10.0, // Ajusta según sea necesario
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+        ]),
       ),
     );
   }

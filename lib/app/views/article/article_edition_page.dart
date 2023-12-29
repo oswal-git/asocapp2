@@ -1,5 +1,6 @@
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/models/image_article_model.dart';
 import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
@@ -59,13 +60,6 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
   Widget _formUI(BuildContext context, ArticleEditController articleEditController) {
     bool titleFocus = false;
     bool abstractFocus = false;
-
-    // double widthMediaQuery = MediaQuery.of(context).size.width * .8;
-
-    List<Map<String, dynamic>> optionsGetImage = [
-      {'option': 'camera', 'texto': 'Camara', 'icon': Icons.camera_alt_outlined},
-      {'option': 'gallery', 'texto': 'Galería', 'icon': Icons.browse_gallery}
-    ];
 
     return Obx(
       () => Column(
@@ -129,7 +123,27 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
           ),
           (articleEditController.imageCoverChanged || !articleEditController.newArticle.coverImageArticle.isDefault) ? 30.ph : 20.ph,
           // Cover widget
-          EglImageWidget(),
+          EglImageWidget(
+            controller: articleEditController,
+            image: articleEditController.newArticle.coverImageArticle,
+            defaultImage: articleEditController.appLogo,
+            onPressedDefault: () {
+              // Lógica para recuperar la imagen por defecto
+              articleEditController.newArticle.coverImageArticle.modify(
+                src: articleEditController.iconUserDefaultProfile,
+                nameFile: 'icons_user_profile_circle',
+                isDefault: true,
+              );
+              articleEditController.imageCover = null;
+              articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
+            },
+            onPressedRestore: () {
+              // Lógica para restaurar la imagen inicial
+              articleEditController.newArticle.coverImageArticle = articleEditController.oldArticle.coverImageArticle.copyWith();
+              articleEditController.imageCover = null;
+              articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
+            },
+          ),
           20.ph,
           // SizedBox(
           //   width: Get.width * .8,
@@ -147,9 +161,17 @@ class EglImageWidget extends StatelessWidget {
   const EglImageWidget({
     super.key,
     this.controller,
+    required this.image,
+    required this.defaultImage,
+    this.onPressedDefault,
+    this.onPressedRestore,
   });
 
   final dynamic controller;
+  final ImageArticle image;
+  final String defaultImage;
+  final VoidCallback? onPressedDefault;
+  final VoidCallback? onPressedRestore;
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +196,7 @@ class EglImageWidget extends StatelessWidget {
               },
             );
           },
-          child: controller.newArticle.coverImageArticle.src != ''
+          child: image.src != ''
               ? FittedBox(
                   child: Container(
                     width: MediaQuery.of(context).size.width * .88,
@@ -202,10 +224,10 @@ class EglImageWidget extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     // Image.network(articleEditController.newArticle.coverImageArticle.src)
-                    child: controller.appLogo == ''
+                    child: defaultImage == ''
                         ? null
                         : Image.network(
-                            controller.appLogo,
+                            defaultImage,
                             width: MediaQuery.of(context).size.width * .88,
                             // height: 300,
                           ),
@@ -218,18 +240,10 @@ class EglImageWidget extends StatelessWidget {
           top: -18.0, // Ajusta según sea necesario
           right: 10.0, // Ajusta según sea necesario
           child: EglCircleIconButton(
+            key: UniqueKey(),
             backgroundColor: EglColorsApp.backgroundIconColor,
-            icon: Icons.disabled_by_default_outlined, // Cambiar a tu icono correspondiente
-            onPressed: () {
-              // Lógica para recuperar la imagen por defecto
-              controller.newArticle.coverImageArticle.modify(
-                src: controller.iconUserDefaultProfile,
-                nameFile: 'icons_user_profile_circle',
-                isDefault: true,
-              );
-              controller.imageCover = null;
-              controller.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
-            },
+            icon: Icons.disabled_by_default_outlined, // X
+            onPressed: onPressedDefault,
           ),
         ),
         // Button restore initial cover
@@ -238,14 +252,10 @@ class EglImageWidget extends StatelessWidget {
           top: -18.0, // Ajusta según sea necesario
           right: 70.0, // Ajusta según sea necesario
           child: EglCircleIconButton(
+            key: UniqueKey(),
             backgroundColor: EglColorsApp.backgroundIconColor,
-            icon: Icons.restore, // Cambiar a tu icono correspondiente
-            onPressed: () {
-              // Lógica para restaurar la imagen inicial
-              articleEditController.newArticle.coverImageArticle = articleEditController.oldArticle.coverImageArticle.copyWith();
-              articleEditController.imageCover = null;
-              articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
-            },
+            icon: Icons.restore, // Relojito hacia atrás
+            onPressed: onPressedRestore,
           ),
         ),
       ],

@@ -99,6 +99,11 @@ class ArticleController extends GetxController {
     // print('Response body: ${result}');
     if (articlesListResponse.status == 200) {
       articlesListResponse.result.map((article) => _articles.add(article)).toList();
+      if (articlesListResponse.message == 'expired') {
+        session.isExpired = true;
+        session.setListUserMessages('Session expired. Reloggin for edit articles');
+        session.checkEdit = false;
+      }
     }
     // return _articles;
   }

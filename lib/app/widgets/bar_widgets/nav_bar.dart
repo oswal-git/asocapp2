@@ -84,16 +84,16 @@ class NavBar extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.notifications),
-              title: const Text('Request'),
+              title: const Text('cNotifications'),
               trailing: ClipOval(
                 child: Container(
                   color: Colors.red,
                   width: 20,
                   height: 20,
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      '5',
-                      style: TextStyle(
+                      session.listUserMessages.isEmpty ? '' : session.listUserMessages.length.toString(),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
                       ),

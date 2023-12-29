@@ -25,6 +25,14 @@ class SessionService extends GetxService {
   bool get isLogin => _isLogin.value;
   set isLogin(value) => _isLogin.value = value;
 
+  final _isExpired = false.obs;
+  bool get isExpired => _isExpired.value;
+  set isExpired(value) => _isExpired.value = value;
+
+  final _listUserMessages = <String>[].obs;
+  List<String> get listUserMessages => _listUserMessages;
+  void setListUserMessages(String value) => _listUserMessages.add(value);
+
   final _checkEdit = false.obs;
   bool get checkEdit => _checkEdit.value;
   set checkEdit(bool value) => _checkEdit.value = value;
@@ -46,6 +54,7 @@ class SessionService extends GetxService {
     if (userConnected.userNameUser != '') {
       _hasData.value = true;
       _isLogin.value = true;
+      _isExpired.value = false;
       await _storage.writeObject(userConnectedKey, userConnected);
 
       await registerTask(loadTask);
@@ -79,6 +88,7 @@ class SessionService extends GetxService {
     _hasData.value = false;
     _isLogin.value = false;
     _checkEdit.value = false;
+    _isExpired.value = false;
     _userConnected.value = UserConnected.clear();
   }
 
