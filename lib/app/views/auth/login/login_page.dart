@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             onChanged: (value) {
               loginController.userConnected!.userNameUser = value;
 
-              logger.i('value: $value');
+              // logger.i('value: $value');
             },
             onValidator: (value) {
               return value!.isEmpty ? 'mInputUser'.tr : null;
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
             labelText: 'lPassword'.tr,
             onChanged: (value) {
               loginController.password = value;
-              logger.i('value: $value');
+              // logger.i('value: $value');
             },
             onValidator: (value) {
               return value!.isEmpty ? 'mPassword'.tr : null;

@@ -17,12 +17,7 @@ class ArticleDataPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           20.ph,
-          Form(
-            key: articleEditController.formKeyData,
-            autovalidateMode: AutovalidateMode.onUserInteraction, // Habilita la validación cuando el usuario interactúa con el formulario
-            onChanged: () {},
-            child: _formUI(context, articleEditController),
-          ),
+          _formUI(context, articleEditController),
         ],
       ),
     );

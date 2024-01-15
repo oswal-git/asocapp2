@@ -1,5 +1,6 @@
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_data_page.dart';
@@ -16,21 +17,22 @@ class NewArticlePage extends StatefulWidget {
   }) {
     articleEditController.oldArticle = articleArguments.article.copyWith();
     articleEditController.newArticle = articleArguments.article.copyWith();
+    articleEditController.newArticleItems = List<ItemArticle>.from(articleArguments.article.itemsArticle);
     if (articleArguments.hasArticle) {
-      articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
+      // articleEditController.imagePropertie.value = Image.network(articleEditController.newArticle.coverImageArticle.src);
     } else {
       articleEditController.oldArticle.coverImageArticle.modify(
-        src: EglImagesPath.appIconUserDefault,
-        nameFile: EglImagesPath.nameIconUserDefaultProfile,
+        src: EglImagesPath.appCoverDefault,
+        nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
         isDefault: true,
       );
       articleEditController.newArticle.coverImageArticle.modify(
-        src: EglImagesPath.appIconUserDefault,
-        nameFile: EglImagesPath.nameIconUserDefaultProfile,
+        src: EglImagesPath.appCoverDefault,
+        nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
         isDefault: true,
       );
 
-      articleEditController.imagePropertie.value = Image.asset(EglImagesPath.appIconUserDefault);
+      // articleEditController.imagePropertie.value = Image.asset(EglImagesPath.appIconUserDefault);
     }
   }
 

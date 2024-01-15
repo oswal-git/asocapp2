@@ -24,18 +24,15 @@ class ItemArticleWidget extends StatefulWidget {
 class _ItemArticleWidgetState extends State<ItemArticleWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) TextItem(text: widget.item.textItemArticle),
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) 2.pw,
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 == 0) ImageItem2(image: widget.item.imageItemArticle),
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) ImageItem2(image: widget.item.imageItemArticle),
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) 2.pw,
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 != 0) TextItem(text: widget.item.textItemArticle),
-        if (widget.item.textItemArticle != '') TextItem(text: widget.item.textItemArticle),
-        if (widget.item.textItemArticle != '') 2.pw,
-        if (widget.item.imageItemArticle.src != '') ImageItem2(image: widget.item.imageItemArticle),
+        if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) Expanded(child: TextItem(text: widget.item.textItemArticle)),
+        if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) 2.pw,
+        if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 == 0) ImageItem2(image: widget.item.imageItemArticle),
+        if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) ImageItem2(image: widget.item.imageItemArticle),
+        if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) 2.pw,
+        if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 != 0) Expanded(child: TextItem(text: widget.item.textItemArticle)),
       ],
     );
   }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/models/article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:asocapp/app/repositorys/repositorys.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/services/services.dart';
@@ -27,6 +28,91 @@ class ArticleEditController extends GetxController {
   final _newArticle = Rx<Article>(Article.clear());
   Article get newArticle => _newArticle.value;
   set newArticle(Article value) => _newArticle.value = value;
+
+  set setItemsArticle(List<ItemArticle> value) {
+    _newArticle.value.itemsArticle = [];
+    _newArticle.value.itemsArticle = value;
+    _newArticle.refresh();
+  }
+
+  final _articleItemsCount = 0.obs;
+  int get articleItemsCount => _newArticleItems.value.length;
+
+  final _newArticleItems = Rx<List<ItemArticle>>([]);
+  List<ItemArticle> get newArticleItems => _newArticleItems.value;
+  set newArticleItems(List<ItemArticle> value) {
+    _newArticleItems.value = value;
+    _articleItemsCount.value = _newArticleItems.value.length;
+  }
+
+  set addLastItemArticle(ItemArticle value) {
+    _newArticleItems.value.add(value);
+    _newArticle.value.itemsArticle = _newArticleItems.value;
+  }
+
+  set addItemArticle(ItemArticle value) {
+    _newArticleItems.value.add(value);
+    _newArticle.value.itemsArticle = _newArticleItems.value;
+    _articleItemsCount.value = _newArticleItems.value.length;
+    _newArticle.refresh();
+  }
+
+  void insertItemArticle(int index, ItemArticle item) {
+    _newArticleItems.value.insert(index, item);
+    _articleItemsCount.value = _newArticleItems.value.length;
+    // _newArticle.value.itemsArticle = _newArticleItems.value;
+    _newArticle.refresh();
+  }
+
+  ItemArticle deleteItemArticle(int value) {
+    final ItemArticle item = _newArticleItems.value.removeAt(value);
+    _articleItemsCount.value = _newArticleItems.value.length;
+    // _newArticle.value.itemsArticle = _newArticleItems.value;
+    _newArticle.refresh();
+    return item;
+  }
+
+  moveDownItemArticle(int oldPos, int newPos) {
+    if (_newArticleItems.value.isEmpty) return;
+    if (oldPos < 0 || oldPos > _newArticleItems.value.length - 1) return;
+    if (newPos < 0 || newPos > _newArticleItems.value.length - 1) return;
+    if (oldPos >= newPos) return;
+
+    if (newPos == (_newArticleItems.value.length - 1)) {
+      _newArticleItems.value.add(ItemArticle.clear());
+    } else {
+      _newArticleItems.value.insert(newPos + 1, ItemArticle.clear());
+    }
+    _newArticleItems.value[newPos + 1] = _newArticleItems.value[oldPos];
+    _newArticleItems.value.removeAt(oldPos);
+    // _newArticle.value.itemsArticle.assignAll(_newArticleItems.value);
+    _newArticleItems.refresh();
+    _newArticle.refresh();
+  }
+
+  moveUpItemArticle(int oldPos, int newPos) {
+    if (_newArticleItems.value.isEmpty) return;
+    if (oldPos < 0 || oldPos > _newArticleItems.value.length - 1) return;
+    if (newPos < 0 || newPos > _newArticleItems.value.length - 1) return;
+    if (oldPos <= newPos) return;
+
+    ItemArticle item = ItemArticle.clear();
+    item.imageItemArticle.modify(
+      src: EglImagesPath.appCoverDefault,
+      nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+      isDefault: true,
+    );
+
+    item.textItemArticle = 'nuevo';
+
+    _newArticleItems.value.insert(newPos, item);
+
+    _newArticleItems.value[newPos] = _newArticleItems.value[oldPos + 1].copyWith();
+    _newArticleItems.value.removeAt(oldPos + 1);
+    // _newArticle.value.itemsArticle.assignAll(_newArticleItems.value);
+    _newArticleItems.refresh();
+    _newArticle.refresh();
+  }
 
   final passwordController = TextEditingController();
   final newPasswordController = TextEditingController();
@@ -112,15 +198,15 @@ class ArticleEditController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    super.onInit();
     // Simulating obtaining the user name from some local storage
 
-    _appLogo.value = await EglImagesPath.appLogo();
+    _appLogo.value = await EglImagesPath.getAppIconUserDefault();
     _iconUserDefaultProfile.value = _appLogo.value;
+    _articleItemsCount.value = _newArticleItems.value.length;
     // // Escucha cambios en selectedDatePublication
     // ever(selectedDatePublication, (DateTime date) {
     // });
-
-    super.onInit();
   }
 
   @override
@@ -132,6 +218,17 @@ class ArticleEditController extends GetxController {
     _stateFocusNode.value.dispose();
     super.onClose();
   }
+
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  // }
+
+  // @override
+  // InternalFinalCallback<void> get onDelete => super.onDelete;
+
+  // @override
+  // InternalFinalCallback<void> get onStart => super.onStart;
 
   final Rx<Image> imagePropertie = Rx<Image>(Image.asset(EglImagesPath.iconUserDefaultProfile));
 
