@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/models/image_article_model.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -24,39 +26,18 @@ class ItemArticleWidget extends StatefulWidget {
 class _ItemArticleWidgetState extends State<ItemArticleWidget> {
   @override
   Widget build(BuildContext context) {
+    bool haveText = widget.item.textItemArticle != '';
+    bool haveImage = widget.item.imageItemArticle.src != '' && !widget.item.imageItemArticle.isDefault;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) TextItem(text: widget.item.textItemArticle),
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 == 0) 2.pw,
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 == 0) ImageItem2(image: widget.item.imageItemArticle),
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) ImageItem2(image: widget.item.imageItemArticle),
-        // if (widget.item.imageItemArticle.src != '' && widget.item.idItemArticle % 2 != 0) 2.pw,
-        // if (widget.item.textItemArticle != '' && widget.item.idItemArticle % 2 != 0) TextItem(text: widget.item.textItemArticle),
-        if (widget.item.textItemArticle != '') TextItem(text: widget.item.textItemArticle),
-        if (widget.item.textItemArticle != '') 2.pw,
-        if (widget.item.imageItemArticle.src != '') ImageItem2(image: widget.item.imageItemArticle),
+        2.ph,
+        if (haveText) TextItem(text: widget.item.textItemArticle),
+        if (haveText && haveImage) 2.ph,
+        if (haveImage) ImageItem2(image: widget.item.imageItemArticle),
+        10.ph,
       ],
-    );
-  }
-}
-
-class ImageItem extends StatelessWidget {
-  const ImageItem({
-    super.key,
-    required this.image,
-  });
-
-  final ImageArticle image;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Image.network(
-        image.src,
-        fit: BoxFit.scaleDown,
-        width: 100,
-      ),
     );
   }
 }
@@ -72,17 +53,30 @@ class ImageItem2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      padding: const EdgeInsets.all(20),
+      // padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(5),
       ),
       duration: 1.seconds,
-      child: Image.network(
-        image.src,
-        fit: BoxFit.scaleDown,
-        width: 150,
-        // color: Colors.indigo,
+      child: Container(
+        // width: MediaQuery.of(context).size.width / 2,
+        margin: const EdgeInsets.symmetric(horizontal: 15.00),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+          // border: Border.all(
+          //   color: Colors.transparent, // color del borde
+          //   width: 2.0, // ancho del borde
+          // ),
+        ),
+        child: EglImageWidget(
+          image: image,
+          defaultImage: EglImagesPath.appCoverDefault,
+          isEditable: false,
+          canDefault: false,
+          onPressedDefault: (_) {},
+          onPressedRestore: (_) {},
+        ),
       ),
     );
   }
@@ -98,11 +92,20 @@ class TextItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Html(
-      data: '   $text',
-      style: {
-        'p': Style(textAlign: TextAlign.justify, fontSize: FontSize(12), lineHeight: const LineHeight(1.5)),
-      },
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        // border: Border.all(
+        //   width: 1.0,
+        //   color: Colors.red,
+        // ),
+      ),
+      child: Html(
+        data: '   $text',
+        style: {
+          'p': Style(textAlign: TextAlign.justify, fontSize: FontSize(12), lineHeight: const LineHeight(1.5)),
+        },
+      ),
     );
   }
 }

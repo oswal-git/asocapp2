@@ -63,6 +63,7 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
             },
           ),
           20.ph,
+          // Abstract
           EglInputMultiLineField(
             focusNode: articleEditController.abstractArticleFocusNode,
             nextFocusNode: articleEditController.abstractArticleFocusNode,

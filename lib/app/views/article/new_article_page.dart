@@ -1,10 +1,13 @@
+import 'package:asocapp/app/apirest/api_models/article_model.dart';
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_data_page.dart';
 import 'package:asocapp/app/views/article/article_edition_page.dart';
+import 'package:asocapp/app/views/article/article_page.dart';
 import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +47,8 @@ class NewArticlePage extends StatefulWidget {
 }
 
 class _NewArticlePageState extends State<NewArticlePage> {
+  final SessionService session = Get.put(SessionService());
+
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
@@ -72,7 +77,10 @@ class _NewArticlePageState extends State<NewArticlePage> {
               backgroundColor: EglColorsApp.transparent,
               icon: Icons.save, // Cambiar a tu icono correspondiente
               size: 30,
-              onPressed: () {},
+              onPressed: () {
+                EglHelper.eglLogger('i', widget.articleEditController.newArticle.toString());
+                EglHelper.eglLogger('i', widget.articleEditController.newArticleItems.toString());
+              },
             ),
             5.pw,
             EglCircleIconButton(
@@ -80,7 +88,23 @@ class _NewArticlePageState extends State<NewArticlePage> {
               backgroundColor: EglColorsApp.transparent,
               icon: Icons.monitor, // Cambiar a tu icono correspondiente
               size: 30,
-              onPressed: () {},
+              onPressed: () {
+                IArticleUserArguments args = IArticleUserArguments(
+                  ArticleUser.fromArticle(
+                    article: widget.articleEditController.newArticle,
+                    idUser: session.userConnected.idUser,
+                    idAsociationUser: session.userConnected.idAsociationUser,
+                    emailUser: session.userConnected.emailUser,
+                    profileUser: session.userConnected.profileUser,
+                    nameUser: session.userConnected.nameUser,
+                    lastNameUser: session.userConnected.lastNameUser,
+                    avatarUser: session.userConnected.avatarUser,
+                    longNameAsociation: session.userConnected.longNameAsoc,
+                    shortNameAsociation: session.userConnected.shortNameAsoc,
+                  ),
+                );
+                Get.to(() => ArticlePage(articleArguments: args));
+              },
             ),
             5.pw,
           ],

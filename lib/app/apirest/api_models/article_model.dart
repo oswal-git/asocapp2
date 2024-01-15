@@ -97,6 +97,50 @@ class ArticleUser extends Article {
     required super.itemsArticle,
   });
 
+  factory ArticleUser.fromArticle({
+    required Article article,
+    required int idUser,
+    required int idAsociationUser,
+    required String emailUser,
+    required String profileUser,
+    required String nameUser,
+    required String lastNameUser,
+    required String avatarUser,
+    required String longNameAsociation,
+    required String shortNameAsociation,
+  }) {
+    return ArticleUser(
+      idArticle: article.idArticle,
+      idAsociationArticle: article.idAsociationArticle,
+      idUserArticle: article.idUserArticle,
+      categoryArticle: article.categoryArticle,
+      subcategoryArticle: article.subcategoryArticle,
+      classArticle: article.classArticle,
+      stateArticle: article.stateArticle,
+      publicationDateArticle: article.publicationDateArticle,
+      effectiveDateArticle: article.effectiveDateArticle,
+      expirationDateArticle: article.expirationDateArticle,
+      coverImageArticle: article.coverImageArticle,
+      titleArticle: article.titleArticle,
+      abstractArticle: article.abstractArticle,
+      ubicationArticle: article.ubicationArticle,
+      dateDeletedArticle: article.dateDeletedArticle,
+      dateCreatedArticle: article.dateCreatedArticle,
+      dateUpdatedArticle: article.dateUpdatedArticle,
+      idUser: idUser,
+      idAsociationUser: idAsociationUser,
+      emailUser: emailUser,
+      profileUser: profileUser,
+      nameUser: nameUser,
+      lastNameUser: lastNameUser,
+      avatarUser: avatarUser,
+      longNameAsociation: longNameAsociation,
+      shortNameAsociation: shortNameAsociation,
+      itemsArticle: article.itemsArticle,
+      // Proporciona otros valores específicos de ArticleUser aquí
+    );
+  }
+
   factory ArticleUser.fromJson(Map<String, dynamic> json) => ArticleUser(
         idArticle: int.parse(json["id_article"]),
         idAsociationArticle: int.parse(json["id_asociation_article"]),
@@ -277,145 +321,6 @@ class ArticleUser extends Article {
     );
   }
 }
-
-// class ImageArticle {
-//   ImageArticle({
-//     required this.src,
-//     required this.nameFile,
-//     required this.filePath,
-//     this.fileImage,
-//     required this.isSelectedFile,
-//     required this.isDefault,
-//     required this.isChange,
-//   });
-
-//   String src;
-//   String nameFile;
-//   String filePath;
-//   dynamic fileImage;
-//   bool isSelectedFile;
-//   bool isDefault;
-//   bool isChange;
-
-//   factory ImageArticle.fromJson(Map<String, dynamic> json) => ImageArticle(
-//         src: json["src"],
-//         nameFile: json["nameFile"],
-//         filePath: json["filePath"],
-//         fileImage: json["fileImage"],
-//         isSelectedFile: json["isSelectedFile"],
-//         isDefault: json["isDefault"],
-//         isChange: json["isChange"],
-//       );
-
-//   Map<String, dynamic> toJson() => {
-//         "src": src,
-//         "nameFile": nameFile,
-//         "filePath": filePath,
-//         "fileImage": fileImage,
-//         "isSelectedFile": isSelectedFile,
-//         "isDefault": isDefault,
-//         "isChange": isChange,
-//       };
-
-//   @override
-//   String toString() {
-//     String cadena = '';
-
-//     cadena = '$cadena ImageArticle { ';
-//     cadena = '$cadena src $src';
-//     cadena = '$cadena nameFile $nameFile';
-//     cadena = '$cadena filePath $filePath';
-//     cadena = '$cadena fileImage $fileImage';
-//     cadena = '$cadena isSelectedFile $isSelectedFile';
-//     cadena = '$cadena isDefault $isDefault';
-//     cadena = '$cadena isChange $isChange';
-
-//     return cadena;
-//   }
-
-//   factory ImageArticle.clear() {
-//     return ImageArticle(
-//       src: '',
-//       nameFile: '',
-//       filePath: '',
-//       fileImage: '',
-//       isSelectedFile: false,
-//       isDefault: false,
-//       isChange: false,
-//     );
-//   }
-// }
-
-// class ItemArticle {
-//   ItemArticle({
-//     required this.idItemArticle,
-//     required this.idArticleItemArticle,
-//     required this.textItemArticle,
-//     required this.imageItemArticle,
-//     required this.dateCreatedItemArticle,
-//   });
-
-//   int idItemArticle;
-//   int idArticleItemArticle;
-//   String textItemArticle;
-//   ImageArticle imageItemArticle;
-//   String dateCreatedItemArticle;
-
-//   factory ItemArticle.fromJson(Map<String, dynamic> json) => ItemArticle(
-//         idItemArticle: int.parse(json["id_item_article"]),
-//         idArticleItemArticle: int.parse(json["id_article_item_article"]),
-//         textItemArticle: json["text_item_article"],
-//         imageItemArticle: ImageArticle.fromJson(json["image_item_article"]),
-//         dateCreatedItemArticle: (json["date_created_item_article"]),
-//       );
-
-//   Map<String, dynamic> toJson() => {
-//         "id_item_article": idItemArticle,
-//         "id_article_item_article": idArticleItemArticle,
-//         "text_item_article": textItemArticle,
-//         "image_item_article": imageItemArticle.toJson(),
-//         "date_created_item_article": dateCreatedItemArticle,
-//       };
-
-//   @override
-//   String toString() {
-//     String cadena = '';
-
-//     cadena = '$cadena ItemArticle { ';
-//     cadena = '$cadena idItemArticle $idItemArticle';
-//     cadena = '$cadena idArticleItemArticle $idArticleItemArticle';
-//     cadena = '$cadena textItemArticle $textItemArticle';
-//     cadena = '$cadena imageItemArticle ${imageItemArticle.toString()}';
-//     cadena = '$cadena dateCreatedItemArticle $dateCreatedItemArticle';
-//     return cadena;
-//   }
-
-//   factory ItemArticle.clear() {
-//     return ItemArticle(
-//       idItemArticle: 0,
-//       idArticleItemArticle: 0,
-//       textItemArticle: '',
-//       imageItemArticle: ImageArticle.clear(),
-//       dateCreatedItemArticle: '',
-//     );
-//   }
-
-//   ItemArticle copyWith({
-//     int? idItemArticle,
-//     int? idArticleItemArticle,
-//     String? textItemArticle,
-//     ImageArticle? imageItemArticle,
-//     String? dateCreatedItemArticle,
-//   }) {
-//     return ItemArticle(
-//       idItemArticle: idItemArticle ?? this.idItemArticle,
-//       idArticleItemArticle: idArticleItemArticle ?? this.idArticleItemArticle,
-//       textItemArticle: textItemArticle ?? this.textItemArticle,
-//       imageItemArticle: imageItemArticle ?? this.imageItemArticle,
-//       dateCreatedItemArticle: dateCreatedItemArticle ?? this.dateCreatedItemArticle,
-//     );
-//   }
-// }
 
 // **************************************************
 
