@@ -18,3 +18,4 @@ export 'fields_widgets/egl_label_input_text.dart';
 export 'fields_widgets/egl_list_tile_copy.dart';
 export 'fields_widgets/egl_logo.dart';
 export 'fields_widgets/egl_stack_list_tile.dart';
+export 'image_widgets/egl_image_widget.dart';

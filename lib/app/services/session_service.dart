@@ -1,12 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:ui';
 
-import 'package:asocapp/app/services/storage_service.dart';
-import 'package:asocapp/app/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'package:asocapp/app/services/storage_service.dart';
+import 'package:asocapp/app/utils/utils.dart';
+
 import '../models/models.dart';
+
+class UserMessages {
+  final String text;
+  final String date;
+  bool isRead;
+
+  UserMessages({
+    required this.text,
+    required this.date,
+    this.isRead = false,
+  });
+}
 
 class SessionService extends GetxService {
   final StorageService _storage = Get.find<StorageService>();
@@ -29,9 +43,18 @@ class SessionService extends GetxService {
   bool get isExpired => _isExpired.value;
   set isExpired(value) => _isExpired.value = value;
 
-  final _listUserMessages = <String>[].obs;
-  List<String> get listUserMessages => _listUserMessages;
-  void setListUserMessages(String value) => _listUserMessages.add(value);
+  final _listUserMessages = <UserMessages>[].obs;
+  List<UserMessages> get listUserMessages => _listUserMessages;
+  void setListUserMessages(String value) => _listUserMessages.add(UserMessages(
+        text: value,
+        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      ));
+  set checkUserMessage(int value) {
+    _listUserMessages[value].isRead = !_listUserMessages[value].isRead;
+    _listUserMessages.refresh();
+  }
+
+  int get toReadmessages => _listUserMessages.where((message) => message.isRead == false).length;
 
   final _checkEdit = false.obs;
   bool get checkEdit => _checkEdit.value;
@@ -43,6 +66,10 @@ class SessionService extends GetxService {
   @override
   void onInit() {
     super.onInit();
+    _listUserMessages.add(UserMessages(
+      text: 'Registro de prueba',
+      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    ));
 
     initialize();
   }

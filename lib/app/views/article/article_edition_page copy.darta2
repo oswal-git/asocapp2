@@ -5,6 +5,7 @@ import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/edit_item_article.dart';
+import 'package:asocapp/app/widgets/image_widgets/egl_image_widget.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,11 +29,25 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
   @override
   Widget build(BuildContext context) {
     // return const Center(child: Text('ArticleEditionPage'));
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          20.ph,
+          _formUI(context, articleEditController),
+        ],
+      ),
+    );
+  }
+
+  Widget _formUI(BuildContext context, ArticleEditController articleEditController) {
+    // double maxWidth = MediaQuery.of(context).size.width;
     bool titleFocus = false;
     bool abstractFocus = false;
 
     return Obx(
-      () => ListView(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           20.ph,
           // Title
@@ -63,6 +78,7 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
             },
           ),
           20.ph,
+          // Abstract
           EglInputMultiLineField(
             focusNode: articleEditController.abstractArticleFocusNode,
             nextFocusNode: articleEditController.abstractArticleFocusNode,
@@ -119,61 +135,98 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
             ),
           ),
           40.ph,
+          // SizedBox(
+          //   width: Get.width * .8,
+          //   child: FittedBox(
+          //     child: articleEditController.imagePropertie.value,
+          //   ),
+          // ),
           if (articleEditController.newArticleItems.isNotEmpty)
-            ReorderableListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                for (ItemArticle item in articleEditController.newArticleItems)
-
-                  // ItemArticle item = articleEditController.newArticleItems[index];
-                  // if (item.imageItemArticle.isDefault) {
-                  //   item.imageItemArticle.modify(
-                  //     src: EglImagesPath.appCoverDefault,
-                  //     nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
-                  //     isDefault: true,
-                  //   );
-                  // }
-                  Container(
-                    key: UniqueKey(),
-                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                    padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
-                    decoration: const BoxDecoration(
-                      // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
-                      border: Border(
-                        top: BorderSide(
-                          color: EglColorsApp.borderTileArticleColor, // color del borde
-                          width: 2.0, // ancho del borde)
-                        ),
-                      ),
-                    ),
-                    child: EditItemArticle(itemArticle: item),
-                    // child: Text('itemIndex: $index'),
-                  ),
-              ],
-              onReorder: (oldIndex, newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
+            Column(
+              children: List.generate(articleEditController.newArticleItems.length, (index) {
+                int maxIndex = articleEditController.newArticleItems.length - 1;
+                ItemArticle item = articleEditController.newArticleItems[index];
+                if (item.imageItemArticle.isDefault) {
+                  item.imageItemArticle.modify(
+                    src: EglImagesPath.appCoverDefault,
+                    nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+                    isDefault: true,
+                  );
                 }
-                setState(() {
-                  final ItemArticle item = articleEditController.deleteItemArticle(oldIndex);
-                  articleEditController.insertItemArticle(newIndex, item);
-                });
-              },
-              // proxyDecorator: (Widget child, int index, Animation<double> animation) {
-              //   return AnimatedBuilder(
-              //     animation: animation,
-              //     builder: (BuildContext context, _) {
-              //       final animValue = Curves.easeInOut.transform(animation.value);
-              //       final scale = lerpDouble(1, 1.05, animValue);
-              //       return Transform.scale(
-              //         scale: scale,
-              //         child: child,
-              //       );
-              //     },
-              //   );
-              // },
+                return Container(
+                  padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
+                        decoration: const BoxDecoration(
+                          // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+                          border: Border(
+                            top: BorderSide(
+                              color: EglColorsApp.borderTileArticleColor, // color del borde
+                              width: 2.0, // ancho del borde)
+                            ),
+                          ),
+                        ),
+                        child: EditItemArticle(itemIndex: index),
+                      ),
+                      // Index del item
+                      Positioned(
+                        top: 5, // Ajusta según sea necesario
+                        left: 20, // Ajusta según sea necesario
+                        child: EglCircleIconButton(
+                            text: index.toString(),
+                            backgroundColor: const Color(0xFF2505DF),
+                            icon: Icons.circle,
+                            color: Colors.transparent,
+                            size: 15,
+                            onPressed: () {}),
+                      ),
+                      // delete item
+                      Positioned(
+                        top: -16, // Ajusta según sea necesario
+                        right: 15, // Ajusta según sea necesario
+                        child: EglCircleIconButton(
+                            // key: UniqueKey(),
+                            backgroundColor: const Color(0xFFAAAAAA),
+                            icon: Icons.disabled_by_default_outlined, // X
+                            size: 20,
+                            onPressed: () {
+                              articleEditController.deleteItemArticle = index;
+                            }),
+                      ),
+                      if (index != maxIndex)
+                        Positioned(
+                          top: -16, // Ajusta según sea necesario
+                          right: 60, // Ajusta según sea necesario
+                          child: EglCircleIconButton(
+                            // key: UniqueKey(),
+                            backgroundColor: const Color(0xFFAAAAAA),
+                            icon: Icons.arrow_downward, // X
+                            size: 20,
+                            onPressed: () => articleEditController.moveDownItemArticle(index, index + 1),
+                          ),
+                        ),
+                      if (index > 0)
+                        Positioned(
+                          top: -16, // Ajusta según sea necesario
+                          right: index == maxIndex ? 60 : 105, // Ajusta según sea necesario
+                          child: EglCircleIconButton(
+                            // key: UniqueKey(),
+                            backgroundColor: const Color(0xFFAAAAAA),
+                            icon: Icons.arrow_upward, // X
+                            size: 20,
+                            onPressed: () => articleEditController.moveUpItemArticle(index, index - 1),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
             ),
+
           20.ph,
           // if (articleEditController.newArticle.itemsArticle.isEmpty)
           Column(

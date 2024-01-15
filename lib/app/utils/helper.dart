@@ -316,8 +316,8 @@ class EglHelper {
 
   static String datetimeToAaaammdd(DateTime date) {
     final year = date.year;
-    final month = date.month;
-    final day = date.day;
+    final String month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
 
     return '$year-$month-$day';
   }
@@ -433,6 +433,20 @@ class EglHelper {
     }
 
     return str;
+  }
+
+  static String getNameFilePath(String path, {String fileSeparator = '/', String extSeparator = '.'}) {
+    int posIni = path.lastIndexOf(fileSeparator) == -1 ? 0 : path.lastIndexOf(fileSeparator) + 1;
+    int posFin = path.lastIndexOf(extSeparator) == -1 ? path.length : path.lastIndexOf(extSeparator);
+    posFin = posFin > posIni ? posFin : path.length;
+    String name = path.substring(posIni, posFin);
+    return name;
+  }
+
+  static String getExtFilePath(String path, {String fileSeparator = '/', String extSeparator = '.'}) {
+    int posIni = path.lastIndexOf(extSeparator) == -1 ? path.length : path.lastIndexOf(extSeparator) + 1;
+    String ext = path.substring(posIni, path.length);
+    return ext;
   }
 
   // end class

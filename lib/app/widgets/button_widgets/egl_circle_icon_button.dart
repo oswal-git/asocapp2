@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class EglCircleIconButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
   final VoidCallback? onPressed;
   final Color color;
   final Color backgroundColor;
@@ -21,33 +21,40 @@ class EglCircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double pad = (size - 10) / 5 + 4;
+    double textTop = 2 * (size - 15) / 5;
+    double textRight1 = 7 * (size - 15) / 15 + 5;
+    double textRight2 = 8 * (size - 15) / 15 + 2;
+
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: backgroundColor, // Ajusta según sea necesario
         ),
-        child: Stack(children: [
-          Icon(
-            icon,
-            color: color, // Ajusta según sea necesario
-            size: size,
-          ),
-          if (text.isNotEmpty)
-            Positioned(
-              top: 6.0, // Ajusta según sea necesario
-              right: text.trim().length == 1 ? 12.0 : 10.0, // Ajusta según sea necesario
-              child: Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
+        child: Padding(
+          padding: EdgeInsets.all(pad),
+          child: Stack(children: [
+            Icon(
+              icon,
+              color: color, // Ajusta según sea necesario
+              size: size,
+            ),
+            if (text.isNotEmpty)
+              Positioned(
+                top: textTop, // Ajusta según sea necesario
+                right: text.trim().length == 1 ? textRight1 : textRight2, // Ajusta según sea necesario
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-            ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
