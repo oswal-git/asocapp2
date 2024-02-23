@@ -5,10 +5,10 @@ class EglConfig {
   static const String apiURLBD = 'apiasoc.es';
   // static const String apiURL = 'localhost/apiasoc';
   static const String apiURLEmulatorDevice = '10.0.2.2/apiasoc'; // emulator local
-  static const String apiURLPhysicalDevice = '192.168.1.20/apiasoc'; // device móvil
+  static const String apiURLPhysicalDevice = '192.168.1.50/apiasoc'; // device móvil
 
   // static const String apiURL = '10.0.2.2:7251';
-  // static const String apiURL = '192.168.1.20:7251';
+  // static const String apiURL = '192.168.1.50:7251';
 
   static const String apiListAll = 'list-all.php';
   static const String apiSingleArticle = 'single-article.php';
@@ -25,6 +25,9 @@ class EglConfig {
   static const String apiReset = 'reset.php';
   static const String apiChange = 'change.php';
   static const String apiRegisterGenericUser = 'register-generic.php';
+  static const String apiCreateArticle = 'create-and-images.php';
+  static const String apiModifyArticle = 'modify-and-images.php';
+  static const String apiDeleteArticle = 'delete-and-images.php';
 
   static const String apiSeparator = '/';
   static const String apiKeyGPT = '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';

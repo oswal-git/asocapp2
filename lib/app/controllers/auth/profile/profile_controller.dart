@@ -178,6 +178,7 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateUserConnected(UserConnected value, bool loadTask) async {
+    userConnected.value = value;
     return session.updateUserConnected(value, loadTask: loadTask);
   }
 

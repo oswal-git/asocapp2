@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:asocapp/app/apirest/api_models/article_model.dart';
+import 'package:asocapp/app/apirest/api_models/article_api_model.dart';
 import 'package:asocapp/app/controllers/article/article_notified_controller.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/utils/utils.dart';

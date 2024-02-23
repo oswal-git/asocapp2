@@ -13,6 +13,7 @@ import 'package:intl/number_symbols_data.dart';
 import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,6 +81,12 @@ class _MyAppState extends State<MyApp> {
 
     return GetMaterialApp(
       translations: Messages(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', 'GB'), Locale('es', 'ES'), Locale('ca')],
       locale: Locale(language, country),
       fallbackLocale: const Locale('es', 'ES'),
       debugShowCheckedModeBanner: false,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:asocapp/app/models/article_not_cover_model.dart';
 import 'package:asocapp/app/models/image_article_model.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
 
@@ -7,45 +8,28 @@ Article articleRequestFromJson(String str) => Article.fromJson(json.decode(str))
 
 String articleRequestToJson(Article data) => json.encode(data.toJson());
 
-class Article {
-  int idArticle;
-  int idAsociationArticle;
-  int idUserArticle;
-  String categoryArticle;
-  String subcategoryArticle;
-  String classArticle;
-  String stateArticle;
-  String publicationDateArticle;
-  String effectiveDateArticle;
-  String expirationDateArticle;
+class Article extends ArticleNotCover {
   ImageArticle coverImageArticle;
-  String titleArticle;
-  String abstractArticle;
-  String ubicationArticle;
-  String dateDeletedArticle;
-  String dateCreatedArticle;
-  String dateUpdatedArticle;
-  List<ItemArticle> itemsArticle;
 
   Article({
-    required this.idArticle,
-    required this.idAsociationArticle,
-    required this.idUserArticle,
-    required this.categoryArticle,
-    required this.subcategoryArticle,
-    required this.classArticle,
-    required this.stateArticle,
-    required this.publicationDateArticle,
-    required this.effectiveDateArticle,
-    required this.expirationDateArticle,
+    required super.idArticle,
+    required super.idAsociationArticle,
+    required super.idUserArticle,
+    required super.categoryArticle,
+    required super.subcategoryArticle,
+    required super.classArticle,
+    required super.stateArticle,
+    required super.publicationDateArticle,
+    required super.effectiveDateArticle,
+    required super.expirationDateArticle,
     required this.coverImageArticle,
-    required this.titleArticle,
-    required this.abstractArticle,
-    required this.ubicationArticle,
-    required this.dateDeletedArticle,
-    required this.dateCreatedArticle,
-    required this.dateUpdatedArticle,
-    required this.itemsArticle,
+    required super.titleArticle,
+    required super.abstractArticle,
+    required super.ubicationArticle,
+    required super.dateDeletedArticle,
+    required super.dateCreatedArticle,
+    required super.dateUpdatedArticle,
+    required super.itemsArticle,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
@@ -69,26 +53,11 @@ class Article {
         itemsArticle: List<ItemArticle>.from(json["items_article"].map((x) => ItemArticle.fromJson(x))),
       );
 
+  @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> toJson = {
-      "id_article": idArticle,
-      "id_asociation_article": idAsociationArticle,
-      "id_user_article": idUserArticle,
-      "category_article": categoryArticle,
-      "subcategory_article": subcategoryArticle,
-      "class_article": classArticle,
-      "state_article": stateArticle,
-      "publication_date_article": publicationDateArticle,
-      "effective_date_article": effectiveDateArticle,
-      "expiration_date_article": expirationDateArticle,
+      ...super.toJson(),
       "cover_image_article": coverImageArticle.toJson(),
-      "title_article": titleArticle,
-      "abstract_article": abstractArticle,
-      "ubication_article": ubicationArticle,
-      "date_deleted_article": dateDeletedArticle,
-      "date_created_article": dateCreatedArticle,
-      "date_updated_article": dateUpdatedArticle,
-      "items_article": List<dynamic>.from(itemsArticle.map((x) => x.toJson())),
     };
 
     return toJson;
@@ -109,7 +78,7 @@ class Article {
     cadena = '$cadena publicationDateArticle: $publicationDateArticle,';
     cadena = '$cadena effectiveDateArticle: $effectiveDateArticle,';
     cadena = '$cadena expirationDateArticle: $expirationDateArticle,';
-    cadena = '$cadena coverImageArticle: $coverImageArticle,';
+    cadena = '$cadena coverImageArticle: ${coverImageArticle.toString()},';
     cadena = '$cadena titleArticle: $titleArticle,';
     cadena = '$cadena abstractArticle: $abstractArticle,';
     cadena = '$cadena ubicationArticle: $ubicationArticle,';
@@ -123,6 +92,51 @@ class Article {
 
     return cadena;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Article &&
+          runtimeType == other.runtimeType &&
+          idArticle == other.idArticle &&
+          idAsociationArticle == other.idAsociationArticle &&
+          idUserArticle == other.idUserArticle &&
+          categoryArticle == other.categoryArticle &&
+          subcategoryArticle == other.subcategoryArticle &&
+          classArticle == other.classArticle &&
+          stateArticle == other.stateArticle &&
+          publicationDateArticle == other.publicationDateArticle &&
+          effectiveDateArticle == other.effectiveDateArticle &&
+          expirationDateArticle == other.expirationDateArticle &&
+          coverImageArticle == other.coverImageArticle &&
+          titleArticle == other.titleArticle &&
+          abstractArticle == other.abstractArticle &&
+          ubicationArticle == other.ubicationArticle &&
+          dateDeletedArticle == other.dateDeletedArticle &&
+          dateCreatedArticle == other.dateCreatedArticle &&
+          dateUpdatedArticle == other.dateUpdatedArticle &&
+          itemsArticle == other.itemsArticle;
+
+  @override
+  int get hashCode =>
+      idArticle.hashCode ^
+      idAsociationArticle.hashCode ^
+      idUserArticle.hashCode ^
+      categoryArticle.hashCode ^
+      subcategoryArticle.hashCode ^
+      classArticle.hashCode ^
+      stateArticle.hashCode ^
+      publicationDateArticle.hashCode ^
+      effectiveDateArticle.hashCode ^
+      expirationDateArticle.hashCode ^
+      coverImageArticle.hashCode ^
+      titleArticle.hashCode ^
+      abstractArticle.hashCode ^
+      ubicationArticle.hashCode ^
+      dateDeletedArticle.hashCode ^
+      dateCreatedArticle.hashCode ^
+      dateUpdatedArticle.hashCode ^
+      itemsArticle.hashCode;
 
   factory Article.clear() {
     return Article(
@@ -147,6 +161,7 @@ class Article {
     );
   }
 
+  @override
   Article copyWith({
     int? idArticle,
     int? idAsociationArticle,
@@ -165,15 +180,6 @@ class Article {
     String? dateDeletedArticle,
     String? dateCreatedArticle,
     String? dateUpdatedArticle,
-    int? idUser,
-    int? idAsociationUser,
-    String? emailUser,
-    String? profileUser,
-    String? nameUser,
-    String? lastNameUser,
-    String? avatarUser,
-    String? longNameAsociation,
-    String? shortNameAsociation,
     List<ItemArticle>? itemsArticle,
   }) {
     return Article(
@@ -197,4 +203,46 @@ class Article {
       itemsArticle: itemsArticle ?? this.itemsArticle,
     );
   }
+
+  void modify({
+    int? idArticle,
+    int? idAsociationArticle,
+    int? idUserArticle,
+    String? categoryArticle,
+    String? subcategoryArticle,
+    String? classArticle,
+    String? stateArticle,
+    String? publicationDateArticle,
+    String? effectiveDateArticle,
+    String? expirationDateArticle,
+    ImageArticle? coverImageArticle,
+    String? titleArticle,
+    String? abstractArticle,
+    String? ubicationArticle,
+    String? dateDeletedArticle,
+    String? dateCreatedArticle,
+    String? dateUpdatedArticle,
+    List<ItemArticle>? itemsArticle,
+  }) {
+    this.idArticle = idArticle ?? this.idArticle;
+    this.idAsociationArticle = idAsociationArticle ?? this.idAsociationArticle;
+    this.idUserArticle = idUserArticle ?? this.idUserArticle;
+    this.categoryArticle = categoryArticle ?? this.categoryArticle;
+    this.subcategoryArticle = subcategoryArticle ?? this.subcategoryArticle;
+    this.classArticle = classArticle ?? this.classArticle;
+    this.stateArticle = stateArticle ?? this.stateArticle;
+    this.publicationDateArticle = publicationDateArticle ?? this.publicationDateArticle;
+    this.effectiveDateArticle = effectiveDateArticle ?? this.effectiveDateArticle;
+    this.expirationDateArticle = expirationDateArticle ?? this.expirationDateArticle;
+    this.coverImageArticle = coverImageArticle ?? this.coverImageArticle;
+    this.titleArticle = titleArticle ?? this.titleArticle;
+    this.abstractArticle = abstractArticle ?? this.abstractArticle;
+    this.ubicationArticle = ubicationArticle ?? this.ubicationArticle;
+    this.dateDeletedArticle = dateDeletedArticle ?? this.dateDeletedArticle;
+    this.dateCreatedArticle = dateCreatedArticle ?? this.dateCreatedArticle;
+    this.dateUpdatedArticle = dateUpdatedArticle ?? this.dateUpdatedArticle;
+    this.itemsArticle = itemsArticle ?? this.itemsArticle;
+  }
+
+  // end class
 }

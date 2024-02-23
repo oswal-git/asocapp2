@@ -11,7 +11,6 @@ import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -25,8 +24,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   LoginController loginController = Get.put(LoginController());
   BuildContext? _context;
-
-  final Logger logger = Logger();
 
 //   @override
 //   void dispose() {
@@ -96,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
             currentValue: loginController.userConnected!.idAsociationUser == 0 ? '' : loginController.userConnected!.idAsociationUser.toString(),
             onChanged: (onChangedVal) {
               loginController.userConnected!.idAsociationUser = int.parse(onChangedVal);
-              logger.i('Asociation id: $onChangedVal');
+              EglHelper.eglLogger('i', 'Asociation id: $onChangedVal');
               setState(() {});
             },
             onValidate: (onValidateVal) {
@@ -119,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
             onChanged: (value) {
               loginController.userConnected!.userNameUser = value;
 
-              // logger.i('value: $value');
+              // EglHelper.eglLogger('i', 'value: $value');
             },
             onValidator: (value) {
               return value!.isEmpty ? 'mInputUser'.tr : null;
@@ -135,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
             labelText: 'lPassword'.tr,
             onChanged: (value) {
               loginController.password = value;
-              // logger.i('value: $value');
+              // EglHelper.eglLogger('i', 'value: $value');
             },
             onValidator: (value) {
               return value!.isEmpty ? 'mPassword'.tr : null;
@@ -167,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                 );
                 if (userAsocData != null) {
                   if (userAsocData.status == 200) {
-                    logger.i('user: ${userAsocData.result.toString()}');
+                    EglHelper.eglLogger('i', 'user: ${userAsocData.result.toString()}');
                     loginController.updateUserConnected(UserConnected(
                       idUser: userAsocData.result!.dataUser.idUser,
                       idAsociationUser: userAsocData.result!.dataUser.idAsociationUser,

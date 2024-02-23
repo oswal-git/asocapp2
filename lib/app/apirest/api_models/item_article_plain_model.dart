@@ -1,33 +1,43 @@
 import 'dart:convert';
 
 import 'package:asocapp/app/models/image_article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
 
-ItemArticle itemArticleRequestFromJson(String str) => ItemArticle.fromJson(json.decode(str));
+ItemArticlePlain itemArticlePlainRequestFromJson(String str) => ItemArticlePlain.fromJson(json.decode(str));
 
-String itemArticleRequestToJson(ItemArticle data) => json.encode(data.toJson());
+String itemArticlePlainRequestToJson(ItemArticlePlain data) => json.encode(data.toJson());
 
-class ItemArticle {
+class ItemArticlePlain {
   int idItemArticle;
   int idArticleItemArticle;
   String textItemArticle;
-  ImageArticle imageItemArticle;
   int imagesIdItemArticle;
   String dateCreatedItemArticle;
 
-  ItemArticle({
+  ItemArticlePlain({
     required this.idItemArticle,
     required this.idArticleItemArticle,
     required this.textItemArticle,
-    required this.imageItemArticle,
     required this.imagesIdItemArticle,
     required this.dateCreatedItemArticle,
   });
 
-  factory ItemArticle.fromJson(Map<String, dynamic> json) => ItemArticle(
+  factory ItemArticlePlain.fromItemArticle(
+    ItemArticle itemArticle,
+  ) {
+    return ItemArticlePlain(
+      idItemArticle: itemArticle.idItemArticle,
+      idArticleItemArticle: itemArticle.idArticleItemArticle,
+      textItemArticle: itemArticle.textItemArticle,
+      imagesIdItemArticle: itemArticle.imagesIdItemArticle,
+      dateCreatedItemArticle: itemArticle.dateCreatedItemArticle,
+    );
+  }
+
+  factory ItemArticlePlain.fromJson(Map<String, dynamic> json) => ItemArticlePlain(
         idItemArticle: json["id_item_article"],
         idArticleItemArticle: json["id_article_item_article"],
         textItemArticle: json["text_item_article"],
-        imageItemArticle: ImageArticle.fromJson(json["image_map_item_article"]),
         imagesIdItemArticle: json["images_id_item_article"],
         dateCreatedItemArticle: (json["date_created_item_article"]),
       );
@@ -36,7 +46,6 @@ class ItemArticle {
         "id_item_article": idItemArticle,
         "id_article_item_article": idArticleItemArticle,
         "text_item_article": textItemArticle,
-        "image_item_article": imageItemArticle.toJson(),
         "images_id_item_article": imagesIdItemArticle,
         "date_created_item_article": dateCreatedItemArticle,
       };
@@ -49,44 +58,22 @@ class ItemArticle {
     cadena = '$cadena idItemArticle $idItemArticle';
     cadena = '$cadena idArticleItemArticle $idArticleItemArticle';
     cadena = '$cadena textItemArticle $textItemArticle';
-    cadena = '$cadena imageItemArticle ${imageItemArticle.toString()}';
     cadena = '$cadena imagesIdItemArticle ${imagesIdItemArticle.toString()}';
     cadena = '$cadena dateCreatedItemArticle $dateCreatedItemArticle';
     return cadena;
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ItemArticle &&
-          idItemArticle == other.idItemArticle &&
-          idArticleItemArticle == other.idArticleItemArticle &&
-          textItemArticle == other.textItemArticle &&
-          imageItemArticle == other.imageItemArticle &&
-          imagesIdItemArticle == other.imagesIdItemArticle &&
-          dateCreatedItemArticle == other.dateCreatedItemArticle;
-
-  @override
-  int get hashCode =>
-      idItemArticle.hashCode ^
-      idArticleItemArticle.hashCode ^
-      textItemArticle.hashCode ^
-      imageItemArticle.hashCode ^
-      imagesIdItemArticle.hashCode ^
-      dateCreatedItemArticle.hashCode;
-
-  factory ItemArticle.clear() {
-    return ItemArticle(
+  factory ItemArticlePlain.clear() {
+    return ItemArticlePlain(
       idItemArticle: 0,
       idArticleItemArticle: 0,
       textItemArticle: '',
-      imageItemArticle: ImageArticle.clear(),
       imagesIdItemArticle: 0,
       dateCreatedItemArticle: '',
     );
   }
 
-  ItemArticle copyWith({
+  ItemArticlePlain copyWith({
     int? idItemArticle,
     int? idArticleItemArticle,
     String? textItemArticle,
@@ -94,11 +81,10 @@ class ItemArticle {
     int? imagesIdItemArticle,
     String? dateCreatedItemArticle,
   }) {
-    return ItemArticle(
+    return ItemArticlePlain(
       idItemArticle: idItemArticle ?? this.idItemArticle,
       idArticleItemArticle: idArticleItemArticle ?? this.idArticleItemArticle,
       textItemArticle: textItemArticle ?? this.textItemArticle,
-      imageItemArticle: imageItemArticle ?? this.imageItemArticle,
       imagesIdItemArticle: imagesIdItemArticle ?? this.imagesIdItemArticle,
       dateCreatedItemArticle: dateCreatedItemArticle ?? this.dateCreatedItemArticle,
     );

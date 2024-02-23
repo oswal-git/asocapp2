@@ -257,12 +257,12 @@ class UserApiRest {
     try {
       final response = await http.post(url, headers: requestHeaders, body: body);
 
+      EglHelper.eglLogger('i', 'Asociations Response body: ${response.body}');
       statusCode = response.statusCode;
 
       if (response.statusCode == 200) {
         final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
-        // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
         return HttpResult<UserAsocResponse>(
           data: userAsocResponse,

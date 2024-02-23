@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-ImageArticle articleRequestFromJson(String str) => ImageArticle.fromJson(json.decode(str));
+ImageArticle imageArticleRequestFromJson(String str) => ImageArticle.fromJson(json.decode(str));
 
-String articleRequestToJson(ImageArticle data) => json.encode(data.toJson());
+String imageArticleRequestToJson(ImageArticle data) => json.encode(data.toJson());
 
 class ImageArticle {
   ImageArticle({
@@ -10,6 +10,7 @@ class ImageArticle {
     required this.nameFile,
     required this.filePath,
     this.fileImage,
+    required this.idImage,
     required this.isSelectedFile,
     required this.isDefault,
     required this.isChange,
@@ -20,6 +21,7 @@ class ImageArticle {
   String filePath;
   dynamic fileImage;
   bool isSelectedFile;
+  int idImage;
   bool isDefault;
   bool isChange;
 
@@ -28,6 +30,7 @@ class ImageArticle {
         nameFile: json["nameFile"],
         filePath: json["filePath"],
         fileImage: json["fileImage"] == '' ? null : json["fileImage"],
+        idImage: json["idImage"],
         isSelectedFile: json["isSelectedFile"],
         isDefault: json["isDefault"],
         isChange: json["isChange"],
@@ -38,6 +41,7 @@ class ImageArticle {
         "nameFile": nameFile,
         "filePath": filePath,
         "fileImage": fileImage ?? '',
+        "idImage": idImage,
         "isSelectedFile": isSelectedFile,
         "isDefault": isDefault,
         "isChange": isChange,
@@ -52,6 +56,7 @@ class ImageArticle {
     cadena = '$cadena nameFile $nameFile';
     cadena = '$cadena filePath $filePath';
     cadena = '$cadena fileImage ${fileImage ?? ''}';
+    cadena = '$cadena idImage ${idImage.toString()}';
     cadena = '$cadena isSelectedFile $isSelectedFile';
     cadena = '$cadena isDefault $isDefault';
     cadena = '$cadena isChange $isChange';
@@ -65,6 +70,7 @@ class ImageArticle {
       nameFile: '',
       filePath: '',
       fileImage: null,
+      idImage: 0,
       isSelectedFile: false,
       isDefault: false,
       isChange: false,
@@ -76,6 +82,7 @@ class ImageArticle {
     String? nameFile,
     String? filePath,
     dynamic fileImage,
+    int? idImage,
     bool? isSelectedFile,
     bool? isDefault,
     bool? isChange,
@@ -85,6 +92,7 @@ class ImageArticle {
       nameFile: nameFile ?? this.nameFile,
       filePath: filePath ?? this.filePath,
       fileImage: fileImage == '' ? null : this.fileImage,
+      idImage: idImage ?? this.idImage,
       isSelectedFile: isSelectedFile ?? this.isSelectedFile,
       isDefault: isDefault ?? this.isDefault,
       isChange: isChange ?? this.isChange,
@@ -96,6 +104,7 @@ class ImageArticle {
     String? nameFile,
     String? filePath,
     dynamic fileImage,
+    int? idImage,
     bool? isSelectedFile,
     bool? isDefault,
     bool? isChange,
@@ -103,7 +112,8 @@ class ImageArticle {
     this.src = src ?? this.src;
     this.nameFile = nameFile ?? this.nameFile;
     this.filePath = filePath ?? this.filePath;
-    this.fileImage = fileImage == '' ? null : this.fileImage;
+    this.fileImage = fileImage ?? this.fileImage;
+    this.idImage = idImage ?? this.idImage;
     this.isSelectedFile = isSelectedFile ?? this.isSelectedFile;
     this.isDefault = isDefault ?? this.isDefault;
     this.isChange = isChange ?? this.isChange;

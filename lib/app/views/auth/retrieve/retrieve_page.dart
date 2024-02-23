@@ -64,8 +64,6 @@ class _RetrievePageState extends State<RetrievePage> {
   }
 
   Widget _formUI(BuildContext context) {
-    _context = context;
-
     return SingleChildScrollView(
       child: Obx(
         () => Padding(
@@ -348,6 +346,7 @@ class _RetrievePageState extends State<RetrievePage> {
                           EglHelper.showMultChoiceDialog(
                             retrieveController.questionList.questions,
                             'tQuestions'.tr,
+                            // ignore: use_build_context_synchronously
                             context: context,
                             onChanged: (value) {
                               retrieveController.questionList.question = value;

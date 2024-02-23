@@ -1,0 +1,222 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/models/image_article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
+
+class EditItemArticle extends StatefulWidget {
+  const EditItemArticle({
+    super.key,
+    required this.itemArticle,
+    this.onPressed,
+  });
+
+  final ItemArticle itemArticle;
+  final ValueChanged<ImageArticle>? onPressed;
+
+  @override
+  State<EditItemArticle> createState() => _EditItemArticleState();
+}
+
+class _EditItemArticleState extends State<EditItemArticle> {
+  final articleEditController = Get.put<ArticleEditController>(ArticleEditController());
+
+  Color toolbarColor = Colors.grey.shade200;
+  bool hasFocus = false;
+  String textIni = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Accede a itemArticle y asigna su valor a textIni
+    textIni = widget.itemArticle.textItemArticle;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ItemArticle item = articleEditController.newArticleItems[widget.itemIndex];
+
+    ///[setHtmlText] to set the html text to editor
+    // void setHtmlText(String text) async {
+    //   await quillEditorController.setText(text);
+    // }
+
+    return Column(
+      // scrollDirection: Axis.vertical,
+      // shrinkWrap: true,
+      children: [
+        // Container(
+        //   // width: MediaQuery.of(context).size.width / 2,
+        //   margin: const EdgeInsets.symmetric(horizontal: 10.00),
+        //   decoration: BoxDecoration(
+        //     // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+        //     border: Border.all(
+        //       color: Colors.red, // color del borde
+        //       width: 2.0, // ancho del borde
+        //     ),
+        //   ),
+        //   child: ToolBar(
+        //     toolBarColor: toolbarColor,
+        //     padding: const EdgeInsets.all(8),
+        //     iconSize: 20,
+        //     iconColor: toolbarIconColor,
+        //     activeIconColor: Colors.greenAccent.shade400,
+        //     controller: quillEditorController,
+        //     crossAxisAlignment: WrapCrossAlignment.start,
+        //     direction: Axis.horizontal,
+        //     customButtons: const [],
+        //   ),
+        // ),
+        // text
+        // Container(
+        //   // width: MediaQuery.of(context).size.width / 2,
+        //   margin: const EdgeInsets.symmetric(horizontal: 10.00),
+        //   decoration: BoxDecoration(
+        //     // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+        //     border: Border.all(
+        //       color: Colors.yellow, // color del borde
+        //       width: 2.0, // ancho del borde
+        //     ),
+        //   ),
+        //   child: ListView(
+        //     scrollDirection: Axis.vertical,
+        //     shrinkWrap: true,
+        //     children: [
+        //       QuillHtmlEditor(
+        //         text: textIni,
+        //         hintText: 'Hint text goes here',
+        //         controller: quillEditorController,
+        //         isEnabled: true,
+        //         ensureVisible: true,
+        //         minHeight: 200,
+        //         autoFocus: true,
+        //         textStyle: editorTextStyle,
+        //         hintTextStyle: hintTextStyle,
+        //         hintTextAlign: TextAlign.start,
+        //         padding: const EdgeInsets.only(left: 5, top: 10, right: 5),
+        //         hintTextPadding: const EdgeInsets.only(left: 20),
+        //         backgroundColor: backgroundColor,
+        //         inputAction: InputAction.newline,
+        //         onEditingComplete: (s) => debugPrint('Editing completed $s'),
+        //         loadingBuilder: (context) {
+        //           return const Center(
+        //             child: CircularProgressIndicator(
+        //               strokeWidth: 1,
+        //               color: Colors.red,
+        //             ),
+        //           );
+        //         },
+        //         onFocusChanged: (focus) {
+        //           debugPrint('has focus $focus');
+        //           hasFocus = true;
+        //         },
+        //         onTextChanged: (text) {
+        //           debugPrint('widget text change $text');
+        //           widget.itemArticle.textItemArticle = text;
+        //           articleEditController.newArticleItems.map((item) {
+        //             if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
+        //               item.textItemArticle = text;
+        //               return item;
+        //             }
+        //             return item;
+        //           });
+        //         },
+        //         onEditorCreated: () {
+        //           debugPrint('Editor has been loaded');
+        //           // setHtmlText('');
+        //         },
+        //         onEditorResized: (height) => debugPrint('Editor resized $height'),
+        //         onSelectionChanged: (sel) => debugPrint('index ${sel.index}, range ${sel.length}'),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        // HtmlEditor(
+        //   quillEditorController: htmlEditorController,
+        //   htmlEditorOptions: HtmlEditorOptions(
+        //     initialText: widget.itemArticle.textItemArticle,
+        //     shouldEnsureVisible: true,
+        //     hint: 'Introduce texto',
+        //     spellCheck: true,
+        //     autoAdjustHeight: true,
+        //     adjustHeightForKeyboard: false,
+        //   ),
+        //   htmlToolbarOptions: const HtmlToolbarOptions(
+        //     toolbarPosition: ToolbarPosition.belowEditor,
+        //   ),
+        //   callbacks: Callbacks(
+        //     onChangeContent: (String? changed) {
+        //       widget.itemArticle.textItemArticle = changed!;
+        //       articleEditController.newArticleItems.map((item) {
+        //         if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
+        //           item.textItemArticle = changed;
+        //           return item;
+        //         }
+        //         return item;
+        //       });
+        //     },
+        //   ),
+        // ),
+        // Imagen
+        Container(
+          // width: MediaQuery.of(context).size.width / 2,
+          margin: const EdgeInsets.symmetric(horizontal: 30.00),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+            border: Border.all(
+              color: Colors.transparent, // color del borde
+              width: 2.0, // ancho del borde
+            ),
+          ),
+          child: EglImageWidget(
+            image: widget.itemArticle.imageItemArticle,
+            defaultImage: EglImagesPath.appCoverDefault,
+            isEditable: true,
+            onChange: (ImageArticle image) {
+              // Lógica para recuperar la imagen por defecto
+              widget.itemArticle.imageItemArticle = image.copyWith();
+              articleEditController.newArticleItems.map((item) {
+                if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
+                  item.imageItemArticle = image.copyWith();
+                  return item;
+                }
+                return item;
+              });
+              EglHelper.eglLogger('i', 'onPressedDefault: ${widget.itemArticle.imageItemArticle.toString()}');
+            },
+            onPressedDefault: (ImageArticle image) {
+              // Lógica para recuperar la imagen por defecto
+              widget.itemArticle.imageItemArticle = image.copyWith();
+              articleEditController.newArticleItems.map((item) {
+                if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
+                  item.imageItemArticle = image.copyWith();
+                  return item;
+                }
+                return item;
+              });
+              EglHelper.eglLogger('i', 'onPressedDefault: ${widget.itemArticle.imageItemArticle.toString()}');
+            },
+            onPressedRestore: (ImageArticle image) {
+              // Lógica para restaurar la imagen inicial
+              widget.itemArticle.imageItemArticle = image.copyWith();
+              articleEditController.newArticleItems.map((item) {
+                if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
+                  item.imageItemArticle = image.copyWith();
+                  return item;
+                }
+                return item;
+              });
+              EglHelper.eglLogger('i', 'onPressedRestore: ${widget.itemArticle.imageItemArticle.toString()}');
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}

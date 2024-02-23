@@ -4,7 +4,6 @@ import 'package:asocapp/app/models/models.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/translations/language_model.dart';
 import 'package:asocapp/app/utils/utils.dart';
-import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:get/get.dart';
 
@@ -310,7 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               Intl.defaultLocale = country == '' ? language : '${language}_$country';
                               // userConnectedIni = profileController.userConnected.value.clone();
                               profileController.userConnectedLast.value = profileController.userConnected.value.clone();
-
+                              profileController.checkIsFormValid();
                               EglHelper.popMessage(
                                   _context!, MessageType.info, 'Usuario actualizado', profileController.userConnected.value.userNameUser);
                               //   'EglRoundButton: userConnected: ${profileController.userConnected.value}');

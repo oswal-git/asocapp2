@@ -6,3 +6,5 @@ export 'auth/register/register_controller.dart';
 export 'auth/retrieve/retrieve_controller.dart';
 export 'dashboard/dashboard_controller.dart';
 export 'home/home_controller.dart';
+export 'users/list_users_controller.dart';
+export 'users/user_item_controller.dart';

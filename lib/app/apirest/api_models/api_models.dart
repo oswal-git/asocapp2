@@ -1,4 +1,4 @@
-export 'article_model.dart';
+export 'article_api_model.dart';
 export 'auth_model.dart';
 export 'notification_article_model.dart';
 export 'question_list_user_model.dart';

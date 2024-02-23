@@ -39,8 +39,8 @@ class EglImageWidget extends StatefulWidget {
 class _EglImageWidgetState extends State<EglImageWidget> {
   Image imagePropertie = Image.asset('assets/images/icons_user_profile_circle.png');
 
-  ImageArticle oldImageArticle = ImageArticle.clear();
-  ImageArticle newImageArticle = ImageArticle.clear();
+  ImageArticle oldImageWidget = ImageArticle.clear();
+  ImageArticle newImageWidget = ImageArticle.clear();
 
   bool imageChanged = false;
 
@@ -69,9 +69,9 @@ class _EglImageWidgetState extends State<EglImageWidget> {
   void initState() {
     super.initState();
 
-    oldImageArticle = widget.image.copyWith();
+    oldImageWidget = widget.image.copyWith();
 
-    newImageArticle = widget.image.copyWith();
+    newImageWidget = widget.image.copyWith();
 
     // getImageWidget(null, maxwidth: MediaQuery.of(context).size.width / 2);
   }
@@ -83,20 +83,20 @@ class _EglImageWidgetState extends State<EglImageWidget> {
 
     if (imagePick == null) {
       // ignore: curly_braces_in_flow_control_structures
-      if (newImageArticle.src.substring(0, 4) == 'http') {
-        if (newImageArticle.isDefault) {
-          imagePropertie = Image.network(newImageArticle.src, width: defaultSize);
+      if (newImageWidget.src != '' && newImageWidget.src.substring(0, 4) == 'http') {
+        if (newImageWidget.isDefault) {
+          imagePropertie = Image.network(newImageWidget.src, width: defaultSize);
           return;
         }
-        imagePropertie = Image.network(newImageArticle.src);
+        imagePropertie = Image.network(newImageWidget.src);
         return;
       }
 
-      if (newImageArticle.isDefault) {
-        imagePropertie = Image.asset(newImageArticle.src, width: defaultSize);
+      if (newImageWidget.isDefault) {
+        imagePropertie = Image.asset(newImageWidget.src, width: defaultSize);
         return;
       }
-      imagePropertie = Image.file(File(newImageArticle.src));
+      imagePropertie = Image.file(File(newImageWidget.src));
       return;
     }
 
@@ -137,7 +137,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
 
       // final String imageBase64 = base64Encode(imageFile.readAsBytesSync());
       imageChanged = true;
-      newImageArticle.modify(
+      newImageWidget.modify(
         src: compressedImagePath,
         nameFile: nameFile,
         filePath: '',
@@ -186,7 +186,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
       return Column(
         children: [
           SizedBox(
-            height: newImageArticle.isDefault ? 10 : 20,
+            height: newImageWidget.isDefault ? 10 : 20,
           ),
           Align(
             child: Stack(
@@ -204,13 +204,13 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                           Get.back();
                           await pickImage(value);
                           setState(() {
-                            widget.onChange!(newImageArticle);
+                            widget.onChange!(newImageWidget);
                           });
                         },
                       );
                     }
                   },
-                  child: !newImageArticle.isDefault
+                  child: !newImageWidget.isDefault
                       ? FittedBox(
                           child: Container(
                             // width: MediaQuery.of(context).size.width * .88,
@@ -250,7 +250,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                         ),
                 ),
                 // Button restore default cover
-                if (widget.isEditable && widget.canDefault && !oldImageArticle.isDefault && !newImageArticle.isDefault)
+                if (widget.isEditable && widget.canDefault && !oldImageWidget.isDefault && !newImageWidget.isDefault)
                   Positioned(
                     top: top, // Ajusta según sea necesario
                     right: right, // Ajusta según sea necesario
@@ -262,7 +262,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                         onPressed: () {
                           // Lógica para recuperar la imagen por defecto
 
-                          newImageArticle.modify(
+                          newImageWidget.modify(
                             src: widget.defaultImage,
                             nameFile: getNameFilePath(widget.defaultImage),
                             isDefault: true,
@@ -276,18 +276,19 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                           //   width: MediaQuery.of(context).size.width / 2,
                           // );
 
-                          widget.onPressedDefault!(newImageArticle);
+                          widget.onPressedDefault!(newImageWidget);
                           getPosition(MediaQuery.of(context).size.width / 2);
                           setState(() {});
                         }),
                   ),
+
                 // Button restore initial cover
                 if (widget.isEditable && imageChanged)
                   Positioned(
-                    top: newImageArticle.isDefault ? (top + 10) : top, // Ajusta según sea necesario, // Ajusta según sea necesario
-                    right: (imageChanged && !oldImageArticle.isDefault && !newImageArticle.isDefault)
+                    top: newImageWidget.isDefault ? (top + 10) : top, // Ajusta según sea necesario, // Ajusta según sea necesario
+                    right: (imageChanged && !oldImageWidget.isDefault && !newImageWidget.isDefault)
                         ? right2
-                        : newImageArticle.isDefault
+                        : newImageWidget.isDefault
                             ? (right - 20)
                             : right, // Ajusta según sea necesario
                     child: EglCircleIconButton(
@@ -298,7 +299,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                       onPressed: () {
                         // Lógica para restaurar la imagen inicial
                         imageChanged = false;
-                        newImageArticle = widget.image.copyWith();
+                        newImageWidget = widget.image.copyWith();
                         imagePicked = null;
                         if (widget.image.isDefault) {
                           getImageWidget(null, maxwidth: MediaQuery.of(context).size.width / 2);
@@ -307,7 +308,7 @@ class _EglImageWidgetState extends State<EglImageWidget> {
                         }
                         // widget.image.isDefault ? imagePropertie = Image.asset(newImageArticle.src) : imagePropertie = Image.network(newImageArticle.src);
 
-                        widget.onPressedRestore!(newImageArticle);
+                        widget.onPressedRestore!(newImageWidget);
                         getPosition(widthBox);
                         setState(() {});
                       },

@@ -1,0 +1,79 @@
+import 'package:flutter_quill/flutter_quill.dart';
+
+  static Future<void> editTextField(
+    BuildContext context, {
+    String text = '',
+    required ValueChanged<String> onChanged,
+  }) async {
+    // Document document = Document.fromJson(text);
+    final isEditing = text.isEmpty;
+    final QuillController quillEditorController = QuillController.basic();
+    final baseButtonStyle = Theme.of(context).iconButtonTheme.style ?? const ButtonStyle();
+    var colorScheme = Theme.of(context).colorScheme;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        titlePadding: const EdgeInsets.only(left: 5, top: 8),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('${isEditing ? 'Edit' : 'Add'} note'),
+            IconButton(
+              onPressed: () {
+                final json = jsonEncode(quillEditorController.document.toDelta().toJson());
+                onChanged(json);
+                Navigator.of(context).pop();
+              
+              },
+              icon: const Icon(Icons.close),
+            )
+          ],
+        ),
+        content: Column(
+          children: [
+            QuillToolbar.simple(
+              configurations: QuillSimpleToolbarConfigurations(
+                controller: quillEditorController,
+                // sharedConfigurations: QuillSharedConfigurations(
+                //   locale: TranslationProvider.of(context).flutterLocale,
+                // ),
+                axis: Axis.horizontal,
+                buttonOptions: QuillSimpleToolbarButtonOptions(
+                  base: QuillToolbarBaseButtonOptions(
+                    iconTheme: QuillIconTheme(
+                      iconButtonUnselectedData: IconButtonData(
+                        style: baseButtonStyle.copyWith(
+                          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                          foregroundColor: MaterialStateProperty.all(colorScheme.primary),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                showUndo: false,
+                showRedo: false,
+                showFontSize: false,
+                showFontFamily: false,
+                showClearFormat: false,
+              ),
+            ),
+            Expanded(
+              child: QuillEditor.basic(
+                configurations: QuillEditorConfigurations(
+                  controller: quillEditorController,
+                  readOnly: false,
+                  minHeight: 200,
+                  maxHeight: 400,
+                ),
+              ),
+            ),
+            // ],
+          ],
+        ),
+      ),
+    );
+  }
+
+
+I have 2 pages PAGE A and PAGE B. I navigate form PAGE A -> PAGE B and do edit some data, or toggle a setting. Now I want to navigate form PAGE B -> PAGE A and also what that a parameter would be

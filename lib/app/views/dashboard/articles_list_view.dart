@@ -1,8 +1,10 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/apirest/api_models/basic_response_model.dart';
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/article/article_controller.dart';
-import 'package:asocapp/app/models/article_model.dart';
+import 'package:asocapp/app/models/models.dart';
 import 'package:asocapp/app/services/services.dart';
+import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_page.dart';
 import 'package:asocapp/app/views/article/new_article_page.dart';
@@ -101,39 +103,40 @@ class _ArticlesListViewState extends State<ArticlesListView> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
+                  ArticleUser item = snapshot.data[index];
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
                       EglArticleListTile(
                         index: index,
-                        leadingImage: snapshot.data[index].coverImageArticle.src,
-                        title: snapshot.data[index].titleArticle,
-                        subtitle: snapshot.data[index].abstractArticle,
-                        category: snapshot.data[index].categoryArticle,
-                        subcategory: snapshot.data[index].subcategoryArticle,
-                        state: snapshot.data[index].stateArticle,
+                        leadingImage: item.coverImageArticle.src,
+                        title: item.titleArticle,
+                        subtitle: item.abstractArticle,
+                        category: item.categoryArticle,
+                        subcategory: item.subcategoryArticle,
+                        state: item.stateArticle,
                         colorState: session.checkEdit ? EglColorsApp.primaryTextTextColor : Colors.transparent,
                         logo: '',
                         trailingImage: '',
                         onTap: () async {
-                          ArticleUser article = await articleController.getArticleUserPublicated(snapshot.data[index]);
+                          ArticleUser article = await articleController.getArticleUserPublicated(item);
                           IArticleUserArguments args = IArticleUserArguments(
                             article,
                           );
                           Get.to(() => ArticlePage(articleArguments: args));
                         },
                         onTapCategory: () {
-                          // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}');
+                          // Utils.eglLogger('i', 'link: ${item.categoryArticle}');
                         },
                         onTapSubcategory: () {
-                          // Utils.eglLogger('i', 'link: ${snapshot.data[index].categoryArticle}/${snapshot.data.subcategoryArticle}');
+                          // Utils.eglLogger('i', 'link: ${item.categoryArticle}/${snapshot.data.subcategoryArticle}');
                         },
-                        backgroundColor: articleController.getColorState(snapshot.data[index]),
+                        backgroundColor: articleController.getColorState(item),
                         colorBorder: EglColorsApp.borderTileArticleColor,
                       ),
                       if (session.userConnected.profileUser == 'admin' &&
                           session.checkEdit &&
-                          session.userConnected.idAsociationUser == snapshot.data[index].idAsociationArticle)
+                          session.userConnected.idAsociationUser == item.idAsociationArticle)
                         Positioned(
                           top: 4.0, // Ajusta según sea necesario
                           left: 20.0, // Ajusta según sea necesario
@@ -143,7 +146,7 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                             icon: Icons.edit_document, // Cambiar a tu icono correspondiente
                             size: 20,
                             onPressed: () async {
-                              Article article = snapshot.data[index] as Article;
+                              Article article = item as Article;
                               IArticleArguments args = IArticleArguments(
                                 article,
                               );
@@ -153,19 +156,30 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                         ),
                       if (session.userConnected.profileUser == 'admin' &&
                           session.checkEdit &&
-                          session.userConnected.idAsociationUser == snapshot.data[index].idAsociationArticle)
+                          session.userConnected.idAsociationUser == item.idAsociationArticle)
                         Positioned(
                           top: 4.0, // Ajusta según sea necesario
                           left: 60.0, // Ajusta según sea necesario
                           child: EglCircleIconButton(
-                            color: EglColorsApp.iconColor,
-                            backgroundColor: EglColorsApp.backgroundIconColor,
-                            icon: Icons.delete, // Cambiar a tu icono correspondiente
-                            size: 20,
-                            onPressed: () {
-                              // Lógica para recuperar la imagen por defecto
-                            },
-                          ),
+                              color: EglColorsApp.iconColor,
+                              backgroundColor: EglColorsApp.backgroundIconColor,
+                              icon: Icons.delete, // Cambiar a tu icono correspondiente
+                              size: 20,
+                              onPressed: () async {
+                                EglHelper.showConfirmationPopup(
+                                  title: 'Eliminar artículo',
+                                  textOkButton: 'Eliminar',
+                                  message: 'Seguro que quieres eliminar el artículo ${item.titleArticle}',
+                                ).then((value) {
+                                  // Manejar el resultado aquí si es nec,esario
+                                  if (value != null && value == true) {
+                                    // Confirmado
+                                    deleteArticle(context, item);
+                                  } else {
+                                    // Cancelado
+                                  }
+                                });
+                              }),
                         ),
                     ],
                   );
@@ -191,5 +205,38 @@ class _ArticlesListViewState extends State<ArticlesListView> {
         );
       }),
     );
+  }
+
+  deleteArticle(BuildContext context, ArticleUser item) async {
+    HttpResult<BasicResponse>? httpResult = await articleController.deleteArticle(
+      item.idArticle,
+      item.dateUpdatedArticle,
+    );
+
+    if (httpResult!.statusCode == 200) {
+      if (context.mounted) {
+        EglHelper.popMessage(context, MessageType.info, 'Article deleted', 'Article deleted');
+      }
+      await articleController.getArticles();
+      return;
+    } else if (httpResult.statusCode == 400) {
+      if (context.mounted) {
+        EglHelper.popMessage(context, MessageType.info, '${'mUnexpectedError'.tr}.', httpResult.error?.data);
+        EglHelper.eglLogger('e', httpResult.error?.data);
+      }
+      return;
+    } else if (httpResult.statusCode == 404) {
+      if (context.mounted) {
+        EglHelper.popMessage(context, MessageType.info, '${'mUnexpectedError'.tr}.', '${'mNoScriptAvailable'.tr}.');
+        EglHelper.eglLogger('e', httpResult.error?.data);
+      }
+      return;
+    } else {
+      if (context.mounted) {
+        EglHelper.popMessage(context, MessageType.info, '${'mUnexpectedError'.tr}.', httpResult.error?.data);
+        EglHelper.eglLogger('e', httpResult.error?.data);
+      }
+      return;
+    }
   }
 }

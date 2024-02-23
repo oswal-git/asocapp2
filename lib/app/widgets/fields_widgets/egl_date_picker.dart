@@ -49,7 +49,7 @@ class EglInputDatePickerField extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           initialValue: currentValue,
           builder: (FormFieldState<DateTime> formState) {
-            late InputBorder shape;
+            InputBorder? shape;
 
             if (formState.hasError) {
               shape = Theme.of(context).inputDecorationTheme.errorBorder!;

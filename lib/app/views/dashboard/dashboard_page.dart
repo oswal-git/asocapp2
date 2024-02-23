@@ -5,8 +5,6 @@ import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/new_article_page.dart';
-import 'package:asocapp/app/widgets/bar_widgets/egl_appbar.dart';
-import 'package:asocapp/app/widgets/button_widgets/egl_check_button_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -61,6 +59,7 @@ class _DashboardPageState extends State<DashboardPage> {
             }),
             actions: [
               if (session.userConnected.profileUser == 'admin' && session.checkEdit)
+                // Nuevo artículo
                 EglCircleIconButton(
                   color: EglColorsApp.iconColor,
                   backgroundColor: EglColorsApp.backgroundIconColor,
@@ -79,6 +78,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   session.isExpired &&
                   session.listUserMessages.isNotEmpty &&
                   session.toReadmessages > 0)
+                // Campanita con Messages,
                 EglCircleIconButton(
                     text: session.listUserMessages.isEmpty ? '' : session.toReadmessages.toString(),
                     color: EglColorsApp.iconColor,
@@ -164,6 +164,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       }
                     }),
               if (session.userConnected.profileUser == 'admin' && !session.isExpired)
+                // Check edit button
                 EglCheckboxButton(
                   isChecked: session.checkEdit,
                   width: 60.0,

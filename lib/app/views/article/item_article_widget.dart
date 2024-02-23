@@ -102,8 +102,8 @@ class TextItem extends StatelessWidget {
       ),
       child: Html(
         data: '   $text',
-        style: {
-          'p': Style(textAlign: TextAlign.justify, fontSize: FontSize(12), lineHeight: const LineHeight(1.5)),
+        style: const {
+          // 'p': Style(textAlign: TextAlign.justify, fontSize: FontSize(12), lineHeight: const LineHeight(1.5)),
         },
       ),
     );

@@ -140,3 +140,6 @@ class TextItemController extends GetxController {
     }
   }
 }
+
+
+Why CustomScrollView right when my SingleChildScrollView is working without any issue

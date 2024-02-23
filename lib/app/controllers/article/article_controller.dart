@@ -1,4 +1,5 @@
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/apirest/api_models/basic_response_model.dart';
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
 import 'package:asocapp/app/services/services.dart';
@@ -99,11 +100,15 @@ class ArticleController extends GetxController {
     // print('Response body: ${result}');
     if (articlesListResponse.status == 200) {
       articlesListResponse.result.map((article) => _articles.add(article)).toList();
+      // Ordenar la lista por el campo 'numOrder'
+      _articles.sort((a, b) => a.numOrder.compareTo(b.numOrder));
       if (articlesListResponse.message == 'expired') {
         session.isExpired = true;
         session.setListUserMessages('Session expired. Reloggin for edit articles');
         session.checkEdit = false;
       }
+    } else {
+      EglHelper.toastMessage(articlesListResponse.message);
     }
     // return _articles;
   }
@@ -118,6 +123,9 @@ class ArticleController extends GetxController {
         list.add(article);
       }
     }
+
+    list.sort((a, b) => a.numOrder.compareTo(b.numOrder));
+
     return list;
   }
 
@@ -135,6 +143,9 @@ class ArticleController extends GetxController {
       ));
     }));
 
+    // Ordenar la lista por el campo 'numOrder'
+    translatedArticles.sort((a, b) => a.numOrder.compareTo(b.numOrder));
+
     return translatedArticles;
   }
 
@@ -144,14 +155,14 @@ class ArticleController extends GetxController {
 
     await Future.wait(transArticle.itemsArticle.map((item) async {
       String text = item.textItemArticle.trim();
-      EglHelper.eglLogger('i', 'text.length: ${text.length}');
-      EglHelper.eglLogger('i', 'text: $text');
+      // EglHelper.eglLogger('i', 'text.length: ${text.length}');
+      // EglHelper.eglLogger('i', 'text: $text');
 
       if (text.isNotEmpty) {
         try {
           String tra1 = await _translator.translate(text, languageUser);
           if (tra1.trim().isNotEmpty) {
-            EglHelper.eglLogger('i', 'tra1: $tra1');
+            // EglHelper.eglLogger('i', 'tra1: $tra1');
             item.textItemArticle = tra1.trim();
           }
         } catch (e) {
@@ -169,8 +180,8 @@ class ArticleController extends GetxController {
 
     for (var i = 0; i < article.itemsArticle.length; i++) {
       String text = article.itemsArticle[i].textItemArticle.trim();
-      EglHelper.eglLogger('i', 'text[$i].length: ${text.length}');
-      EglHelper.eglLogger('i', 'text[$i]: $text');
+      // EglHelper.eglLogger('i', 'text[$i].length: ${text.length}');
+      // EglHelper.eglLogger('i', 'text[$i]: $text');
       //
       //   i == 0
       //       ? text =
@@ -179,7 +190,7 @@ class ArticleController extends GetxController {
       if (text != '') {
         String tra1 = await _translator.translate(text, languageUser);
         if (tra1.trim() != '') {
-          EglHelper.eglLogger('i', 'tra1[$i]: $tra1');
+          // EglHelper.eglLogger('i', 'tra1[$i]: $tra1');
           text = tra1.trim();
         }
         list[i] = article.itemsArticle[i].copyWith(textItemArticle: text);
@@ -198,4 +209,14 @@ class ArticleController extends GetxController {
     }
     return _article.value;
   }
+
+  Future<HttpResult<BasicResponse>?> deleteArticle(int idArticle, String dateUpdatedArticle) async {
+    try {
+      return articlesRepository.deleteArticle(idArticle, dateUpdatedArticle);
+    } catch (e) {
+      EglHelper.toastMessage((e.toString()));
+      return null;
+    }
+  }
+// end class
 }

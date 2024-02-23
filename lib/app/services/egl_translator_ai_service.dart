@@ -1,15 +1,21 @@
+import 'dart:async';
+
 import 'package:asocapp/app/utils/utils.dart';
-import 'package:translator/translator.dart';
+// https://github.com/ManeraKai/simplytranslate_mobile/blob/main/lib/simplytranslate.dart
+import 'package:simplytranslate/simplytranslate.dart';
+// import 'package:translator/translator.dart';
 
 class EglTranslatorAiService {
-  final translator = GoogleTranslator();
+  // final translator = GoogleTranslator();
+  final translator = SimplyTranslator(EngineType.google);
 
   Future<String> translate(String text, String languageTo) async {
     var textTranslated = text.trim();
 
     if (textTranslated != '') {
       try {
-        textTranslated = (await translator.translate(text.trim(), to: languageTo)).text;
+        // textTranslated = (await translator.trSimply(text.trim(), 'auto', languageTo));
+        textTranslated = await translator.trSimply(text.trim(), 'auto', languageTo);
         return Future.value(textTranslated);
       } catch (e) {
         // Translation translation = {

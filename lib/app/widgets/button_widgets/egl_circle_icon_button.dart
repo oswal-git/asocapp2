@@ -8,6 +8,7 @@ class EglCircleIconButton extends StatelessWidget {
   final Color backgroundColor;
   final double size;
   final String text;
+  final bool enabled;
 
   const EglCircleIconButton({
     super.key,
@@ -17,6 +18,7 @@ class EglCircleIconButton extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.size = 30.0,
     this.text = '',
+    this.enabled = true,
   });
 
   @override
@@ -27,7 +29,7 @@ class EglCircleIconButton extends StatelessWidget {
     double textRight2 = 8 * (size - 15) / 15 + 2;
 
     return GestureDetector(
-      onTap: onPressed,
+      onTap: enabled ? onPressed : null,
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -38,7 +40,7 @@ class EglCircleIconButton extends StatelessWidget {
           child: Stack(children: [
             Icon(
               icon,
-              color: color, // Ajusta según sea necesario
+              color: enabled ? color : color.withOpacity(.2), // Ajusta según sea necesario
               size: size,
             ),
             if (text.isNotEmpty)

@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 // import 'package:asociaciones/res/theme.dart';
@@ -42,6 +44,8 @@ class EglInputMultiLineField extends StatefulWidget {
 }
 
 class _EglInputMultiLineFieldState extends State<EglInputMultiLineField> {
+  final _debouncer = Debouncer(milliseconds: 500);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -51,12 +55,12 @@ class _EglInputMultiLineFieldState extends State<EglInputMultiLineField> {
       keyboardType: TextInputType.multiline,
       autovalidateMode: widget.autovalidateMode,
       focusNode: widget.focusNode,
-      onFieldSubmitted: (_) {
-        widget.nextFocusNode?.requestFocus();
-      },
+      onFieldSubmitted: (_) => widget.nextFocusNode?.requestFocus(),
       initialValue: widget.currentValue,
-      validator: widget.onValidator,
-      onChanged: widget.onChanged,
+      validator: (value) => widget.onValidator(value),
+      onChanged: (valuChanged) => _debouncer.run(() {
+        widget.onChanged(valuChanged);
+      }),
       style: const TextStyle(height: null),
       decoration: InputDecoration(
         //   labelText: (focusNode!.hasFocus || controller.text.isNotEmpty) ? label : hint,
@@ -107,5 +111,17 @@ class _EglInputMultiLineFieldState extends State<EglInputMultiLineField> {
         ),
       ),
     );
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+  Debouncer({required this.milliseconds});
+  void run(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

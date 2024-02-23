@@ -81,7 +81,15 @@ class SessionService extends GetxService {
     if (userConnected.userNameUser != '') {
       _hasData.value = true;
       _isLogin.value = true;
-      _isExpired.value = false;
+
+      // Hora actual
+      // Sumar 6 horas a la hora actual
+      //  Obtener el valor en segundos para hacerlo comparable con PHP
+      // int tokenExpUserInSeconds = (DateTime.now().add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000);
+      int tokenExpUserInSeconds = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+
+      _isExpired.value = (tokenExpUserInSeconds > userConnected.tokenExpUser);
+
       await _storage.writeObject(userConnectedKey, userConnected);
 
       await registerTask(loadTask);

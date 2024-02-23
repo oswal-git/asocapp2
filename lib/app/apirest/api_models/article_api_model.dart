@@ -24,7 +24,7 @@ class ArticleListResponse {
   factory ArticleListResponse.fromJson(Map<String, dynamic> json) => ArticleListResponse(
         status: json["status"],
         message: json["message"],
-        result: List<ArticleUser>.from(json["result"].map((x) => ArticleUser.fromJson(x))),
+        result: json["result"] == null ? [] : List<ArticleUser>.from(json["result"].map((x) => ArticleUser.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,7 +56,36 @@ class ArticleListResult {
 }
 
 // **************************************************
+ArticleUserResponse articleUserResponseFromJson(String str) => ArticleUserResponse.fromJson(json.decode(str));
+
+String articleUserResponseToJson(ArticleUserResponse data) => json.encode(data.toJson());
+
+class ArticleUserResponse {
+  int status;
+  String message;
+  ArticleUser result;
+
+  ArticleUserResponse({
+    required this.status,
+    required this.message,
+    required this.result,
+  });
+
+  factory ArticleUserResponse.fromJson(Map<String, dynamic> json) => ArticleUserResponse(
+        status: json["status"],
+        message: json["message"],
+        result: ArticleUser.fromJson(json["result"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "result": result.toJson(),
+      };
+}
+
 class ArticleUser extends Article {
+  final int numOrder;
   final int idUser;
   final int idAsociationUser;
   final String emailUser;
@@ -85,6 +114,7 @@ class ArticleUser extends Article {
     required super.dateDeletedArticle,
     required super.dateCreatedArticle,
     required super.dateUpdatedArticle,
+    required this.numOrder,
     required this.idUser,
     required this.idAsociationUser,
     required this.emailUser,
@@ -99,6 +129,7 @@ class ArticleUser extends Article {
 
   factory ArticleUser.fromArticle({
     required Article article,
+    required int numOrder,
     required int idUser,
     required int idAsociationUser,
     required String emailUser,
@@ -127,6 +158,7 @@ class ArticleUser extends Article {
       dateDeletedArticle: article.dateDeletedArticle,
       dateCreatedArticle: article.dateCreatedArticle,
       dateUpdatedArticle: article.dateUpdatedArticle,
+      numOrder: numOrder,
       idUser: idUser,
       idAsociationUser: idAsociationUser,
       emailUser: emailUser,
@@ -142,9 +174,9 @@ class ArticleUser extends Article {
   }
 
   factory ArticleUser.fromJson(Map<String, dynamic> json) => ArticleUser(
-        idArticle: int.parse(json["id_article"]),
-        idAsociationArticle: int.parse(json["id_asociation_article"]),
-        idUserArticle: int.parse(json["id_user_article"]),
+        idArticle: json["id_article"],
+        idAsociationArticle: json["id_asociation_article"],
+        idUserArticle: json["id_user_article"],
         categoryArticle: json["category_article"],
         subcategoryArticle: json["subcategory_article"],
         classArticle: json["class_article"],
@@ -159,8 +191,9 @@ class ArticleUser extends Article {
         dateDeletedArticle: json["date_deleted_article"],
         dateCreatedArticle: (json["date_created_article"]),
         dateUpdatedArticle: (json["date_updated_article"]),
-        idUser: int.parse(json["id_user"]),
-        idAsociationUser: int.parse(json["id_asociation_user"]),
+        numOrder: json["num_order"],
+        idUser: json["id_user"],
+        idAsociationUser: json["id_asociation_user"],
         emailUser: json["email_user"],
         profileUser: json["profile_user"],
         nameUser: json["name_user"],
@@ -175,6 +208,7 @@ class ArticleUser extends Article {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> toJson = {
       ...super.toJson(),
+      "num_order": numOrder,
       "id_user": idUser,
       "id_asociation_user": idAsociationUser,
       "email_user": emailUser,
@@ -204,13 +238,14 @@ class ArticleUser extends Article {
     cadena = '$cadena publicationDateArticle: $publicationDateArticle,';
     cadena = '$cadena effectiveDateArticle: $effectiveDateArticle,';
     cadena = '$cadena expirationDateArticle: $expirationDateArticle,';
-    cadena = '$cadena coverImageArticle: $coverImageArticle,';
+    cadena = '$cadena coverImageArticle: ${coverImageArticle.toString()},';
     cadena = '$cadena titleArticle: $titleArticle,';
     cadena = '$cadena abstractArticle: $abstractArticle,';
     cadena = '$cadena ubicationArticle: $ubicationArticle,';
     cadena = '$cadena dateDeletedArticle: $dateDeletedArticle,';
     cadena = '$cadena dateCreatedArticle: $dateCreatedArticle,';
     cadena = '$cadena dateUpdatedArticle: $dateUpdatedArticle,';
+    cadena = '$cadena numOrder: $numOrder,';
     cadena = '$cadena idUser: $idUser,';
     cadena = '$cadena idAsociationUser: $idAsociationUser,';
     cadena = '$cadena emailUser: $emailUser,';
@@ -247,6 +282,7 @@ class ArticleUser extends Article {
       dateDeletedArticle: '',
       dateCreatedArticle: '',
       dateUpdatedArticle: '',
+      numOrder: 0,
       idUser: 0,
       idAsociationUser: 0,
       emailUser: '',
@@ -279,6 +315,7 @@ class ArticleUser extends Article {
     String? dateDeletedArticle,
     String? dateCreatedArticle,
     String? dateUpdatedArticle,
+    int? numOrder,
     int? idUser,
     int? idAsociationUser,
     String? emailUser,
@@ -308,6 +345,7 @@ class ArticleUser extends Article {
       dateDeletedArticle: dateDeletedArticle ?? this.dateDeletedArticle,
       dateCreatedArticle: dateCreatedArticle ?? this.dateCreatedArticle,
       dateUpdatedArticle: dateUpdatedArticle ?? this.dateUpdatedArticle,
+      numOrder: numOrder ?? this.numOrder,
       idUser: idUser ?? this.idUser,
       idAsociationUser: idAsociationUser ?? this.idAsociationUser,
       emailUser: emailUser ?? this.emailUser,
