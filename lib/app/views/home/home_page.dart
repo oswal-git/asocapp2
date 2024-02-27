@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/controllers/controllers.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: const <Widget>[
               Image(
-                image: AssetImage('assets/images/eglos_logo.png'),
+                image: AssetImage(EglImagesPath.lightAppLogo),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),

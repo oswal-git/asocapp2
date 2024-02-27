@@ -1,12 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:ui';
 
-import 'package:asocapp/app/services/storage_service.dart';
-import 'package:asocapp/app/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'package:asocapp/app/services/storage_service.dart';
+import 'package:asocapp/app/utils/utils.dart';
+
 import '../models/models.dart';
+
+class UserMessages {
+  final String text;
+  final String date;
+  bool isRead;
+
+  UserMessages({
+    required this.text,
+    required this.date,
+    this.isRead = false,
+  });
+}
 
 class SessionService extends GetxService {
   final StorageService _storage = Get.find<StorageService>();
@@ -25,12 +39,37 @@ class SessionService extends GetxService {
   bool get isLogin => _isLogin.value;
   set isLogin(value) => _isLogin.value = value;
 
+  final _isExpired = false.obs;
+  bool get isExpired => _isExpired.value;
+  set isExpired(value) => _isExpired.value = value;
+
+  final _listUserMessages = <UserMessages>[].obs;
+  List<UserMessages> get listUserMessages => _listUserMessages;
+  void setListUserMessages(String value) => _listUserMessages.add(UserMessages(
+        text: value,
+        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      ));
+  set checkUserMessage(int value) {
+    _listUserMessages[value].isRead = !_listUserMessages[value].isRead;
+    _listUserMessages.refresh();
+  }
+
+  int get toReadmessages => _listUserMessages.where((message) => message.isRead == false).length;
+
+  final _checkEdit = false.obs;
+  bool get checkEdit => _checkEdit.value;
+  set checkEdit(bool value) => _checkEdit.value = value;
+
   final _userConnected = Rx<UserConnected>(UserConnected.clear());
   UserConnected get userConnected => _userConnected.value;
 
   @override
   void onInit() {
     super.onInit();
+    _listUserMessages.add(UserMessages(
+      text: 'Registro de prueba',
+      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    ));
 
     initialize();
   }
@@ -42,6 +81,15 @@ class SessionService extends GetxService {
     if (userConnected.userNameUser != '') {
       _hasData.value = true;
       _isLogin.value = true;
+
+      // Hora actual
+      // Sumar 6 horas a la hora actual
+      //  Obtener el valor en segundos para hacerlo comparable con PHP
+      // int tokenExpUserInSeconds = (DateTime.now().add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000);
+      int tokenExpUserInSeconds = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+
+      _isExpired.value = (tokenExpUserInSeconds > userConnected.tokenExpUser);
+
       await _storage.writeObject(userConnectedKey, userConnected);
 
       await registerTask(loadTask);
@@ -66,6 +114,7 @@ class SessionService extends GetxService {
         await registerTask(true);
       }
     }
+    _checkEdit.value = false;
     return this;
   }
 
@@ -73,23 +122,25 @@ class SessionService extends GetxService {
   void userClear() {
     _hasData.value = false;
     _isLogin.value = false;
+    _checkEdit.value = false;
+    _isExpired.value = false;
     _userConnected.value = UserConnected.clear();
   }
 
   Future<void> registerTask(bool loadTask) async {
     if (isLogin) {
-      Helper.eglLogger('i', 'Session -> loadDataUser: isLogin? ${isLogin.toString()}');
+      EglHelper.eglLogger('i', 'Session -> loadDataUser: isLogin? ${isLogin.toString()}');
       //   if (!isThereTask) {
       if (loadTask) {
-        Helper.eglLogger('i', 'Session -> loadDataUser: isThereTask? ${_isThereTask.value.toString()}');
+        EglHelper.eglLogger('i', 'Session -> loadDataUser: isThereTask? ${_isThereTask.value.toString()}');
         Workmanager().cancelAll();
         if (userConnected.timeNotificationsUser != 99) {
           final int frequency = userConnected.timeNotificationsUser * 60;
           final int initialDelay = calcInitialDelay(userConnected.timeNotificationsUser);
 
-          Helper.eglLogger('i', 'Session -> loadDataUser: timeNotificationsUser? ${userConnected.timeNotificationsUser.toString()}');
+          EglHelper.eglLogger('i', 'Session -> loadDataUser: timeNotificationsUser? ${userConnected.timeNotificationsUser.toString()}');
           isThereTask = true;
-          Helper.eglLogger('i', 'Session -> loadDataUser: Workmanager().registerPeriodicTask');
+          EglHelper.eglLogger('i', 'Session -> loadDataUser: Workmanager().registerPeriodicTask');
 
           Workmanager().registerPeriodicTask(
             "5", simplePeriodicTask,
@@ -151,7 +202,7 @@ class SessionService extends GetxService {
 
     int secondsDifference = targetDateTime.difference(now).inSeconds;
 
-    Helper.eglLogger('i', 'Session: calcInitialDelay -> secondsDifference: $secondsDifference');
+    EglHelper.eglLogger('i', 'Session: calcInitialDelay -> secondsDifference: $secondsDifference');
     // return 4;
     return secondsDifference;
   }

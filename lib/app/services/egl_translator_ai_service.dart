@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:asocapp/app/utils/utils.dart';
-import 'package:translator/translator.dart';
+// https://github.com/ManeraKai/simplytranslate_mobile/blob/main/lib/simplytranslate.dart
+import 'package:simplytranslate/simplytranslate.dart';
+// import 'package:translator/translator.dart';
 
 class EglTranslatorAiService {
-  final translator = GoogleTranslator();
+  // final translator = GoogleTranslator();
+  final translator = SimplyTranslator(EngineType.google);
 
   Future<String> translate(String text, String languageTo) async {
-    var textTrnaslated = text.trim();
+    var textTranslated = text.trim();
 
-    if (textTrnaslated != '') {
+    if (textTranslated != '') {
       try {
-        textTrnaslated = (await translator.translate(text.trim(), to: languageTo)).text;
-        return Future.value(textTrnaslated);
+        // textTranslated = (await translator.trSimply(text.trim(), 'auto', languageTo));
+        textTranslated = await translator.trSimply(text.trim(), 'auto', languageTo);
+        return Future.value(textTranslated);
       } catch (e) {
         // Translation translation = {
         //   '',
@@ -19,11 +25,11 @@ class EglTranslatorAiService {
         //   {'error': '$e'}
         // } as Translation;
         // translation.targetLanguage.code == 'error' ? Helper.eglLogger('e', 'idAsoc') : null;
-        Helper.eglLogger('e', 'translate -> $textTrnaslated: ${e.toString()}');
-        return Future.value(textTrnaslated);
+        EglHelper.eglLogger('e', 'translate -> $textTranslated: ${e.toString()}');
+        return Future.value(textTranslated);
       }
     } else {
-      return Future.value(textTrnaslated);
+      return Future.value(textTranslated);
     }
   }
 }

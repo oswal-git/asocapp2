@@ -1,5 +1,11 @@
 import 'dart:convert';
 
+import 'package:asocapp/app/models/article_model.dart';
+import 'package:asocapp/app/models/image_article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
+
+import 'package:intl/intl.dart';
+
 ArticleListResponse articleListResponseFromJson(String str) => ArticleListResponse.fromJson(json.decode(str));
 
 String articleListResponseToJson(ArticleListResponse data) => json.encode(data.toJson());
@@ -7,7 +13,7 @@ String articleListResponseToJson(ArticleListResponse data) => json.encode(data.t
 class ArticleListResponse {
   int status;
   String message;
-  List<Article> result;
+  List<ArticleUser> result;
 
   ArticleListResponse({
     required this.status,
@@ -18,20 +24,20 @@ class ArticleListResponse {
   factory ArticleListResponse.fromJson(Map<String, dynamic> json) => ArticleListResponse(
         status: json["status"],
         message: json["message"],
-        result: List<Article>.from(json["result"].map((x) => Article.fromJson(x))),
+        result: json["result"] == null ? [] : List<ArticleUser>.from(json["result"].map((x) => ArticleUser.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "result": List<Article>.from(result.map((x) => x.toJson())),
+        "result": List<ArticleUser>.from(result.map((x) => x.toJson())),
       };
 }
 // **************************************************
 
 class ArticleListResult {
   int numRecords;
-  List<Article> records;
+  List<ArticleUser> records;
 
   ArticleListResult({
     required this.numRecords,
@@ -40,7 +46,7 @@ class ArticleListResult {
 
   factory ArticleListResult.fromJson(Map<String, dynamic> json) => ArticleListResult(
         numRecords: json["num_records"],
-        records: List<Article>.from(json["records"].map((x) => Article.fromJson(x))),
+        records: List<ArticleUser>.from(json["records"].map((x) => ArticleUser.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,53 +56,65 @@ class ArticleListResult {
 }
 
 // **************************************************
-class Article {
-  int idArticle;
-  int idAsociationArticle;
-  int idUserArticle;
-  String categoryArticle;
-  String subcategoryArticle;
-  String classArticle;
-  String stateArticle;
-  String publicationDateArticle;
-  String effectiveDateArticle;
-  String expirationDateArticle;
-  ImageArticle coverImageArticle;
-  String titleArticle;
-  String abstractArticle;
-  String ubicationArticle;
-  String dateDeletedArticle;
-  String dateCreatedArticle;
-  String dateUpdatedArticle;
-  int idUser;
-  int idAsociationUser;
-  String emailUser;
-  String profileUser;
-  String nameUser;
-  String lastNameUser;
-  String avatarUser;
-  String longNameAsociation;
-  String shortNameAsociation;
-  List<ItemArticle> itemsArticle;
+ArticleUserResponse articleUserResponseFromJson(String str) => ArticleUserResponse.fromJson(json.decode(str));
 
-  Article({
-    required this.idArticle,
-    required this.idAsociationArticle,
-    required this.idUserArticle,
-    required this.categoryArticle,
-    required this.subcategoryArticle,
-    required this.classArticle,
-    required this.stateArticle,
-    required this.publicationDateArticle,
-    required this.effectiveDateArticle,
-    required this.expirationDateArticle,
-    required this.coverImageArticle,
-    required this.titleArticle,
-    required this.abstractArticle,
-    required this.ubicationArticle,
-    required this.dateDeletedArticle,
-    required this.dateCreatedArticle,
-    required this.dateUpdatedArticle,
+String articleUserResponseToJson(ArticleUserResponse data) => json.encode(data.toJson());
+
+class ArticleUserResponse {
+  int status;
+  String message;
+  ArticleUser result;
+
+  ArticleUserResponse({
+    required this.status,
+    required this.message,
+    required this.result,
+  });
+
+  factory ArticleUserResponse.fromJson(Map<String, dynamic> json) => ArticleUserResponse(
+        status: json["status"],
+        message: json["message"],
+        result: ArticleUser.fromJson(json["result"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "result": result.toJson(),
+      };
+}
+
+class ArticleUser extends Article {
+  final int numOrder;
+  final int idUser;
+  final int idAsociationUser;
+  final String emailUser;
+  final String profileUser;
+  final String nameUser;
+  final String lastNameUser;
+  final String avatarUser;
+  final String longNameAsociation;
+  final String shortNameAsociation;
+
+  ArticleUser({
+    required super.idArticle,
+    required super.idAsociationArticle,
+    required super.idUserArticle,
+    required super.categoryArticle,
+    required super.subcategoryArticle,
+    required super.classArticle,
+    required super.stateArticle,
+    required super.publicationDateArticle,
+    required super.effectiveDateArticle,
+    required super.expirationDateArticle,
+    required super.coverImageArticle,
+    required super.titleArticle,
+    required super.abstractArticle,
+    required super.ubicationArticle,
+    required super.dateDeletedArticle,
+    required super.dateCreatedArticle,
+    required super.dateUpdatedArticle,
+    required this.numOrder,
     required this.idUser,
     required this.idAsociationUser,
     required this.emailUser,
@@ -106,13 +124,59 @@ class Article {
     required this.avatarUser,
     required this.longNameAsociation,
     required this.shortNameAsociation,
-    required this.itemsArticle,
+    required super.itemsArticle,
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) => Article(
-        idArticle: int.parse(json["id_article"]),
-        idAsociationArticle: int.parse(json["id_asociation_article"]),
-        idUserArticle: int.parse(json["id_user_article"]),
+  factory ArticleUser.fromArticle({
+    required Article article,
+    required int numOrder,
+    required int idUser,
+    required int idAsociationUser,
+    required String emailUser,
+    required String profileUser,
+    required String nameUser,
+    required String lastNameUser,
+    required String avatarUser,
+    required String longNameAsociation,
+    required String shortNameAsociation,
+  }) {
+    return ArticleUser(
+      idArticle: article.idArticle,
+      idAsociationArticle: article.idAsociationArticle,
+      idUserArticle: article.idUserArticle,
+      categoryArticle: article.categoryArticle,
+      subcategoryArticle: article.subcategoryArticle,
+      classArticle: article.classArticle,
+      stateArticle: article.stateArticle,
+      publicationDateArticle: article.publicationDateArticle,
+      effectiveDateArticle: article.effectiveDateArticle,
+      expirationDateArticle: article.expirationDateArticle,
+      coverImageArticle: article.coverImageArticle,
+      titleArticle: article.titleArticle,
+      abstractArticle: article.abstractArticle,
+      ubicationArticle: article.ubicationArticle,
+      dateDeletedArticle: article.dateDeletedArticle,
+      dateCreatedArticle: article.dateCreatedArticle,
+      dateUpdatedArticle: article.dateUpdatedArticle,
+      numOrder: numOrder,
+      idUser: idUser,
+      idAsociationUser: idAsociationUser,
+      emailUser: emailUser,
+      profileUser: profileUser,
+      nameUser: nameUser,
+      lastNameUser: lastNameUser,
+      avatarUser: avatarUser,
+      longNameAsociation: longNameAsociation,
+      shortNameAsociation: shortNameAsociation,
+      itemsArticle: article.itemsArticle,
+      // Proporciona otros valores específicos de ArticleUser aquí
+    );
+  }
+
+  factory ArticleUser.fromJson(Map<String, dynamic> json) => ArticleUser(
+        idArticle: json["id_article"],
+        idAsociationArticle: json["id_asociation_article"],
+        idUserArticle: json["id_user_article"],
         categoryArticle: json["category_article"],
         subcategoryArticle: json["subcategory_article"],
         classArticle: json["class_article"],
@@ -127,8 +191,9 @@ class Article {
         dateDeletedArticle: json["date_deleted_article"],
         dateCreatedArticle: (json["date_created_article"]),
         dateUpdatedArticle: (json["date_updated_article"]),
-        idUser: int.parse(json["id_user"]),
-        idAsociationUser: int.parse(json["id_asociation_user"]),
+        numOrder: json.containsKey("num_order") ? json["num_order"] : 0,
+        idUser: json["id_user"],
+        idAsociationUser: json["id_asociation_user"],
         emailUser: json["email_user"],
         profileUser: json["profile_user"],
         nameUser: json["name_user"],
@@ -139,25 +204,11 @@ class Article {
         itemsArticle: List<ItemArticle>.from(json["items_article"].map((x) => ItemArticle.fromJson(x))),
       );
 
+  @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> toJson = {
-      "id_article": idArticle,
-      "id_asociation_article": idAsociationArticle,
-      "id_user_article": idUserArticle,
-      "category_article": categoryArticle,
-      "subcategory_article": subcategoryArticle,
-      "class_article": classArticle,
-      "state_article": stateArticle,
-      "publication_date_article": publicationDateArticle,
-      "effective_date_article": effectiveDateArticle,
-      "expiration_date_article": expirationDateArticle,
-      "cover_image_article": coverImageArticle.toJson(),
-      "title_article": titleArticle,
-      "abstract_article": abstractArticle,
-      "ubication_article": ubicationArticle,
-      "date_deleted_article": dateDeletedArticle,
-      "date_created_article": dateCreatedArticle,
-      "date_updated_article": dateUpdatedArticle,
+      ...super.toJson(),
+      "num_order": numOrder,
       "id_user": idUser,
       "id_asociation_user": idAsociationUser,
       "email_user": emailUser,
@@ -167,7 +218,6 @@ class Article {
       "avatar_user": avatarUser,
       "long_name_asociation": longNameAsociation,
       "short_name_asociation": shortNameAsociation,
-      "items_article": List<dynamic>.from(itemsArticle.map((x) => x.toJson())),
     };
 
     return toJson;
@@ -188,13 +238,14 @@ class Article {
     cadena = '$cadena publicationDateArticle: $publicationDateArticle,';
     cadena = '$cadena effectiveDateArticle: $effectiveDateArticle,';
     cadena = '$cadena expirationDateArticle: $expirationDateArticle,';
-    cadena = '$cadena coverImageArticle: $coverImageArticle,';
+    cadena = '$cadena coverImageArticle: ${coverImageArticle.toString()},';
     cadena = '$cadena titleArticle: $titleArticle,';
     cadena = '$cadena abstractArticle: $abstractArticle,';
     cadena = '$cadena ubicationArticle: $ubicationArticle,';
     cadena = '$cadena dateDeletedArticle: $dateDeletedArticle,';
     cadena = '$cadena dateCreatedArticle: $dateCreatedArticle,';
     cadena = '$cadena dateUpdatedArticle: $dateUpdatedArticle,';
+    cadena = '$cadena numOrder: $numOrder,';
     cadena = '$cadena idUser: $idUser,';
     cadena = '$cadena idAsociationUser: $idAsociationUser,';
     cadena = '$cadena emailUser: $emailUser,';
@@ -212,17 +263,17 @@ class Article {
     return cadena;
   }
 
-  factory Article.clear() {
-    return Article(
+  factory ArticleUser.clear() {
+    return ArticleUser(
       idArticle: 0,
       idAsociationArticle: 0,
       idUserArticle: 0,
       categoryArticle: '',
       subcategoryArticle: '',
       classArticle: '',
-      stateArticle: '',
-      publicationDateArticle: '',
-      effectiveDateArticle: '',
+      stateArticle: 'redacción',
+      publicationDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      effectiveDateArticle: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       expirationDateArticle: '',
       coverImageArticle: ImageArticle.clear(),
       titleArticle: '',
@@ -231,6 +282,7 @@ class Article {
       dateDeletedArticle: '',
       dateCreatedArticle: '',
       dateUpdatedArticle: '',
+      numOrder: 0,
       idUser: 0,
       idAsociationUser: 0,
       emailUser: '',
@@ -244,7 +296,8 @@ class Article {
     );
   }
 
-  Article copyWith({
+  @override
+  ArticleUser copyWith({
     int? idArticle,
     int? idAsociationArticle,
     int? idUserArticle,
@@ -262,6 +315,7 @@ class Article {
     String? dateDeletedArticle,
     String? dateCreatedArticle,
     String? dateUpdatedArticle,
+    int? numOrder,
     int? idUser,
     int? idAsociationUser,
     String? emailUser,
@@ -273,7 +327,7 @@ class Article {
     String? shortNameAsociation,
     List<ItemArticle>? itemsArticle,
   }) {
-    return Article(
+    return ArticleUser(
       idArticle: idArticle ?? this.idArticle,
       idAsociationArticle: idAsociationArticle ?? this.idAsociationArticle,
       idUserArticle: idUserArticle ?? this.idUserArticle,
@@ -291,6 +345,7 @@ class Article {
       dateDeletedArticle: dateDeletedArticle ?? this.dateDeletedArticle,
       dateCreatedArticle: dateCreatedArticle ?? this.dateCreatedArticle,
       dateUpdatedArticle: dateUpdatedArticle ?? this.dateUpdatedArticle,
+      numOrder: numOrder ?? this.numOrder,
       idUser: idUser ?? this.idUser,
       idAsociationUser: idAsociationUser ?? this.idAsociationUser,
       emailUser: emailUser ?? this.emailUser,
@@ -305,145 +360,6 @@ class Article {
   }
 }
 
-class ImageArticle {
-  ImageArticle({
-    required this.src,
-    required this.nameFile,
-    required this.filePath,
-    this.fileImage,
-    required this.isSelectedFile,
-    required this.isDefault,
-    required this.isChange,
-  });
-
-  String src;
-  String nameFile;
-  String filePath;
-  dynamic fileImage;
-  bool isSelectedFile;
-  bool isDefault;
-  bool isChange;
-
-  factory ImageArticle.fromJson(Map<String, dynamic> json) => ImageArticle(
-        src: json["src"],
-        nameFile: json["nameFile"],
-        filePath: json["filePath"],
-        fileImage: json["fileImage"],
-        isSelectedFile: json["isSelectedFile"],
-        isDefault: json["isDefault"],
-        isChange: json["isChange"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "src": src,
-        "nameFile": nameFile,
-        "filePath": filePath,
-        "fileImage": fileImage,
-        "isSelectedFile": isSelectedFile,
-        "isDefault": isDefault,
-        "isChange": isChange,
-      };
-
-  @override
-  String toString() {
-    String cadena = '';
-
-    cadena = '$cadena ImageArticle { ';
-    cadena = '$cadena src $src';
-    cadena = '$cadena nameFile $nameFile';
-    cadena = '$cadena filePath $filePath';
-    cadena = '$cadena fileImage $fileImage';
-    cadena = '$cadena isSelectedFile $isSelectedFile';
-    cadena = '$cadena isDefault $isDefault';
-    cadena = '$cadena isChange $isChange';
-
-    return cadena;
-  }
-
-  factory ImageArticle.clear() {
-    return ImageArticle(
-      src: '',
-      nameFile: '',
-      filePath: '',
-      fileImage: '',
-      isSelectedFile: false,
-      isDefault: false,
-      isChange: false,
-    );
-  }
-}
-
-class ItemArticle {
-  ItemArticle({
-    required this.idItemArticle,
-    required this.idArticleItemArticle,
-    required this.textItemArticle,
-    required this.imageItemArticle,
-    required this.dateCreatedItemArticle,
-  });
-
-  int idItemArticle;
-  int idArticleItemArticle;
-  String textItemArticle;
-  ImageArticle imageItemArticle;
-  String dateCreatedItemArticle;
-
-  factory ItemArticle.fromJson(Map<String, dynamic> json) => ItemArticle(
-        idItemArticle: int.parse(json["id_item_article"]),
-        idArticleItemArticle: int.parse(json["id_article_item_article"]),
-        textItemArticle: json["text_item_article"],
-        imageItemArticle: ImageArticle.fromJson(json["image_item_article"]),
-        dateCreatedItemArticle: (json["date_created_item_article"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id_item_article": idItemArticle,
-        "id_article_item_article": idArticleItemArticle,
-        "text_item_article": textItemArticle,
-        "image_item_article": imageItemArticle.toJson(),
-        "date_created_item_article": dateCreatedItemArticle,
-      };
-
-  @override
-  String toString() {
-    String cadena = '';
-
-    cadena = '$cadena ItemArticle { ';
-    cadena = '$cadena idItemArticle $idItemArticle';
-    cadena = '$cadena idArticleItemArticle $idArticleItemArticle';
-    cadena = '$cadena textItemArticle $textItemArticle';
-    cadena = '$cadena imageItemArticle ${imageItemArticle.toString()}';
-    cadena = '$cadena dateCreatedItemArticle $dateCreatedItemArticle';
-    return cadena;
-  }
-
-  factory ItemArticle.clear() {
-    return ItemArticle(
-      idItemArticle: 0,
-      idArticleItemArticle: 0,
-      textItemArticle: '',
-      imageItemArticle: ImageArticle.clear(),
-      dateCreatedItemArticle: '',
-    );
-  }
-
-  ItemArticle copyWith({
-    int? idItemArticle,
-    int? idArticleItemArticle,
-    String? textItemArticle,
-    ImageArticle? imageItemArticle,
-    String? dateCreatedItemArticle,
-  }) {
-    return ItemArticle(
-      idItemArticle: idItemArticle ?? this.idItemArticle,
-      idArticleItemArticle: idArticleItemArticle ?? this.idArticleItemArticle,
-      textItemArticle: textItemArticle ?? this.textItemArticle,
-      imageItemArticle: imageItemArticle ?? this.imageItemArticle,
-      dateCreatedItemArticle: dateCreatedItemArticle ?? this.dateCreatedItemArticle,
-    );
-  }
-}
-
 // **************************************************
 
 ArticleResponse articleResponseFromJson(String str) => ArticleResponse.fromJson(json.decode(str));
@@ -453,7 +369,7 @@ String articleResponseToJson(ArticleResponse data) => json.encode(data.toJson())
 class ArticleResponse {
   int status;
   String message;
-  Article result;
+  ArticleUser result;
 
   ArticleResponse({
     required this.status,
@@ -464,7 +380,7 @@ class ArticleResponse {
   factory ArticleResponse.fromJson(Map<String, dynamic> json) => ArticleResponse(
         status: json["status"],
         message: json["message"],
-        result: json["result"] == null ? Article.clear() : Article.fromJson(json["result"]),
+        result: json["result"] == null ? ArticleUser.clear() : ArticleUser.fromJson(json["result"]),
       );
 
   Map<String, dynamic> toJson() => {

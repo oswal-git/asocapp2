@@ -1,0 +1,726 @@
+import 'dart:ui';
+
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/models/image_article_model.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/services/services.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/article/edit_item_article.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class ArticleEditionPage extends StatefulWidget {
+  const ArticleEditionPage({super.key});
+
+  @override
+  State<ArticleEditionPage> createState() => _ArticleEditionPageState();
+}
+
+class _ArticleEditionPageState extends State<ArticleEditionPage> {
+  final articleEditController = Get.put<ArticleEditController>(ArticleEditController());
+  final SessionService session = Get.put<SessionService>(SessionService());
+
+  Color toolbarColor = Colors.grey.shade200;
+  bool titleFocus = false;
+  String plainTitle = '';
+  String titleBefore = '';
+  String textValidateTitle = '';
+  String titleIni = '';
+  bool abstractFocus = false;
+  String plainAbstract = '';
+  String abstractBefore = '';
+  String textValidateAbstract = '';
+  String abstractIni = '';
+
+  @override
+  void initState() {
+    super.initState();
+    titleIni = articleEditController.newArticle.titleArticle;
+    titleBefore = articleEditController.newArticle.titleArticle;
+    abstractIni = articleEditController.newArticle.abstractArticle;
+    abstractBefore = articleEditController.newArticle.abstractArticle;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // return const Center(child: Text('ArticleEditionPage'));
+    // HtmlEditorController htmlEditorController1 = HtmlEditorController();
+    // HtmlEditorController htmlEditorController2 = HtmlEditorController();
+    // bool titleFocus = false;
+    // bool abstractFocus = false;
+
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10.00),
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+          border: Border.all(
+            color: Colors.yellow, // color del borde
+            width: 2.0, // ancho del borde
+          ),
+        ),
+        child: ListView(
+          children: [
+            20.ph,
+            // Title
+            Container(
+              margin: const EdgeInsets.only(bottom: 5.0, left: 5.0),
+              padding: const EdgeInsets.only(bottom: 5.0),
+              alignment: Alignment.centerLeft,
+              decoration: const BoxDecoration(
+                // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+                border: Border(
+                    bottom: BorderSide(
+                  color: Colors.grey, // color del borde
+                  width: 2.0, // ancho del borde
+                )),
+              ),
+              child: Text(
+                'Título',
+                style: TextStyle(fontSize: 14, color: Colors.indigo[900]),
+              ),
+            ),
+            // Text title
+            ListView(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              children: [
+                // QuillHtmlEditor(
+                //   text: titleIni,
+                //   hintText: 'Hint text goes here',
+                //   controller: quillTitleEditorController,
+                //   isEnabled: true,
+                //   ensureVisible: true,
+                //   minHeight: 100,
+                //   autoFocus: true,
+                //   textStyle: editorTextStyle,
+                //   hintTextStyle: hintTextStyle,
+                //   hintTextAlign: TextAlign.start,
+                //   padding: const EdgeInsets.only(left: 5, top: 10, right: 5),
+                //   hintTextPadding: const EdgeInsets.only(left: 20),
+                //   backgroundColor: backgroundColor,
+                //   inputAction: InputAction.newline,
+                //   onEditingComplete: (s) => EglHelper.eglLogger('w', 'Editing completed $s'),
+                //   loadingBuilder: (context) {
+                //     return const Center(
+                //       child: CircularProgressIndicator(
+                //         strokeWidth: 1,
+                //         color: Colors.red,
+                //       ),
+                //     );
+                //   },
+                //   onFocusChanged: (focus) {
+                //     EglHelper.eglLogger('i', 'has focus $focus');
+                //     titleFocus = true;
+                //     // setState(() {
+                //     // });
+                //   },
+                //   onTextChanged: (String text) async {
+                //     plainTitle = parse(text).documentElement!.text;
+                //     // final int diffText = text.length - plainTitle.length;
+                //     EglHelper.eglLogger('i', 'widget titleBefore change $titleBefore');
+                //     EglHelper.eglLogger('i', 'widget text change $text');
+                //     EglHelper.eglLogger('i', 'widget plaintext change $plainTitle');
+                //     if (titleFocus) {
+                //       textValidateTitle = await validateTitle(plainTitle, minLength: 4, maxLength: 100);
+                //       if (plainTitle.length > 150) {
+                //         articleEditController.newArticle.titleArticle = titleBefore;
+                //         quillTitleEditorController.setText(titleBefore);
+                //         quillTitleEditorController.focus();
+                //       } else {
+                //         articleEditController.newArticle.titleArticle = text;
+                //         titleBefore = text;
+                //       }
+                //       setState(() {});
+                //     }
+                //   },
+                //   onEditorCreated: () {
+                //     EglHelper.eglLogger('i', 'Editor has been loaded');
+                //     // setHtmlText('');
+                //   },
+                //   onEditorResized: (height) => EglHelper.eglLogger('i', 'Editor resized $height'),
+                //   onSelectionChanged: (sel) => EglHelper.eglLogger('i', 'index ${sel.index}, range ${sel.length}'),
+                // ),
+                // ToolBar(
+                //   controller: quillTitleEditorController,
+                //   toolBarConfig: const [
+                //     ToolBarStyle.bold,
+                //     ToolBarStyle.italic,
+                //     ToolBarStyle.align,
+                //     ToolBarStyle.color,
+                //     ToolBarStyle.background,
+                //     ToolBarStyle.clean,
+                //   ],
+                //   toolBarColor: toolbarColor,
+                //   padding: const EdgeInsets.all(8),
+                //   iconSize: 20,
+                //   iconColor: toolbarIconColor,
+                //   activeIconColor: Colors.greenAccent.shade400,
+                //   crossAxisAlignment: WrapCrossAlignment.start,
+                //   // direction: Axis.horizontal,
+                //   // customButtons: [],
+                // ),
+                // Validate title
+                Container(
+                  margin: const EdgeInsets.only(top: 5.0, right: 10.0, left: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        textValidateTitle,
+                        style: TextStyle(fontSize: 12, color: Colors.red[600]),
+                      ),
+                      Text(
+                        plainTitle.length.toString(),
+                        style: TextStyle(fontSize: 12, color: Colors.blue[600]),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            20.ph,
+            // Abstract
+            // Container(
+            //   margin: const EdgeInsets.only(bottom: 5.0, left: 5.0),
+            //   padding: const EdgeInsets.only(bottom: 5.0),
+            //   alignment: Alignment.centerLeft,
+            //   decoration: const BoxDecoration(
+            //     // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+            //     border: Border(
+            //         bottom: BorderSide(
+            //       color: Colors.grey, // color del borde
+            //       width: 2.0, // ancho del borde
+            //     )),
+            //   ),
+            //   child: Text(
+            //     'Abstract',
+            //     style: TextStyle(fontSize: 14, color: Colors.indigo[900]),
+            //   ),
+            // ),
+            // Text abstract
+            ListView(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              children: [
+                // QuillHtmlEditor(
+                //   text: abstractIni,
+                //   hintText: 'Hint abstract goes here',
+                //   controller: quillAbstractEditorController,
+                //   isEnabled: true,
+                //   ensureVisible: true,
+                //   minHeight: 150,
+                //   autoFocus: true,
+                //   textStyle: editorTextStyle,
+                //   hintTextStyle: hintTextStyle,
+                //   hintTextAlign: TextAlign.start,
+                //   padding: const EdgeInsets.only(left: 5, top: 10, right: 5),
+                //   hintTextPadding: const EdgeInsets.only(left: 20),
+                //   backgroundColor: backgroundColor,
+                //   inputAction: InputAction.newline,
+                //   onEditingComplete: (s) => EglHelper.eglLogger('w', 'Editing abstract completed $s'),
+                //   loadingBuilder: (context) {
+                //     return const Center(
+                //       child: CircularProgressIndicator(
+                //         strokeWidth: 1,
+                //         color: Colors.red,
+                //       ),
+                //     );
+                //   },
+                //   onFocusChanged: (focus) {
+                //     EglHelper.eglLogger('i', 'abstract has focus $focus');
+                //     abstractFocus = true;
+                //     // setState(() {
+                //     // });
+                //   },
+                //   onTextChanged: (String text) async {
+                //     plainAbstract = parse(text).documentElement!.text;
+                //     // final int diffText = text.length - plainAbstract.length;
+                //     EglHelper.eglLogger('i', 'widget abstractBefore change $abstractBefore');
+                //     EglHelper.eglLogger('i', 'widget text abstract change $text');
+                //     EglHelper.eglLogger('i', 'widget plaintext change $plainAbstract');
+                //     if (abstractFocus) {
+                //       textValidateAbstract = await validateAbstract(plainAbstract, minLength: 4, maxLength: 200);
+                //       if (plainAbstract.length > 250) {
+                //         articleEditController.newArticle.abstractArticle = abstractBefore;
+                //         quillAbstractEditorController.setText(abstractBefore);
+                //         quillAbstractEditorController.focus();
+                //       } else {
+                //         articleEditController.newArticle.abstractArticle = text;
+                //         abstractBefore = text;
+                //       }
+                //       setState(() {});
+                //     }
+                //   },
+                //   onEditorCreated: () {
+                //     EglHelper.eglLogger('i', 'Editor Abstract has been loaded');
+                //     // setHtmlText('');
+                //   },
+                //   onEditorResized: (height) => EglHelper.eglLogger('i', 'Editor Abstract resized $height'),
+                //   onSelectionChanged: (sel) => EglHelper.eglLogger('i', 'Abstract index ${sel.index}, range ${sel.length}'),
+                // ),
+                // ToolBar(
+                //   controller: quillAbstractEditorController,
+                //   toolBarConfig: const [
+                //     ToolBarStyle.bold,
+                //     ToolBarStyle.italic,
+                //     ToolBarStyle.align,
+                //     ToolBarStyle.color,
+                //     ToolBarStyle.background,
+                //     ToolBarStyle.clean,
+                //   ],
+                //   toolBarColor: toolbarColor,
+                //   padding: const EdgeInsets.all(8),
+                //   iconSize: 20,
+                //   iconColor: toolbarIconColor,
+                //   activeIconColor: Colors.greenAccent.shade400,
+                //   crossAxisAlignment: WrapCrossAlignment.start,
+                //   // direction: Axis.horizontal,
+                //   // customButtons: [],
+                // ),
+                // Validate Abstract
+                Container(
+                  margin: const EdgeInsets.only(top: 5.0, right: 10.0, left: 10.0),
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        textValidateAbstract,
+                        style: TextStyle(fontSize: 12, color: Colors.red[600]),
+                      ),
+                      Text(
+                        plainAbstract.length.toString(),
+                        style: TextStyle(fontSize: 12, color: Colors.blue[600]),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            // EglInputMultiLineField(
+            //   focusNode: articleEditController.titleArticleFocusNode,
+            //   nextFocusNode: articleEditController.abstractArticleFocusNode,
+            //   currentValue: articleEditController.newArticle.titleArticle,
+            //   autovalidateMode: AutovalidateMode.onUserInteraction,
+            //   iconLabel: Icons.person_pin,
+            //   // ronudIconBorder: true,
+            //   labelText: 'lTitleArticle'.tr,
+            //   hintText: 'hTitleArticle'.tr,
+            //   maxLines: null,
+            //   maxLength: 100,
+            //   // icon: Icons.person_pin,
+            //   onChanged: (value) {
+            //     articleEditController.newArticle.titleArticle = value;
+            //     titleFocus = articleEditController.titleArticleFocusNode.hasFocus;
+            //     //   titleKey.currentState?.validate();
+            //   },
+            //   onValidator: (value) {
+            //     if (titleFocus) {
+            //       if (value!.isEmpty) return 'Introduzca el título del artículo';
+            //       if (value.length < 4) return 'El título ha de tener 4 carácteres como mínimo ';
+            //       if (value.length > 100) return 'El título ha de tener 100 carácteres como máximo ';
+            //     }
+            //     return null;
+            //   },
+            // ),
+
+            // HtmlEditor(
+            //   controller: htmlEditorController1,
+            //   htmlEditorOptions: HtmlEditorOptions(
+            //     initialText: articleEditController.newArticle.titleArticle,
+            //     shouldEnsureVisible: true,
+            //     hint: 'Introduce el título',
+            //     characterLimit: 100,
+            //     spellCheck: true,
+            //     autoAdjustHeight: true,
+            //     adjustHeightForKeyboard: false,
+            //     androidUseHybridComposition: true,
+            //   ),
+            //   htmlToolbarOptions: const HtmlToolbarOptions(
+            //     toolbarPosition: ToolbarPosition.belowEditor,
+            //     renderSeparatorWidget: true,
+            //     // dropdownIconSize: 18,
+            //     // toolbarItemHeight: 20,
+            //     defaultToolbarButtons: [
+            //       StyleButtons(
+            //         style: true,
+            //       ),
+            //       FontSettingButtons(
+            //         fontName: true,
+            //         fontSize: true,
+            //         fontSizeUnit: false,
+            //       ),
+            //       FontButtons(
+            //         bold: true,
+            //         italic: true,
+            //         underline: true,
+            //         clearAll: true,
+            //         strikethrough: true,
+            //         superscript: true,
+            //         subscript: true,
+            //       ),
+            //       ColorButtons(
+            //         foregroundColor: true,
+            //         highlightColor: true,
+            //       ),
+            //       ListButtons(
+            //         ul: false,
+            //         ol: false,
+            //         listStyles: false,
+            //       ),
+            //       ParagraphButtons(
+            //         alignLeft: false,
+            //         alignCenter: false,
+            //         alignRight: false,
+            //         alignJustify: false,
+            //         increaseIndent: false,
+            //         decreaseIndent: false,
+            //         textDirection: false,
+            //         lineHeight: false,
+            //         caseConverter: true,
+            //       ),
+            //       // InsertButtons(),
+            //       OtherButtons(
+            //         fullscreen: true,
+            //         codeview: false,
+            //         undo: true,
+            //         redo: true,
+            //         help: false,
+            //         copy: false,
+            //         paste: false,
+            //       ),
+            //     ],
+            //   ),
+            //   otherOptions: const OtherOptions(
+            //     height: 150,
+            //   ),
+            //   callbacks: Callbacks(
+            //     onChangeContent: (String? changed) {
+            //       articleEditController.newArticle.titleArticle = changed!;
+            //       if (changed.isNotEmpty && !titleFocus) titleFocus = true;
+            //       if (titleFocus) {
+            //         setState(() {
+            //           if (changed.isEmpty) {
+            //             textValidateTitle = 'Introduzca el título del artículo';
+            //           } else if (changed.length < 4) {
+            //             textValidateTitle = 'El título ha de tener 4 carácteres como mínimo ';
+            //           } else if (changed.length > 100) {
+            //             textValidateTitle = 'El título ha de tener 100 carácteres como máximo ';
+            //             // controller.getTe
+            //           } else {
+            //             textValidateTitle = '';
+            //           }
+            //         });
+            //       }
+            //     },
+            //   ),
+            // ),
+            // if (textValidateTitle != '')
+
+            20.ph,
+            // Abstract
+            // HtmlEditor(
+            //   controller: htmlEditorController2,
+            //   htmlEditorOptions: HtmlEditorOptions(
+            //     initialText: articleEditController.newArticle.abstractArticle,
+            //     shouldEnsureVisible: true,
+            //     hint: 'Introduce el resumen',
+            //     characterLimit: 100,
+            //     spellCheck: true,
+            //     autoAdjustHeight: true,
+            //     adjustHeightForKeyboard: false,
+            //     androidUseHybridComposition: true,
+            //   ),
+            //   htmlToolbarOptions: const HtmlToolbarOptions(
+            //     toolbarPosition: ToolbarPosition.belowEditor,
+            //     // dropdownIconSize: 18,
+            //     // toolbarItemHeight: 20,
+            //     defaultToolbarButtons: [
+            //       StyleButtons(
+            //         style: true,
+            //       ),
+            //       FontSettingButtons(
+            //         fontName: true,
+            //         fontSize: true,
+            //         fontSizeUnit: false,
+            //       ),
+            //       FontButtons(
+            //         bold: true,
+            //         italic: true,
+            //         underline: true,
+            //         clearAll: true,
+            //         strikethrough: true,
+            //         superscript: true,
+            //         subscript: true,
+            //       ),
+            //       ColorButtons(
+            //         foregroundColor: true,
+            //         highlightColor: true,
+            //       ),
+            //       ListButtons(
+            //         ul: false,
+            //         ol: false,
+            //         listStyles: false,
+            //       ),
+            //       ParagraphButtons(
+            //         alignLeft: false,
+            //         alignCenter: false,
+            //         alignRight: false,
+            //         alignJustify: false,
+            //         increaseIndent: false,
+            //         decreaseIndent: false,
+            //         textDirection: false,
+            //         lineHeight: false,
+            //         caseConverter: true,
+            //       ),
+            //       // InsertButtons(),
+            //       OtherButtons(
+            //         fullscreen: true,
+            //         codeview: false,
+            //         undo: true,
+            //         redo: true,
+            //         help: false,
+            //         copy: false,
+            //         paste: false,
+            //       ),
+            //     ],
+            //   ),
+            //   otherOptions: const OtherOptions(
+            //     height: 150,
+            //   ),
+            //   callbacks: Callbacks(
+            //     onChangeContent: (String? changed) {
+            //       articleEditController.newArticle.abstractArticle = changed!;
+            //       if (changed.isNotEmpty && !abstractFocus) abstractFocus = true;
+            //       if (abstractFocus) {
+            //         setState(() {
+            //           if (changed.isEmpty) {
+            //             validateAbstract = 'Introduzca el título del artículo';
+            //           } else if (changed.length < 4) {
+            //             validateAbstract = 'El título ha de tener 4 carácteres como mínimo ';
+            //           } else if (changed.length > 100) {
+            //             validateAbstract = 'El título ha de tener 100 carácteres como máximo ';
+            //             // controller.getTe
+            //           } else {
+            //             validateAbstract = '';
+            //           }
+            //         });
+            //       }
+            //     },
+            //   ),
+            // ),
+            // if (validateAbstract != '')
+
+            // ),
+
+            // EglInputMultiLineField(
+            //   focusNode: articleEditController.abstractArticleFocusNode,
+            //   nextFocusNode: articleEditController.abstractArticleFocusNode,
+            //   currentValue: articleEditController.newArticle.abstractArticle,
+            //   autovalidateMode: AutovalidateMode.onUserInteraction,
+            //   iconLabel: Icons.person_pin,
+            //   // ronudIconBorder: true,
+            //   labelText: 'lAbstractArticle'.tr,
+            //   hintText: 'hAbstractArticle'.tr,
+            //   maxLines: null,
+            //   maxLength: 200,
+            //   // icon: Icons.person_pin,
+            //   onChanged: (value) {
+            //     articleEditController.newArticle.abstractArticle = value;
+            //     abstractFocus = articleEditController.abstractArticleFocusNode.hasFocus;
+            //     //   abstractKey.currentState?.validate();
+            //   },
+            //   onValidator: (value) {
+            //     if (abstractFocus) {
+            //       if (value!.isEmpty) return 'Introduzca el abstract del artículo';
+            //       if (value.length < 4) return 'El abstract ha de tener 4 carácteres como mínimo ';
+            //       if (value.length > 200) return 'El abstract ha de tener 200 carácteres como máximo ';
+            //     }
+            //     return null;
+            //   },
+            // ),
+            (articleEditController.imageCoverChanged || !articleEditController.newArticle.coverImageArticle.isDefault) ? 30.ph : 20.ph,
+            // Cover widget
+            Container(
+              // width: MediaQuery.of(context).size.width / 2,
+              margin: const EdgeInsets.symmetric(horizontal: 30.00),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+                border: Border.all(
+                  color: Colors.transparent, // color del borde
+                  width: 2.0, // ancho del borde
+                ),
+              ),
+              child: EglImageWidget(
+                image: articleEditController.newArticle.coverImageArticle,
+                defaultImage: EglImagesPath.appCoverDefault,
+                isEditable: true,
+                canDefault: false,
+                onChange: (ImageArticle image) {
+                  // Lógica para recuperar la imagen por defecto
+                  articleEditController.newArticle.coverImageArticle = image.copyWith();
+                  EglHelper.eglLogger('i', 'onChange: ${articleEditController.newArticle.coverImageArticle.toString()}');
+                },
+                onPressedDefault: (ImageArticle image) {
+                  // Lógica para recuperar la imagen por defecto
+                  articleEditController.newArticle.coverImageArticle = image.copyWith();
+                  EglHelper.eglLogger('i', 'onPressedDefault: ${articleEditController.newArticle.coverImageArticle.toString()}');
+                },
+                onPressedRestore: (ImageArticle image) {
+                  // Lógica para restaurar la imagen inicial
+                  articleEditController.newArticle.coverImageArticle = image.copyWith();
+                  EglHelper.eglLogger('i', 'onPressedRestore: ${articleEditController.newArticle.coverImageArticle.toString()}');
+                },
+              ),
+            ),
+            40.ph,
+            if (articleEditController.newArticleItems.isNotEmpty)
+              ReorderableListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  for (ItemArticle item in articleEditController.newArticleItems)
+
+                    // ItemArticle item = articleEditController.newArticleItems[index];
+                    // if (item.imageItemArticle.isDefault) {
+                    //   item.imageItemArticle.modify(
+                    //     src: EglImagesPath.appCoverDefault,
+                    //     nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+                    //     isDefault: true,
+                    //   );
+                    // }
+                    Dismissible(
+                      key: UniqueKey(),
+                      background: Container(
+                        color: Colors.red[400],
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (direction) {
+                        if (direction == DismissDirection.startToEnd) {
+                          // Borrar mensaje
+                          articleEditController.discardItemArticle(item);
+                        }
+                      },
+                      child: Container(
+                          key: UniqueKey(),
+                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
+                          decoration: const BoxDecoration(
+                            // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+                            border: Border(
+                              top: BorderSide(
+                                color: EglColorsApp.borderTileArticleColor, // color del borde
+                                width: 2.0, // ancho del borde)
+                              ),
+                            ),
+                          ),
+                          child: EditItemArticle(itemArticle: item)),
+                      // child: Text('itemIndex: $index'),
+                    ),
+                ],
+                onReorder: (oldIndex, newIndex) {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  setState(() {
+                    final ItemArticle item = articleEditController.deleteItemArticle(oldIndex);
+                    articleEditController.insertItemArticle(newIndex, item);
+                  });
+                },
+                proxyDecorator: (Widget child, int index, Animation<double> animation) {
+                  return AnimatedBuilder(
+                    animation: animation,
+                    builder: (BuildContext context, _) {
+                      final animValue = Curves.easeInOut.transform(animation.value);
+                      final double elevation = lerpDouble(1, 1.05, animValue)!;
+                      return Material(
+                        elevation: elevation,
+                        color: Colors.grey[200],
+                        shadowColor: Colors.red[100],
+                        child: Transform.scale(
+                          scale: elevation,
+                          child: child,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            20.ph,
+            // if (articleEditController.newArticle.itemsArticle.isEmpty)
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    EglCircleIconButton(
+                      // key: UniqueKey(),
+                      backgroundColor: const Color(0xFFAAAAAA),
+                      icon: Icons.add_circle_outline, // Relojito hacia atrás
+                      onPressed: () {
+                        ItemArticle item = ItemArticle.clear();
+                        item.idArticleItemArticle = articleEditController.newArticle.idArticle;
+                        item.idItemArticle = articleEditController.articleItemsCount;
+                        item.imageItemArticle.modify(
+                          src: EglImagesPath.appCoverDefault,
+                          nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+                          isDefault: true,
+                        );
+                        articleEditController.addItemArticle = item;
+                      },
+                    ),
+                    10.pw,
+                  ],
+                ),
+                20.ph,
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// functions
+  Future<String> validateTitle(String text, {int minLength = 0, int maxLength = 99999}) async {
+    String textValidateTitle = '';
+
+    if (text.isEmpty && minLength > 0) {
+      textValidateTitle = 'Introduzca el título del artículo';
+    } else if (text.length < minLength) {
+      textValidateTitle = 'El título ha de tener $minLength carácteres como mínimo ';
+    } else if (text.length > maxLength) {
+      textValidateTitle = 'El título ha de tener $maxLength carácteres como máximo ';
+      // controller.getTe
+    } else {
+      textValidateTitle = '';
+    }
+    return textValidateTitle;
+  }
+
+  Future<String> validateAbstract(String text, {int minLength = 0, int maxLength = 99999}) async {
+    String textValidateAbstract = '';
+
+    if (text.isEmpty && minLength > 0) {
+      textValidateAbstract = 'Introduzca el abstract del artículo';
+    } else if (text.length < minLength) {
+      textValidateAbstract = 'El abstract ha de tener $minLength carácteres como mínimo ';
+    } else if (text.length > maxLength) {
+      textValidateAbstract = 'El abstract ha de tener $maxLength carácteres como máximo ';
+      // controller.getTe
+    } else {
+      textValidateAbstract = '';
+    }
+    return textValidateAbstract;
+  }
+
+// end
+}

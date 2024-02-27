@@ -131,7 +131,7 @@ class NotificationService extends GetxService {
           payload: {"idArticle": item['idArticle'].toString()}),
     );
     // bigPicture: 'asset://assets/images/eglos_logo.png',
-    Helper.eglLogger('i', 'NotificationService: createArticleNotification: fin');
+    EglHelper.eglLogger('i', 'NotificationService: createArticleNotification: fin');
   }
 
   @pragma("vm:entry-point")
@@ -182,9 +182,9 @@ class NotificationService extends GetxService {
 
     // Navigate into pages, avoiding to open the notification details page over another details page already opened
     // MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
-    Helper.eglLogger('w', 'onActionReceivedMethod /dashboard push ${receivedAction.id!.toString()}');
-    Helper.eglLogger('w', 'onActionReceivedMethod receivedAction.payload ${receivedAction.payload}');
-    Helper.eglLogger('w', 'onActionReceivedMethod receivedAction.payload[idArticle] ${receivedAction.payload?['idArticle']}');
+    EglHelper.eglLogger('w', 'onActionReceivedMethod /dashboard push ${receivedAction.id!.toString()}');
+    EglHelper.eglLogger('w', 'onActionReceivedMethod receivedAction.payload ${receivedAction.payload}');
+    EglHelper.eglLogger('w', 'onActionReceivedMethod receivedAction.payload[idArticle] ${receivedAction.payload?['idArticle']}');
 
     if (receivedAction.channelKey == 'avisos_noticias') {
       // Navigator.pushNamed(
@@ -225,28 +225,28 @@ class NotificationService extends GetxService {
   @pragma("vm:entry-point")
   static Future<void> onActionNotificationMethod(BuildContext context, ReceivedNotification receivedNotification) async {
     // Your code goes here
-    Helper.eglLogger('w', 'onActionNotificationMethod');
+    EglHelper.eglLogger('w', 'onActionNotificationMethod');
   }
 
   /// Use this method to detect when a new notification or a schedule is created
   @pragma("vm:entry-point")
   static Future<void> onNotificationCreatedMethod(BuildContext context, ReceivedNotification receivedNotification) async {
     // Your code goes here
-    Helper.eglLogger('i', 'onNotificationCreatedMethod');
+    EglHelper.eglLogger('i', 'onNotificationCreatedMethod');
   }
 
   /// Use this method to detect every time that a new notification is displayed
   @pragma("vm:entry-point")
   static Future<void> onNotificationDisplayedMethod(BuildContext context, ReceivedNotification receivedNotification) async {
     // Your code goes here
-    Helper.eglLogger('i', 'onNotificationDisplayedMethod');
+    EglHelper.eglLogger('i', 'onNotificationDisplayedMethod');
   }
 
   /// Use this method to detect if the user dismissed a notification
   @pragma("vm:entry-point")
   static Future<void> onDismissActionReceivedMethod(BuildContext context, ReceivedAction receivedAction) async {
     // Your code goes here
-    Helper.eglLogger('w', 'onDismissActionReceivedMethod');
+    EglHelper.eglLogger('w', 'onDismissActionReceivedMethod');
   }
 
   Future<Map<dynamic, dynamic>> getPendingNotifyArticlesList() async {
@@ -282,7 +282,7 @@ class NotificationService extends GetxService {
       // return list;
     } catch (error) {
       // print('Response status: ${response.statusCode}');
-      Helper.eglLogger('e', 'ArticlesService -> getPendingNotifyArticlesList -> Response try error: $error');
+      EglHelper.eglLogger('e', 'ArticlesService -> getPendingNotifyArticlesList -> Response try error: $error');
     }
     return Future.value(pending);
   }

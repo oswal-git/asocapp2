@@ -48,7 +48,7 @@ class UserItemController extends GetxController {
   }
 
   bool isLogin(UserItem user) {
-    Helper.eglLogger('i', 'isLogin: ');
+    EglHelper.eglLogger('i', 'isLogin: ');
 
     try {
       if (!session.isLogin) {
@@ -59,7 +59,7 @@ class UserItemController extends GetxController {
       userItem.value = user.clone();
       userItemIni.value = user.clone();
       userItemLast.value = user.clone();
-      Helper.eglLogger('i', 'isLogin: ${userItemIni.value.idAsociationUser}');
+      EglHelper.eglLogger('i', 'isLogin: ${userItemIni.value.idAsociationUser}');
       return true;
     } catch (e) {
       rethrow;
@@ -82,7 +82,7 @@ class UserItemController extends GetxController {
       loading.value = false;
       return response;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }
@@ -96,7 +96,7 @@ class UserItemController extends GetxController {
       loading.value = false;
       return response;
     } catch (e) {
-      Helper.toastMessage(e.toString());
+      EglHelper.toastMessage(e.toString());
       loading.value = false;
       return null;
     }

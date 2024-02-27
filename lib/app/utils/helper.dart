@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:asocapp/app/config/config.dart';
@@ -7,16 +12,21 @@ import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:html/parser.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:timezone/data/latest.dart' as tzl;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:intl/intl.dart';
 
 enum MessageType { info, warning, error }
 
-class Helper {
+typedef ValidateCallback = String Function(String text);
+
+class EglHelper {
   static void fieldFocus(BuildContext context, FocusNode currentNode, FocusNode nextFocus) {
     currentNode.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
@@ -158,6 +168,7 @@ class Helper {
         ),
       );
 
+  // Para mostrar avisos
   static popMessage(
     BuildContext context,
     MessageType messageType,
@@ -218,11 +229,281 @@ class Helper {
         });
   }
 
+  static Future<bool?> showConfirmationPopup({
+    String title = '¿Estás seguro de continuar?',
+    String message = '',
+    String textOkButton = 'Confirmar',
+    Color textColorOkButton = AppColors.whiteColor,
+    Color colorOkButton = AppColors.primaryMaterialColor,
+    String textCancelButton = 'Cancelar',
+    Color textColorCancelButton = AppColors.whiteColor,
+    Color colorCancelButton = AppColors.primaryMaterialColor,
+  }) async {
+    bool? result = await Get.defaultDialog(
+      title: title,
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(message, textAlign: TextAlign.center, style: const TextStyle()),
+            20.ph,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back(result: true); // Confirmar
+                  },
+                  child: Text(textOkButton),
+                ),
+                const SizedBox(width: 20),
+                OutlinedButton(
+                  onPressed: () {
+                    Get.back(result: false); // Cancelar
+                  },
+                  child: Text(textCancelButton),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return result;
+  }
+
+  static Future<void> editTextField(
+    BuildContext context, {
+    String title = 'Edit text',
+    String text = '',
+    double height = 550,
+    int maxCaracters = 0,
+    bool toolbarPos = true,
+    required ValueChanged<String> onUpdate,
+    required ValidateCallback onValidate,
+  }) async {
+    final HtmlEditorController htmlEditorController = HtmlEditorController();
+
+    String textBefore = text;
+    String textValidate = '';
+    String plainText = parse(textBefore).documentElement!.text;
+    int lengthPlainText = plainText.length;
+
+    List<Toolbar> defaultToolbarButtons = [
+      const StyleButtons(
+        style: false,
+      ),
+      const FontSettingButtons(
+        fontName: true,
+        fontSize: true,
+        fontSizeUnit: false,
+      ),
+      const FontButtons(
+        bold: true,
+        italic: true,
+        underline: true,
+        clearAll: false,
+        strikethrough: true,
+        superscript: true,
+        subscript: true,
+      ),
+      const ColorButtons(
+        foregroundColor: true,
+        highlightColor: true,
+      ),
+      const ListButtons(
+        ul: false,
+        ol: false,
+        listStyles: false,
+      ),
+      const ParagraphButtons(
+        alignLeft: true,
+        alignCenter: true,
+        alignRight: true,
+        alignJustify: true,
+        increaseIndent: false,
+        decreaseIndent: false,
+        textDirection: false,
+        lineHeight: true,
+        caseConverter: true,
+      ),
+      const InsertButtons(
+        link: false,
+        picture: false,
+        audio: false,
+        video: false,
+        otherFile: false,
+        table: false,
+        hr: false,
+      ),
+      const OtherButtons(
+        fullscreen: false,
+        codeview: false,
+        undo: true,
+        redo: true,
+        help: false,
+        copy: false,
+        paste: false,
+      ),
+    ];
+
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        insetPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        titlePadding: const EdgeInsets.only(left: 20.0, top: 8),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    String txtSalida = await htmlEditorController.getText();
+                    if (txtSalida.contains('src="data:')) {
+                      txtSalida = '<text removed due to base-64 data, displaying the text could cause the app to crash>';
+                    }
+                    Get.back();
+                    onUpdate(txtSalida);
+                  },
+                  icon: const Icon(Icons.check),
+                ),
+              ],
+            )
+          ],
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width - 30,
+          // height: MediaQuery.of(context).size.height - 30,
+          padding: const EdgeInsets.all(10.0),
+          decoration: const BoxDecoration(
+            // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.red, // color del borde
+                width: 2.0, // ancho del borde
+              ),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 5.0, right: 10.0, left: 10.0),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      textValidate,
+                      style: TextStyle(fontSize: 12, color: Colors.red[600]),
+                    ),
+                    Text(
+                      lengthPlainText.toString(),
+                      style: TextStyle(fontSize: 12, color: Colors.blue[600]),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.white70,
+                  height: 250,
+                  child: HtmlEditor(
+                    controller: htmlEditorController, //required
+                    htmlEditorOptions: HtmlEditorOptions(
+                      initialText: text,
+                      hint: "Your text here...",
+                      characterLimit: maxCaracters > 0 ? maxCaracters : null,
+                      // shouldEnsureVisible: true,
+                      autoAdjustHeight: true,
+                      adjustHeightForKeyboard: false,
+                      spellCheck: true,
+                    ),
+                    htmlToolbarOptions: HtmlToolbarOptions(
+                      toolbarPosition: toolbarPos ? ToolbarPosition.aboveEditor : ToolbarPosition.belowEditor,
+                      toolbarType: ToolbarType.nativeScrollable,
+                      toolbarItemHeight: 22,
+                      defaultToolbarButtons: defaultToolbarButtons,
+                    ),
+                    otherOptions: OtherOptions(
+                      height: height,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 248, 246, 244),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    callbacks: Callbacks(
+                      onChangeContent: (String? changed) async {
+                        EglHelper.eglLogger('i', 'content changed to $changed');
+                        plainText = parse(changed).documentElement!.text;
+                        lengthPlainText = plainText.length;
+                        // textValidate = validateText(plainText, minLength: 4, maxLength: 100);
+                        textValidate = onValidate(plainText);
+                        // htmlEditorController.addNotification(
+                        //     '<div style="display:flex; justify-content:space-between; align-items:center;"><div style="color: red;">$textValidate</div><div>${changed!.length.toString()}</div></div>',
+                        //     NotificationType.info);
+                        (context as Element).markNeedsBuild();
+                      },
+                      onFocus: () {
+                        EglHelper.eglLogger('i', 'editor focused');
+                      },
+                      onInit: () {
+                        EglHelper.eglLogger('i', 'editor inited');
+                        htmlEditorController.setFocus();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextButton(
+                      style: TextButton.styleFrom(backgroundColor: Colors.blueGrey),
+                      onPressed: () {
+                        htmlEditorController.toggleCodeView();
+                      },
+                      child: const Text('Html code', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static Future<String> apiURL() async {
     String apiURL = '';
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    androidInfo.isPhysicalDevice ? apiURL = Config.apiURLPhysicalDevice : apiURL = Config.apiURLEmulatorDevice;
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      apiURL = androidInfo.isPhysicalDevice ? EglConfig.apiURLPhysicalDevice : EglConfig.apiURLEmulatorDevice;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      eglLogger('i', 'El dispositivo es un emulador: ${iosInfo.isPhysicalDevice}');
+      eglLogger('i', 'Tipo de dispositivo: ${iosInfo.utsname.machine}');
+    }
 
     // IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
     // print('Is simulator: ${iosInfo.isPhysicalDevice}');
@@ -231,9 +512,9 @@ class Helper {
 
   static Future<String> parseApiUrlBody(String responseBody) async {
     try {
-      String apiUrl = await Helper.apiURL();
+      String apiUrl = await EglHelper.apiURL();
       //   eglLogger('w', 'responseBody: $responseBody');
-      String replacedBody = responseBody.replaceAll(Config.apiURLBD, apiUrl);
+      String replacedBody = responseBody.replaceAll(EglConfig.apiURLBD, apiUrl);
       //   eglLogger('w', 'replacedBody: $replacedBody');
       return replacedBody;
     } catch (_) {
@@ -302,6 +583,22 @@ class Helper {
     return formatter.parse(formatter.format(now));
   }
 
+  static DateTime aaaammddToDatetime(String aaaammdd) {
+    final year = int.parse(aaaammdd.substring(0, 4));
+    final month = int.parse(aaaammdd.substring(5, 7));
+    final day = int.parse(aaaammdd.substring(8, 10));
+
+    return DateTime(year, month, day);
+  }
+
+  static String datetimeToAaaammdd(DateTime date) {
+    final year = date.year;
+    final String month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
+  }
+
   static Map<dynamic, dynamic> getResolutionDevice() {
     // ignore: deprecated_member_use
     SingletonFlutterWindow window = WidgetsBinding.instance.window;
@@ -333,6 +630,131 @@ class Helper {
     };
 
     return resolutionDevice;
+  }
+
+  static Future<Map<dynamic, dynamic>> getSizeImage(Image image, double? maxWidth) async {
+    double rMaxWidth = maxWidth ?? Get.width;
+    double iWidth = rMaxWidth;
+    double iHeight = rMaxWidth / 2.0;
+
+    Completer completer = Completer();
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo info, bool _) {
+          completer.complete(info.image);
+          iWidth = info.image.width.toDouble();
+          iHeight = info.image.height.toDouble();
+
+          final factor = rMaxWidth / iWidth;
+          iHeight = factor * iHeight;
+        },
+      ),
+    );
+    final factor = rMaxWidth / iWidth;
+    iHeight = factor * iHeight;
+
+    Map<dynamic, dynamic> sizeImage = {
+      'width': rMaxWidth,
+      'height': iHeight,
+    };
+
+    return sizeImage;
+  }
+
+  static String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      String respText = '${text.substring(0, maxLength)}...';
+      return respText;
+    }
+  }
+
+  static bool osDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
+
+  static Size screnSize() => MediaQuery.of(Get.context!).size;
+
+  static double screnHeight() => MediaQuery.of(Get.context!).size.height;
+
+  static double screnWidth() => MediaQuery.of(Get.context!).size.width;
+
+  static Uint8List stringToUint8List(String dataImage) => const Base64Decoder().convert(dataImage);
+
+  static String generateChain({int length = 8, String type = 'all'}) {
+    String keyspace = '';
+
+    switch (type) {
+      case 'number':
+        keyspace = EglKeysConfig.KEYSPACE_NUMBER;
+        break;
+
+      case 'letters':
+        keyspace = EglKeysConfig.KEYSPACE_LETTERS;
+        break;
+
+      case 'all':
+      default:
+        keyspace = EglKeysConfig.KEYSPACE_ALL;
+        break;
+    }
+
+    String str = '';
+    int max = keyspace.length;
+    Random rng = Random();
+    if (max < 1) {
+      eglLogger('e', 'keyspace must be at least two characters long');
+      return '';
+    }
+    for (int i = 0; i < length; ++i) {
+      str = '$str${keyspace[rng.nextInt(max)]}';
+    }
+
+    return str;
+  }
+
+  static String getNameFilePath(String path, {String fileSeparator = '/', String extSeparator = '.'}) {
+    int posIni = path.lastIndexOf(fileSeparator) == -1 ? 0 : path.lastIndexOf(fileSeparator) + 1;
+    int posFin = path.lastIndexOf(extSeparator) == -1 ? path.length : path.lastIndexOf(extSeparator);
+    posFin = posFin > posIni ? posFin : path.length;
+    String name = path.substring(posIni, posFin);
+    return name;
+  }
+
+  static String getExtFilePath(String path, {String fileSeparator = '/', String extSeparator = '.'}) {
+    int posIni = path.lastIndexOf(extSeparator) == -1 ? path.length : path.lastIndexOf(extSeparator) + 1;
+    String ext = path.substring(posIni, path.length);
+    return ext;
+  }
+
+// functions
+  static String validateText(String text, {int minLength = 0, int maxLength = 99999}) {
+    String textValidate = '';
+
+    if (text.isEmpty && minLength > 0) {
+      textValidate = 'Introduzca el título del artículo';
+    } else if (text.length < minLength) {
+      textValidate = 'El título ha de tener $minLength carácteres como mínimo ';
+    } else if (text.length > maxLength) {
+      textValidate = 'El título ha de tener $maxLength carácteres como máximo ';
+      // controller.getTe
+    } else {
+      textValidate = '';
+    }
+    return textValidate;
+  }
+
+  static bool listsAreEqual(List<dynamic> list1, List<dynamic> list2) {
+    if (list1.length != list2.length) {
+      return false;
+    }
+
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
   // end class
 }

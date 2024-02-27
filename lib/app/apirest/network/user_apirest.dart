@@ -24,7 +24,7 @@ class UserApiRest {
       'Content-type': 'application/json',
     };
 
-    final url = await Config.uri(apiUser, '${Config.apiListAllQuestions}?user_name_user=$username&id_asociation_user=$asociationId');
+    final url = await EglConfig.uri(apiUser, '${EglConfig.apiListAllQuestions}?user_name_user=$username&id_asociation_user=$asociationId');
 
     final response = await http.get(url, headers: requestHeaders);
 
@@ -57,7 +57,7 @@ class UserApiRest {
 
     logger.i('answer_user: $key');
 
-    final url = await Config.uri(apiUser, Config.apiValidateKey);
+    final url = await EglConfig.uri(apiUser, EglConfig.apiValidateKey);
 
     try {
       final response = await http.post(url, headers: requestHeaders, body: body);
@@ -67,7 +67,7 @@ class UserApiRest {
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
-        final UserPassResponse userPassResponse = userPassResponseFromJson(await Helper.parseApiUrlBody(response.body));
+        final UserPassResponse userPassResponse = userPassResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
         // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userPassResponse;
@@ -77,7 +77,7 @@ class UserApiRest {
           error: null,
         );
       } else if (statusCode > 400) {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<UserPassResponse>(
           data: null,
           error: HttpError(
@@ -88,7 +88,7 @@ class UserApiRest {
           statusCode: statusCode,
         );
       } else {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<UserPassResponse>(
           data: null,
@@ -135,7 +135,7 @@ class UserApiRest {
 
     var len = await imageAvatar.length();
 
-    final url = await Config.uri(apiUser, Config.apiUserProfileAvatar);
+    final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfileAvatar);
 
     http.MultipartRequest request = http.MultipartRequest('POST', url);
 
@@ -171,7 +171,7 @@ class UserApiRest {
         // final body = await utf8.decodeStream(response.stream);
         logger.i('body($statusCode): $body');
 
-        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await Helper.parseApiUrlBody(body));
+        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(body));
 
         // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
@@ -184,7 +184,7 @@ class UserApiRest {
         Map map = jsonDecode(await response.stream.bytesToString());
         logger.i('response.stream.bytesToString($statusCode): $map');
         final body = await utf8.decodeStream(response.stream);
-        data = parseResponseBody(await Helper.parseApiUrlBody(body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(body));
         return HttpResult<UserAsocResponse>(
           data: null,
           error: HttpError(
@@ -198,7 +198,7 @@ class UserApiRest {
         Map map = jsonDecode(await response.stream.bytesToString());
         logger.i('response.stream.bytesToString($statusCode): $map');
         final body = await utf8.decodeStream(response.stream);
-        data = parseResponseBody(await Helper.parseApiUrlBody(body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(body));
         String message = data['message'];
         return HttpResult<UserAsocResponse>(
           data: null,
@@ -252,17 +252,17 @@ class UserApiRest {
       'date_updated_user': dateUpdatedUser,
     });
 
-    final url = await Config.uri(apiUser, Config.apiUserProfile);
+    final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfile);
 
     try {
       final response = await http.post(url, headers: requestHeaders, body: body);
 
+      EglHelper.eglLogger('i', 'Asociations Response body: ${response.body}');
       statusCode = response.statusCode;
 
       if (response.statusCode == 200) {
-        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await Helper.parseApiUrlBody(response.body));
+        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
-        // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
         return HttpResult<UserAsocResponse>(
           data: userAsocResponse,
@@ -270,7 +270,7 @@ class UserApiRest {
           error: null,
         );
       } else if (statusCode > 400) {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<UserAsocResponse>(
           data: null,
           error: HttpError(
@@ -281,7 +281,7 @@ class UserApiRest {
           statusCode: statusCode,
         );
       } else {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<UserAsocResponse>(
           data: null,
@@ -332,7 +332,7 @@ class UserApiRest {
       'date_updated_user': dateUpdatedUser,
     });
 
-    final url = await Config.uri(apiUser, Config.apiUserProfileStatus);
+    final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfileStatus);
 
     try {
       final response = await http.post(url, headers: requestHeaders, body: body);
@@ -340,7 +340,7 @@ class UserApiRest {
       statusCode = response.statusCode;
 
       if (response.statusCode == 200) {
-        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await Helper.parseApiUrlBody(response.body));
+        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
         // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
@@ -350,7 +350,7 @@ class UserApiRest {
           error: null,
         );
       } else if (statusCode > 400) {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<UserAsocResponse>(
           data: null,
           error: HttpError(
@@ -361,7 +361,7 @@ class UserApiRest {
           statusCode: statusCode,
         );
       } else {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<UserAsocResponse>(
           data: null,
@@ -405,7 +405,7 @@ class UserApiRest {
       'Authorization': 'Bearer ${session.getAuthToken}',
     };
 
-    final url = await Config.uri(apiUser, Config.apiListAll);
+    final url = await EglConfig.uri(apiUser, EglConfig.apiListAll);
     try {
       final response = await http.get(url, headers: requestHeaders);
 
@@ -414,7 +414,7 @@ class UserApiRest {
       // print('Response status: ${response.statusCode}');
       //   Helper.eglLogger('i', 'Response body: ${response.body}');
       if (response.statusCode == 200) {
-        final UsersListResponse usersListResponse = usersListUserResponseFromJson(await Helper.parseApiUrlBody(response.body));
+        final UsersListResponse usersListResponse = usersListUserResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
         // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
@@ -424,7 +424,7 @@ class UserApiRest {
           error: null,
         );
       } else if (statusCode > 400) {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<UsersListResponse>(
           data: null,
           error: HttpError(
@@ -435,7 +435,7 @@ class UserApiRest {
           statusCode: statusCode,
         );
       } else {
-        data = parseResponseBody(await Helper.parseApiUrlBody(response.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<UsersListResponse>(
           data: null,

@@ -39,7 +39,7 @@ class AsociationController extends GetxController {
               })
           .toList();
     }
-    Helper.eglLogger('i', _asociationsList.toString());
+    EglHelper.eglLogger('i', _asociationsList.toString());
     return Future.value(asociationsList);
   }
 
@@ -74,7 +74,7 @@ class AsociationController extends GetxController {
   Asociation getAsociationById(int idAsociation) {
     Asociation searchedAsociation = _asociations.firstWhere((element) => idAsociation == element.idAsociation);
 
-    Helper.eglLogger('d', 'getAsociationById: ${searchedAsociation.longNameAsociation}');
+    EglHelper.eglLogger('d', 'getAsociationById: ${searchedAsociation.longNameAsociation}');
 
     return searchedAsociation;
   }

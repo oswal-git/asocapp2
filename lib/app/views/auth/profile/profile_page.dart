@@ -41,10 +41,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        automaticallyImplyLeading: true,
-        title: Text('tUserProfile'.tr),
+      appBar: EglAppBar(
+        showBackArrow: true,
+        title: 'tUserProfile'.tr,
       ),
       body: SafeArea(
         child: Padding(
@@ -96,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           GestureDetector(
             onTap: () async {
-              Helper.showMultChoiceDialog(
+              EglHelper.showMultChoiceDialog(
                 optionsGetImage,
                 'tQuestions'.tr,
                 context: context,
@@ -303,35 +302,35 @@ class _ProfilePageState extends State<ProfilePage> {
 
                               //   AppLocale locale = Utils.getAppLocale(httpResult.data!.result!.dataUser.languageUser);
                               String language = profileController.userConnected.value.languageUser;
-                              String country = Helper.getAppCountryLocale(language);
+                              String country = EglHelper.getAppCountryLocale(language);
 
                               var locale = Locale(language, country);
                               Get.updateLocale(locale);
                               Intl.defaultLocale = country == '' ? language : '${language}_$country';
                               // userConnectedIni = profileController.userConnected.value.clone();
                               profileController.userConnectedLast.value = profileController.userConnected.value.clone();
-
-                              Helper.popMessage(
+                              profileController.checkIsFormValid();
+                              EglHelper.popMessage(
                                   _context!, MessageType.info, 'Usuario actualizado', profileController.userConnected.value.userNameUser);
                               //   'EglRoundButton: userConnected: ${profileController.userConnected.value}');
                               //   Navigator.pushNamed(_context!, RouteName.dashboard);
                               // setState(() {});
                               return;
                             } else {
-                              Helper.toastMessage(httpResult.error.toString());
+                              EglHelper.toastMessage(httpResult.error.toString());
                               return;
                             }
                           } else if (httpResult.statusCode == 404) {
-                            Helper.popMessage(
+                            EglHelper.popMessage(
                                 //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
                                 _context!,
                                 MessageType.info,
                                 '${'mUnexpectedError'.tr}.',
                                 '${'mNoScriptAvailable'.tr}.');
-                            Helper.eglLogger('e', httpResult.error?.data);
+                            EglHelper.eglLogger('e', httpResult.error?.data);
                             return;
                           }
-                          Helper.popMessage(
+                          EglHelper.popMessage(
                               //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
                               _context!,
                               MessageType.info,
@@ -339,12 +338,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               httpResult.error?.data);
                           return;
                         } else {
-                          Helper.popMessage(_context!, MessageType.info, 'No han habido cambios', 'Nada para modificar');
+                          EglHelper.popMessage(_context!, MessageType.info, 'No han habido cambios', 'Nada para modificar');
                           return;
                           // Utils.eglLogger('i', 'EglRoundButton: userConnected: ${profileController.userConnected.value}');
                         }
                       }
-                      Helper.popMessage(context, MessageType.info, 'Faltan campos por rellenar', 'No se ha podido modificar el perfil del usuario');
+                      EglHelper.popMessage(
+                          context, MessageType.info, 'Faltan campos por rellenar', 'No se ha podido modificar el perfil del usuario');
                       //   Helper.toastMessage(title: 'Error al modificar el perfil', content: const Text('No se ha podido modificar el perfil del usuario'));
                     },
                   )

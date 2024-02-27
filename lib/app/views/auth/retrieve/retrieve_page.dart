@@ -33,13 +33,13 @@ class _RetrievePageState extends State<RetrievePage> {
   @override
   void dispose() {
     // Helper.eglLogger('i', 'dispose ${StackTrace.current} $runtimeType');
-    Helper.eglLogger('i', 'dispose $runtimeType');
+    EglHelper.eglLogger('i', 'dispose $runtimeType');
     super.dispose();
   }
 
   @override
   void initState() {
-    Helper.eglLogger('i', '$runtimeType');
+    EglHelper.eglLogger('i', '$runtimeType');
     super.initState();
   }
 
@@ -64,8 +64,6 @@ class _RetrievePageState extends State<RetrievePage> {
   }
 
   Widget _formUI(BuildContext context) {
-    _context = context;
-
     return SingleChildScrollView(
       child: Obx(
         () => Padding(
@@ -262,7 +260,7 @@ class _RetrievePageState extends State<RetrievePage> {
                         retrieveController.emailTextController.text,
                       );
                       if (httpResult!.statusCode == 200) {
-                        Helper.showPopMessage(
+                        EglHelper.showPopMessage(
                           _context!,
                           'mRetrievePassword1'.tr,
                           'mRetrievePassword2'.tr,
@@ -282,9 +280,9 @@ class _RetrievePageState extends State<RetrievePage> {
                         );
                       } else if (httpResult.statusCode > 400) {
                         logger.i('userapp: ${httpResult.error!.data.toString()}');
-                        Helper.toastMessage('mUserNotFound'.tr);
+                        EglHelper.toastMessage('mUserNotFound'.tr);
                       } else {
-                        Helper.toastMessage(' ${httpResult.error!.data}');
+                        EglHelper.toastMessage(' ${httpResult.error!.data}');
                       }
                     }
                   } else if (retrieveController.showClave) {
@@ -300,7 +298,7 @@ class _RetrievePageState extends State<RetrievePage> {
                       if (httpResult!.statusCode == 200) {
                         logger.i('userapp: ${httpResult.data.toString()}');
                         // _showSingleChoicePassDialog(userPassResponse.result.passwordUser);
-                        Helper.showPopMessage(
+                        EglHelper.showPopMessage(
                           _context!,
                           'mNewPassword'.tr,
                           httpResult.data!.result.passwordUser,
@@ -325,9 +323,9 @@ class _RetrievePageState extends State<RetrievePage> {
                         return;
                       } else if (httpResult.statusCode > 400) {
                         logger.i('userapp: ${httpResult.error!.data.toString()}');
-                        Helper.toastMessage('mUserNotFound'.tr);
+                        EglHelper.toastMessage('mUserNotFound'.tr);
                       } else {
-                        Helper.toastMessage(' ${httpResult.error!.data}');
+                        EglHelper.toastMessage(' ${httpResult.error!.data}');
                       }
                     }
                   } else {
@@ -345,9 +343,10 @@ class _RetrievePageState extends State<RetrievePage> {
                           logger.i('Encontradas varias preguntas');
                           // _showMultChoiceDialog(retrieveController.questionList.questions);
                           // ignore: use_build_context_synchronously
-                          Helper.showMultChoiceDialog(
+                          EglHelper.showMultChoiceDialog(
                             retrieveController.questionList.questions,
                             'tQuestions'.tr,
+                            // ignore: use_build_context_synchronously
                             context: context,
                             onChanged: (value) {
                               retrieveController.questionList.question = value;
@@ -356,10 +355,10 @@ class _RetrievePageState extends State<RetrievePage> {
                             },
                           );
                         } else {
-                          Helper.toastMessage('${'mUserQuestionNotFound'.tr}: ${retrieveController.questionList}.status');
+                          EglHelper.toastMessage('${'mUserQuestionNotFound'.tr}: ${retrieveController.questionList}.status');
                         }
                       } else {
-                        Helper.toastMessage('${'mUserQuestionDataNotFound'.tr}: ${retrieveController.questionList}.status');
+                        EglHelper.toastMessage('${'mUserQuestionDataNotFound'.tr}: ${retrieveController.questionList}.status');
                       }
                       // answerTextController.text = '';
                       retrieveController.answerTextController.text = '';

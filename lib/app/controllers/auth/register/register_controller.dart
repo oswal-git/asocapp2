@@ -82,7 +82,7 @@ class RegisterController extends GetxController {
       loading = false;
       return userRepository.registerGenericUser(username, asociationId, password, question, answer);
     } catch (e) {
-      Helper.toastMessage((e.toString()));
+      EglHelper.toastMessage((e.toString()));
       loading = false;
       return null;
     }

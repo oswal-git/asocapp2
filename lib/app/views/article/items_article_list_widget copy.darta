@@ -1,0 +1,151 @@
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/controllers/article/article_edit_controller.dart';
+import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:asocapp/app/views/article/edit_item_article.dart';
+import 'package:asocapp/app/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class ItemsArticleListWidget extends StatefulWidget {
+  const ItemsArticleListWidget({
+    super.key,
+  });
+
+  @override
+  State<ItemsArticleListWidget> createState() => _ItemsArticleListWidgetState();
+}
+
+class _ItemsArticleListWidgetState extends State<ItemsArticleListWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final articleEditController = Get.put<ArticleEditController>(ArticleEditController());
+
+    return Obx(
+      () => Column(
+        children: [
+          // if (articleEditController.newArticleItems.isNotEmpty)
+          Column(
+            children: List.generate(articleEditController.newArticleItems.length, (index) {
+              int maxIndex = articleEditController.newArticleItems.length - 1;
+              ItemArticle item = articleEditController.newArticleItems[index];
+              if (item.imageItemArticle.isDefault) {
+                item.imageItemArticle.modify(
+                  src: EglImagesPath.appCoverDefault,
+                  nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+                  isDefault: true,
+                );
+              }
+              return Container(
+                padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.only(bottom: 10.0, top: 40.0),
+                      decoration: const BoxDecoration(
+                        // borderRadius: BorderRadius.circular(50.0), // ajusta el radio según sea necesario
+                        border: Border(
+                          top: BorderSide(
+                            color: EglColorsApp.borderTileArticleColor, // color del borde
+                            width: 2.0, // ancho del borde)
+                          ),
+                        ),
+                      ),
+                      child: EditItemArticle(itemIndex: index),
+                    ),
+                    // Index del item
+                    Positioned(
+                      top: 5, // Ajusta según sea necesario
+                      left: 20, // Ajusta según sea necesario
+                      child: EglCircleIconButton(
+                          text: index.toString(),
+                          backgroundColor: const Color(0xFF2505DF),
+                          icon: Icons.circle,
+                          color: Colors.transparent,
+                          size: 15,
+                          onPressed: () {}),
+                    ),
+                    // delete item
+                    Positioned(
+                      top: -16, // Ajusta según sea necesario
+                      right: 15, // Ajusta según sea necesario
+                      child: EglCircleIconButton(
+                          // key: UniqueKey(),
+                          backgroundColor: const Color(0xFFAAAAAA),
+                          icon: Icons.disabled_by_default_outlined, // X
+                          size: 20,
+                          onPressed: () {
+                            articleEditController.deleteItemArticle = index;
+                            setState(() {});
+                          }),
+                    ),
+                    if (index != maxIndex)
+                      Positioned(
+                        top: -16, // Ajusta según sea necesario
+                        right: 60, // Ajusta según sea necesario
+                        child: EglCircleIconButton(
+                          // key: UniqueKey(),
+                          backgroundColor: const Color(0xFFAAAAAA),
+                          icon: Icons.arrow_downward, // X
+                          size: 20,
+                          onPressed: () {
+                            articleEditController.moveDownItemArticle(index, index + 1);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    if (index > 0)
+                      Positioned(
+                        top: -16, // Ajusta según sea necesario
+                        right: index == maxIndex ? 60 : 105, // Ajusta según sea necesario
+                        child: EglCircleIconButton(
+                          // key: UniqueKey(),
+                          backgroundColor: const Color(0xFFAAAAAA),
+                          icon: Icons.arrow_upward, // X
+                          size: 20,
+                          onPressed: () {
+                            articleEditController.moveUpItemArticle(index, index - 1);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            }),
+          ),
+          20.ph,
+          // if (articleEditController.newArticle.itemsArticle.isEmpty)
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  EglCircleIconButton(
+                    // key: UniqueKey(),
+                    backgroundColor: const Color(0xFFAAAAAA),
+                    icon: Icons.add_circle_outline, // Relojito hacia atrás
+                    onPressed: () {
+                      ItemArticle item = ItemArticle.clear();
+                      item.imageItemArticle.modify(
+                        src: EglImagesPath.appCoverDefault,
+                        nameFile: EglHelper.getNameFilePath(EglImagesPath.appCoverDefault),
+                        isDefault: true,
+                      );
+                      articleEditController.addItemArticle = item;
+                      setState(() {});
+                    },
+                  ),
+                  10.pw,
+                ],
+              ),
+              20.ph,
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

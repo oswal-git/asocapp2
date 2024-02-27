@@ -16,10 +16,10 @@ class HomeController extends GetxController {
 
   Future<void> isLogin() async {
     if (session.isLogin) {
-      Timer(const Duration(seconds: 3), () => Get.to(() => const DashboardPage()));
+      Timer(const Duration(seconds: 3), () => Get.offAll(() => const DashboardPage()));
     } else {
       // Timer(const Duration(seconds: 3), () => Navigator.pushNamed(context, RouteName.register));
-      Timer(const Duration(seconds: 3), () => Get.to(() => const LoginPage()));
+      Timer(const Duration(seconds: 3), () => Get.offAll(() => const LoginPage()));
     }
   }
 }

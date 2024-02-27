@@ -44,14 +44,14 @@ class ListUsersController extends GetxController {
           _loading.value = false;
           return users;
         } else {
-          Helper.toastMessage(httpResult.error.toString());
+          EglHelper.toastMessage(httpResult.error.toString());
           _loading.value = false;
           return users;
         }
       }
 
       if (httpResult.error!.data == 'Expired token') {
-        Helper.showPopMessage(
+        EglHelper.showPopMessage(
           _context!,
           'mExpiredtoken'.tr,
           'mLoginIn'.tr,
@@ -71,7 +71,7 @@ class ListUsersController extends GetxController {
           },
         );
       } else {
-        Helper.popMessage(
+        EglHelper.popMessage(
             //   _context!, MessageType.info, 'Actualización no realizada', 'No se han podido actualizar los datos del usuario');
             _context!,
             MessageType.info,

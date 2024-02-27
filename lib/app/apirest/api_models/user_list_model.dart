@@ -100,13 +100,13 @@ class UserItem {
   });
 
   static UserItem fromJson(Map<String, dynamic> json) => UserItem(
-        idUser: int.parse(json["id_user"]),
-        idAsociationUser: int.parse(json["id_asociation_user"]),
+        idUser: json["id_user"],
+        idAsociationUser: json["id_asociation_user"],
         userNameUser: json['user_name_user'],
         emailUser: json['email_user'],
-        recoverPasswordUser: int.parse(json['recover_password_user']),
+        recoverPasswordUser: json['recover_password_user'],
         tokenUser: json['token_user'],
-        tokenExpUser: int.parse(json['token_exp_user']),
+        tokenExpUser: json['token_exp_user'],
         profileUser: json['profile_user'],
         statusUser: json['status_user'],
         nameUser: json['name_user'],

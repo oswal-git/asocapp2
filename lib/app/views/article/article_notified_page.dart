@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:asocapp/app/apirest/api_models/article_model.dart';
+import 'package:asocapp/app/apirest/api_models/article_api_model.dart';
 import 'package:asocapp/app/controllers/article/article_notified_controller.dart';
 import 'package:asocapp/app/resources/resources.dart';
 import 'package:asocapp/app/utils/utils.dart';
@@ -25,9 +25,9 @@ class ArticleNotifiedPage extends StatefulWidget {
 class _ArticleNotifiedPageState extends State<ArticleNotifiedPage> {
   final articleNotifiedController = Get.find<ArticleNotifiedController>();
 
-  Article article = Article.clear();
+  ArticleUser article = ArticleUser.clear();
 
-  Future<Article> getSingleArticle() async {
+  Future<ArticleUser> getSingleArticle() async {
     return articleNotifiedController.getSingleArticle(widget.articleNotifiedArguments.idArticle);
   }
 
@@ -35,7 +35,7 @@ class _ArticleNotifiedPageState extends State<ArticleNotifiedPage> {
   void initState() {
     super.initState();
 
-    getSingleArticle().then((Article value) {
+    getSingleArticle().then((ArticleUser value) {
       if (value.idArticle == 0) {
         articleNotifiedController.exitSession();
         Get.to(() => LoginPage);

@@ -40,11 +40,9 @@ class _ChangePageState extends State<ChangePage> {
 
     return Scaffold(
       // drawer: const NavBar(),
-      appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        automaticallyImplyLeading: true,
-        title: const Text(title),
-        centerTitle: true, // Centra el título
+      appBar: EglAppBar(
+        showBackArrow: true,
+        title: title,
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout_outlined), // Icono para la acción a la derecha
@@ -194,11 +192,11 @@ class _ChangePageState extends State<ChangePage> {
                     // setState(() {});
                     return;
                   }
-                  Helper.popMessage(_context!, MessageType.info, 'No se ha encontrado el usuario', 'Usuario, asociación o clave erroneas');
+                  EglHelper.popMessage(_context!, MessageType.info, 'No se ha encontrado el usuario', 'Usuario, asociación o clave erroneas');
                 } else if (userAsocData?.status == 400) {
-                  Helper.toastMessage(userAsocData!.message);
+                  EglHelper.toastMessage(userAsocData!.message);
                 } else {
-                  Helper.toastMessage(userAsocData!.message);
+                  EglHelper.toastMessage(userAsocData!.message);
                 }
                 changeController.loading = false;
                 return;

@@ -1,0 +1,370 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:asocapp/app/config/config.dart';
+import 'package:asocapp/app/models/article_model.dart';
+import 'package:asocapp/app/repositorys/repositorys.dart';
+import 'package:asocapp/app/resources/resources.dart';
+import 'package:asocapp/app/services/services.dart';
+import 'package:asocapp/app/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
+class ArticleEditController extends GetxController {
+  final SessionService session = Get.put(SessionService());
+  final ArticlesRepository articlesRepository = Get.put(ArticlesRepository());
+
+  final formKey = GlobalKey<FormState>();
+
+  final _newArticle = Rx<Article>(Article.clear());
+  Article get newArticle => _newArticle.value;
+  final passwordController = TextEditingController();
+  final newPasswordController = TextEditingController();
+
+  Rx<DateTime> selectedDatePublication = DateTime.now().obs;
+  Rx<DateTime> firstDatePublication = DateTime.now().obs;
+  Rx<DateTime> lastDatePublication = DateTime(3000).obs;
+  Rx<DateTime> selectedDateEffective = DateTime.now().obs;
+  Rx<DateTime> firstDateEffective = DateTime.now().obs;
+  Rx<DateTime> lastDateEffective = DateTime(3000).obs;
+  Rx<DateTime> selectedDateExpiration = DateTime(4000).obs;
+  Rx<DateTime> firstDateExpiration = DateTime.now().obs;
+  Rx<DateTime> lastDateExpiration = DateTime(4001).obs;
+
+  final _titleArticleFocusNode = FocusNode().obs;
+  FocusNode get titleArticleFocusNode => _titleArticleFocusNode.value;
+
+  final _abstractArticleFocusNode = FocusNode().obs;
+  FocusNode get abstractArticleFocusNode => _abstractArticleFocusNode.value;
+
+  final _categoryFocusNode = FocusNode().obs;
+  FocusNode get categoryFocusNode => _categoryFocusNode.value;
+
+  final _subcategoryFocusNode = FocusNode().obs;
+  FocusNode get subcategoryFocusNode => _subcategoryFocusNode.value;
+
+  final _stateFocusNode = FocusNode().obs;
+  FocusNode get stateFocusNode => _stateFocusNode.value;
+
+  List<dynamic> listArticleCategory = ArticleCategory.getListArticleCategory();
+  List<dynamic> listArticleSubcategory = ArticleSubcategory.getListArticleSubcategory();
+  List<dynamic> listArticleState = ArticleState.getListArticleState();
+
+  final _listSubcategory = Rx<List<dynamic>>([]);
+  List<dynamic> get listSubcategory => _listSubcategory.value;
+  void actualizelistSubcategory(String value) {
+    _listSubcategory.value = [];
+
+    final List<dynamic> list = listArticleSubcategory
+        .where((element) => element['category'].toString() == value)
+        .map((e) => {'value': e['value'], 'name': e['name']})
+        .toList();
+
+    _listSubcategory.value = list;
+  }
+
+  final _imageCoverChanged = false.obs;
+  bool get imageCoverChanged => _imageCoverChanged.value;
+  set imageCoverChanged(bool value) => _imageCoverChanged.value = value;
+
+  final _sizeImage = Rx<Map<dynamic, dynamic>>({
+    'width': Get.width,
+    'height': Get.width / 2,
+  });
+  Map<dynamic, dynamic> get sizeImage => _sizeImage.value;
+  set sizeImage(Map<dynamic, dynamic> value) => _sizeImage.value = value;
+
+  // Crop code
+  final cropImagePath = ''.obs;
+  final cropImageSize = ''.obs;
+
+  // Image code
+  final selectedImagePath = ''.obs;
+  final selectedImageSize = ''.obs;
+
+  // Compress code
+  final compressedImagePath = ''.obs;
+  final compressedImageSize = ''.obs;
+
+  final _imageCover = Rx<XFile?>(XFile(''));
+  XFile? get imageCover => _imageCover.value;
+  set imageCover(XFile? value) => _imageCover.value = value;
+
+  final _isFormValid = false.obs;
+  bool get isFormValid => _isFormValid.value;
+
+  bool checkIsFormValid() {
+    // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path}');
+    // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path != ''}');
+    return _isFormValid.value = ((formKey.currentState?.validate() ?? false));
+  }
+
+  @override
+  void onInit() {
+    // Simulating obtaining the user name from some local storage
+    passwordController.text = 'foo@foo.com';
+
+    // // Escucha cambios en selectedDatePublication
+    // ever(selectedDatePublication, (DateTime date) {
+    // });
+
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _titleArticleFocusNode.value.dispose();
+    _abstractArticleFocusNode.value.dispose();
+    _categoryFocusNode.value.dispose();
+    _subcategoryFocusNode.value.dispose();
+    _stateFocusNode.value.dispose();
+    super.onClose();
+  }
+
+  final Rx<Widget> imageWidget = Rx<Widget>(
+    const Image(
+      image: AssetImage(EglImagesPath.iconUserDefaultProfile),
+      fit: BoxFit.scaleDown,
+      color: Colors.amberAccent,
+    ),
+  );
+
+//   Widget get imageWidget => imageWidget.value;
+  Future<void> setImageWidget(XFile? imagePick) async {
+    _imageCover.value = imagePick;
+    // const double widthOval = 200.0;
+    // const double heightOval = 200.0;
+
+    if (imagePick == null) {
+      // ignore: curly_braces_in_flow_control_structures
+      if (_newArticle.value.coverImageArticle.src == '') {
+        imagePropertie.value = Image.asset(EglImagesPath.iconUserDefaultProfile);
+        final Image image = Image.asset(EglImagesPath.iconUserDefaultProfile);
+
+        await getSizeImage(image, Get.width * .8);
+        _sizeImage.refresh();
+
+        // double iWidth = pickedFile.
+        imageWidget.value = Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+            border: Border.all(
+              color: Colors.black, // color del borde
+              width: 1.0, // ancho del borde
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+            child: Image(
+              width: sizeImage['width'],
+              height: sizeImage['height'],
+              //   width: double.infinity,
+              //   height: 200,
+              image: const AssetImage(EglImagesPath.iconUserDefaultProfile),
+              //   fit: BoxFit.cover,
+              color: Colors.amberAccent,
+            ),
+          ),
+        );
+      } else {
+        imagePropertie.value = Image.network(_newArticle.value.coverImageArticle.src);
+        imageWidget.value = ClipOval(
+          child: Image.network(
+            _newArticle.value.coverImageArticle.src,
+            //   width: widthOval,
+            //   height: heightOval,
+            fit: BoxFit.cover,
+          ),
+        );
+      }
+    } else if (imagePick.path.substring(0, 4) == 'http') {
+      imagePropertie.value = Image.network(imagePick.path);
+      imageWidget.value = ClipOval(
+        child: Image.network(
+          imagePick.path,
+          //   width: widthOval,
+          //   height: heightOval,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      imagePropertie.value = Image.file(File(imagePick.path));
+      final Image image = Image.file(
+        File(imagePick.path),
+      );
+
+      await getSizeImage(image, Get.width * .8);
+      imageWidget.value = Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+          border: Border.all(
+            color: Colors.transparent, // color del borde
+            width: 2.0, // ancho del borde
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+          child: Image.file(
+            File(imagePick.path),
+            width: sizeImage['width'],
+            height: sizeImage['height'],
+            fit: BoxFit.fill,
+          ),
+        ),
+      );
+    }
+  }
+
+  final Rx<Image> imagePropertie = Rx<Image>(Image.asset(EglImagesPath.iconUserDefaultProfile));
+
+//   Widget get imageWidget => imageWidget.value;
+  Future<void> getImageWidget(XFile? imagePick) async {
+    _imageCover.value = imagePick;
+    // const double widthOval = 200.0;
+    // const double heightOval = 200.0;
+
+    if (imagePick == null) {
+      // ignore: curly_braces_in_flow_control_structures
+      if (_newArticle.value.coverImageArticle.src == '') {
+        imagePropertie.value = Image.asset(EglImagesPath.iconUserDefaultProfile);
+        final Image image = Image.asset(EglImagesPath.iconUserDefaultProfile);
+
+        await getSizeImage(image, Get.width * .8);
+        _sizeImage.refresh();
+
+        // double iWidth = pickedFile.
+        imageWidget.value = Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+            border: Border.all(
+              color: Colors.black, // color del borde
+              width: 1.0, // ancho del borde
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+            child: Image(
+              width: sizeImage['width'],
+              height: sizeImage['height'],
+              //   width: double.infinity,
+              //   height: 200,
+              image: const AssetImage(EglImagesPath.iconUserDefaultProfile),
+              //   fit: BoxFit.cover,
+              color: Colors.amberAccent,
+            ),
+          ),
+        );
+      } else {
+        imagePropertie.value = Image.network(_newArticle.value.coverImageArticle.src);
+        imageWidget.value = ClipOval(
+          child: Image.network(
+            _newArticle.value.coverImageArticle.src,
+            //   width: widthOval,
+            //   height: heightOval,
+            fit: BoxFit.cover,
+          ),
+        );
+      }
+    } else if (imagePick.path.substring(0, 4) == 'http') {
+      imagePropertie.value = Image.network(imagePick.path);
+      imageWidget.value = ClipOval(
+        child: Image.network(
+          imagePick.path,
+          //   width: widthOval,
+          //   height: heightOval,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      imagePropertie.value = Image.file(File(imagePick.path));
+      final Image image = Image.file(
+        File(imagePick.path),
+      );
+
+      await getSizeImage(image, Get.width * .8);
+      imageWidget.value = Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+          border: Border.all(
+            color: Colors.transparent, // color del borde
+            width: 2.0, // ancho del borde
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0), // ajusta el radio según sea necesario
+          child: Image.file(
+            File(imagePick.path),
+            width: sizeImage['width'],
+            height: sizeImage['height'],
+            fit: BoxFit.fill,
+          ),
+        ),
+      );
+    }
+  }
+
+  pickImage(String option) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: option == 'camera' ? ImageSource.camera : ImageSource.gallery);
+    if (pickedFile != null) {
+      //   selectedImagePath = File(pickedFile.path);
+      selectedImagePath.value = pickedFile.path;
+      selectedImageSize.value = "${(File(selectedImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // Crop
+      final cropImageFile =
+          await ImageCropper().cropImage(sourcePath: selectedImagePath.value, maxWidth: 512, maxHeight: 512, compressFormat: ImageCompressFormat.png);
+      cropImagePath.value = cropImageFile!.path;
+      cropImageSize.value = "${(File(cropImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // Compress
+      final dir = Directory.systemTemp;
+      final targetPath = '${dir.absolute.path}/tempimage${EglHelper.generateChain()}.png';
+
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        cropImagePath.value,
+        targetPath,
+        quality: 90,
+        format: CompressFormat.png,
+      );
+      compressedImagePath.value = compressedFile!.path;
+      compressedImageSize.value = "${(File(compressedImagePath.value).lengthSync() / 1024 / 1024).toStringAsFixed(2)} Mb";
+
+      // final String imageBase64 = base64Encode(imageFile.readAsBytesSync());
+      await setImageWidget(compressedFile);
+      _imageCoverChanged.value = true;
+    }
+    //   Helper.eglLogger('i', 'isLogin: ${profileController.imageCover!.path}');
+    //   Helper.eglLogger('i', 'isLogin: ${profileController.imageCover!.path != ''}');
+    checkIsFormValid();
+  }
+
+  Future<void> getSizeImage(Image image, double? maxWidth) async {
+    double rMaxWidth = maxWidth ?? Get.width;
+    double iWidth = rMaxWidth;
+    double iHeight = rMaxWidth / 2.0;
+
+    Completer completer = Completer();
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo info, bool _) async {
+          completer.complete(info.image);
+          iWidth = info.image.width.toDouble();
+          iHeight = info.image.height.toDouble();
+
+          final factor = rMaxWidth / iWidth;
+          iHeight = factor * iHeight;
+
+          _sizeImage.value = {
+            'width': rMaxWidth,
+            'height': iHeight,
+          };
+          // await setImageWidget(image);
+        },
+      ),
+    );
+  }
+}
