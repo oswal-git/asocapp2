@@ -207,6 +207,7 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
                           if (direction == DismissDirection.startToEnd) {
                             // Borrar mensaje
                             articleEditController.discardItemArticle(item);
+                            articleEditController.checkIsFormValid();
                           }
                         },
                         confirmDismiss: (direction) async {
@@ -239,6 +240,7 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
                     // setState(() {
                     final ItemArticle item = articleEditController.deleteItemArticle(oldIndex);
                     articleEditController.insertItemArticle(newIndex, item);
+                    articleEditController.checkIsFormValid();
                     // });
                   },
                   proxyDecorator: (Widget child, int index, Animation<double> animation) {

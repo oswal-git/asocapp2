@@ -191,7 +191,7 @@ class ArticleUser extends Article {
         dateDeletedArticle: json["date_deleted_article"],
         dateCreatedArticle: (json["date_created_article"]),
         dateUpdatedArticle: (json["date_updated_article"]),
-        numOrder: json["num_order"],
+        numOrder: json.containsKey("num_order") ? json["num_order"] : 0,
         idUser: json["id_user"],
         idAsociationUser: json["id_asociation_user"],
         emailUser: json["email_user"],

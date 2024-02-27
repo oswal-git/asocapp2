@@ -250,13 +250,6 @@ class ArticlesApiRest {
     //add headers
     request.headers.addAll(requestHeaders);
 
-    //adding params
-    request.fields['article'] = jsonEncode(articlePlain.toJson());
-    request.fields['action'] = 'create';
-    request.fields['module'] = 'articles';
-    request.fields['prefix'] = 'images/asociation-${articlePlain.idAsociationArticle.toString()}';
-    request.fields['user_name'] = _session.userConnected.nameUser;
-
     if (imageCoverArticle.isSelectedFile) {
       XFile image = imageCoverArticle.fileImage;
       String name = imageCoverArticle.nameFile;
@@ -278,10 +271,12 @@ class ArticlesApiRest {
     }
 
     for (var i = 0; i < articleItems.length; i++) {
-      if (articleItems[i].imageItemArticle.fileImage != null) {
-        XFile image = articleItems[i].imageItemArticle.fileImage;
+      ItemArticle itemImageArticle = articleItems[i];
+      ImageArticle imageItem = itemImageArticle.imageItemArticle;
+      if (imageItem.fileImage != null) {
+        XFile image = imageItem.fileImage;
         int id = articleItems[i].idItemArticle;
-        String name = articleItems[i].imageItemArticle.nameFile;
+        String name = imageItem.nameFile;
 
         final http.ByteStream stream = http.ByteStream(image.openRead());
         stream.cast();
@@ -294,8 +289,21 @@ class ArticlesApiRest {
         );
 
         request.files.add(multiport);
+      } else if (imageItem.idImage != 0 && imageItem.isDefault) {
+        articlePlain.itemsArticlePlain[i].deleteImage = true;
+        articlePlain.itemsArticlePlain[i].idDeleteImage = itemImageArticle.imagesIdItemArticle;
+      } else if (imageItem.idImage != 0 && imageItem.isChange) {
+        articlePlain.itemsArticlePlain[i].deleteImage = true;
+        articlePlain.itemsArticlePlain[i].idDeleteImage = itemImageArticle.imagesIdItemArticle;
       }
     }
+
+    //adding params
+    request.fields['article'] = jsonEncode(articlePlain.toJson());
+    request.fields['action'] = 'modify';
+    request.fields['module'] = 'articles';
+    request.fields['prefix'] = 'images/asociation-${articlePlain.idAsociationArticle.toString()}';
+    request.fields['user_name'] = _session.userConnected.nameUser;
 
     try {
       final response = await request.send();

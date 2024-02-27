@@ -96,6 +96,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
                           }
                           return item;
                         });
+                        articleEditController.checkIsFormValid();
                         setState(() {});
                       }
                     },
@@ -137,6 +138,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
                 }
                 return item;
               });
+              articleEditController.checkIsFormValid();
               EglHelper.eglLogger('i', 'onPressedDefault: ${widget.itemArticle.imageItemArticle.toString()}');
             },
             onPressedDefault: (ImageArticle image) {
@@ -149,6 +151,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
                 }
                 return item;
               });
+              articleEditController.checkIsFormValid();
               EglHelper.eglLogger('i', 'onPressedDefault: ${widget.itemArticle.imageItemArticle.toString()}');
             },
             onPressedRestore: (ImageArticle image) {
@@ -161,6 +164,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
                 }
                 return item;
               });
+              articleEditController.checkIsFormValid();
               EglHelper.eglLogger('i', 'onPressedRestore: ${widget.itemArticle.imageItemArticle.toString()}');
             },
           ),

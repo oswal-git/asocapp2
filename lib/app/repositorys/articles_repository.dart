@@ -26,7 +26,7 @@ class ArticlesRepository {
 
   Future<HttpResult<ArticleUserResponse>?> modifyArticle(
       ArticlePlain articlePlain, ImageArticle imageCoverArticle, List<ItemArticle> articleItems) async {
-    return articlesApiRest.createArticle(articlePlain, imageCoverArticle, articleItems);
+    return articlesApiRest.modifyArticle(articlePlain, imageCoverArticle, articleItems);
   }
 
   Future<HttpResult<BasicResponse>?> deleteArticle(int idArticle, String dateUpdatedArticle) async {

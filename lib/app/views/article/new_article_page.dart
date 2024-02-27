@@ -75,6 +75,35 @@ class _NewArticlePageState extends State<NewArticlePage> {
     // ignore: no_leading_underscores_for_local_identifiers
     final ArticleDataTabs _tabs = Get.put(ArticleDataTabs());
 
+    leadingOnPressed() {
+      bool articleChanged = !(widget.articleEditController.newArticle == widget.articleEditController.oldArticle);
+      bool itemsChanged = !(EglHelper.listsAreEqual(widget.articleEditController.newArticleItems, widget.articleEditController.oldArticleItems));
+      if (articleChanged || itemsChanged) {
+        EglHelper.showConfirmationPopup(
+          title: 'Descartar modificaciones del artículo',
+          textOkButton: 'Descartar',
+          message: 'Seguro que quieres descartar los cambios en el artículo ${widget.articleEditController.newArticle.titleArticle}',
+        ).then((value) {
+          // Manejar el resultado aquí si es nec,esario
+          if (value != null && value == true) {
+            // Confirmado
+            articleChanged ? widget.articleEditController.newArticle = widget.articleEditController.oldArticle : null;
+            itemsChanged
+                ? widget.articleEditController.newArticleItems = widget.articleEditController.oldArticleItems.map((item) => item.copyWith()).toList()
+                : null;
+            Get.back();
+            return;
+          } else {
+            // Cancelado
+            return;
+          }
+        });
+      } else {
+        Get.back();
+        return;
+      }
+    }
+
     createArticle() async {
       ArticlePlain articlePlain = ArticlePlain.fromArticle(article: widget.articleEditController.newArticle);
       ImageArticle imageCoverArticle = widget.articleEditController.newArticle.coverImageArticle;
@@ -123,8 +152,8 @@ class _NewArticlePageState extends State<NewArticlePage> {
     modifyArticle() async {
       ArticlePlain articlePlain = ArticlePlain.fromArticle(article: widget.articleEditController.newArticle);
       ImageArticle imageCoverArticle = widget.articleEditController.newArticle.coverImageArticle;
-      EglHelper.eglLogger('i', widget.articleEditController.newArticle.toString());
-      EglHelper.eglLogger('i', widget.articleEditController.newArticleItems.toString());
+      // EglHelper.eglLogger('i', widget.articleEditController.newArticle.toString());
+      // EglHelper.eglLogger('i', widget.articleEditController.newArticleItems.toString());
       HttpResult<ArticleUserResponse>? httpResult = await widget.articleEditController.modifyArticle(
         context,
         articlePlain,
@@ -153,7 +182,7 @@ class _NewArticlePageState extends State<NewArticlePage> {
       } else if (httpResult.statusCode == 404) {
         if (context.mounted) {
           EglHelper.popMessage(context, MessageType.info, '${'mUnexpectedError'.tr}.', '${'mNoScriptAvailable'.tr}.');
-          EglHelper.eglLogger('e', httpResult.error?.data);
+          EglHelper.eglLogger('e', httpResult.error?.data['message']);
         }
         return;
       } else {
@@ -175,32 +204,7 @@ class _NewArticlePageState extends State<NewArticlePage> {
             toolbarHeight: 80,
             showBackArrow: false,
             leadingIcon: Icons.arrow_back,
-            leadingOnPressed: () {
-              if (widget.articleEditController.newArticle == widget.articleEditController.oldArticle &&
-                  Set.from(widget.articleEditController.newArticleItems) == Set.from(widget.articleEditController.oldArticleItems)) {
-                Get.back();
-                return;
-              } else {
-                EglHelper.showConfirmationPopup(
-                  title: 'Descartar modificaciones del artículo',
-                  textOkButton: 'Descartar',
-                  message: 'Seguro que quieres descartar los cambios en el artículo ${widget.articleEditController.newArticle.titleArticle}',
-                ).then((value) {
-                  // Manejar el resultado aquí si es nec,esario
-                  if (value != null && value == true) {
-                    // Confirmado
-                    widget.articleEditController.newArticle = widget.articleEditController.oldArticle;
-                    widget.articleEditController.newArticleItems =
-                        widget.articleEditController.oldArticleItems.map((item) => item.copyWith()).toList();
-                    Get.back();
-                    return;
-                  } else {
-                    // Cancelado
-                    return;
-                  }
-                });
-              }
-            },
+            leadingOnPressed: () => leadingOnPressed(),
             leadingWidget: null,
             bottom: TabBar(
               controller: _tabs.controller,

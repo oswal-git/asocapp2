@@ -55,6 +55,7 @@ class ArticleEditController extends GetxController {
 
   void insertItemArticle(int index, ItemArticle item) {
     _newArticleItems.value.insert(index, item);
+    _newArticle.value.itemsArticle.insert(index, item);
     _articleItemsCount.value = _newArticleItems.value.length;
     // _newArticle.value.itemsArticle = _newArticleItems.value;
     _newArticle.refresh();
@@ -62,6 +63,7 @@ class ArticleEditController extends GetxController {
 
   ItemArticle deleteItemArticle(int value) {
     final ItemArticle item = _newArticleItems.value.removeAt(value);
+    final ItemArticle item1 = _newArticle.value.itemsArticle.removeAt(value);
     _articleItemsCount.value = _newArticleItems.value.length;
     // _newArticle.value.itemsArticle = _newArticleItems.value;
     _newArticle.refresh();
@@ -212,7 +214,7 @@ class ArticleEditController extends GetxController {
 
     try {
       loading = false;
-      return articlesRepository.createArticle(articlePlain, imageCoverArticle, articleItems);
+      return articlesRepository.modifyArticle(articlePlain, imageCoverArticle, articleItems);
     } catch (e) {
       EglHelper.toastMessage((e.toString()));
       loading = false;

@@ -13,6 +13,8 @@ class ItemArticlePlain {
   String textItemArticle;
   int imagesIdItemArticle;
   String dateCreatedItemArticle;
+  bool deleteImage;
+  int idDeleteImage;
 
   ItemArticlePlain({
     required this.idItemArticle,
@@ -20,6 +22,8 @@ class ItemArticlePlain {
     required this.textItemArticle,
     required this.imagesIdItemArticle,
     required this.dateCreatedItemArticle,
+    this.deleteImage = false,
+    this.idDeleteImage = 0,
   });
 
   factory ItemArticlePlain.fromItemArticle(
@@ -31,6 +35,8 @@ class ItemArticlePlain {
       textItemArticle: itemArticle.textItemArticle,
       imagesIdItemArticle: itemArticle.imagesIdItemArticle,
       dateCreatedItemArticle: itemArticle.dateCreatedItemArticle,
+      deleteImage: false,
+      idDeleteImage: 0,
     );
   }
 
@@ -40,6 +46,8 @@ class ItemArticlePlain {
         textItemArticle: json["text_item_article"],
         imagesIdItemArticle: json["images_id_item_article"],
         dateCreatedItemArticle: (json["date_created_item_article"]),
+        deleteImage: (json["delete_image"]),
+        idDeleteImage: (json["id_delete_image"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -48,6 +56,8 @@ class ItemArticlePlain {
         "text_item_article": textItemArticle,
         "images_id_item_article": imagesIdItemArticle,
         "date_created_item_article": dateCreatedItemArticle,
+        "delete_image": deleteImage,
+        "id_delete_image": idDeleteImage,
       };
 
   @override
@@ -60,6 +70,8 @@ class ItemArticlePlain {
     cadena = '$cadena textItemArticle $textItemArticle';
     cadena = '$cadena imagesIdItemArticle ${imagesIdItemArticle.toString()}';
     cadena = '$cadena dateCreatedItemArticle $dateCreatedItemArticle';
+    cadena = '$cadena deleteImage $deleteImage';
+    cadena = '$cadena idDeleteImage $idDeleteImage';
     return cadena;
   }
 
@@ -70,6 +82,8 @@ class ItemArticlePlain {
       textItemArticle: '',
       imagesIdItemArticle: 0,
       dateCreatedItemArticle: '',
+      deleteImage: false,
+      idDeleteImage: 0,
     );
   }
 
@@ -80,6 +94,8 @@ class ItemArticlePlain {
     ImageArticle? imageItemArticle,
     int? imagesIdItemArticle,
     String? dateCreatedItemArticle,
+    bool? deleteImage,
+    int? idDeleteImage,
   }) {
     return ItemArticlePlain(
       idItemArticle: idItemArticle ?? this.idItemArticle,
@@ -87,6 +103,8 @@ class ItemArticlePlain {
       textItemArticle: textItemArticle ?? this.textItemArticle,
       imagesIdItemArticle: imagesIdItemArticle ?? this.imagesIdItemArticle,
       dateCreatedItemArticle: dateCreatedItemArticle ?? this.dateCreatedItemArticle,
+      deleteImage: deleteImage ?? this.deleteImage,
+      idDeleteImage: idDeleteImage ?? this.idDeleteImage,
     );
   }
 }
