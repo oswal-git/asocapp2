@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:asocapp/app/models/article_model.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/utils/utils.dart';
 
 ArticleNotCover articleNotCoverRequestFromJson(String str) => ArticleNotCover.fromJson(json.decode(str));
 
@@ -143,6 +144,49 @@ class ArticleNotCover {
 
     return cadena;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ArticleNotCover &&
+          runtimeType == other.runtimeType &&
+          idArticle == other.idArticle &&
+          idAsociationArticle == other.idAsociationArticle &&
+          idUserArticle == other.idUserArticle &&
+          categoryArticle == other.categoryArticle &&
+          subcategoryArticle == other.subcategoryArticle &&
+          classArticle == other.classArticle &&
+          stateArticle == other.stateArticle &&
+          publicationDateArticle == other.publicationDateArticle &&
+          effectiveDateArticle == other.effectiveDateArticle &&
+          expirationDateArticle == other.expirationDateArticle &&
+          titleArticle == other.titleArticle &&
+          abstractArticle == other.abstractArticle &&
+          ubicationArticle == other.ubicationArticle &&
+          dateDeletedArticle == other.dateDeletedArticle &&
+          dateCreatedArticle == other.dateCreatedArticle &&
+          dateUpdatedArticle == other.dateUpdatedArticle &&
+          EglHelper.listsAreEqual(itemsArticle, other.itemsArticle);
+
+  @override
+  int get hashCode =>
+      idArticle.hashCode ^
+      idAsociationArticle.hashCode ^
+      idUserArticle.hashCode ^
+      categoryArticle.hashCode ^
+      subcategoryArticle.hashCode ^
+      classArticle.hashCode ^
+      stateArticle.hashCode ^
+      publicationDateArticle.hashCode ^
+      effectiveDateArticle.hashCode ^
+      expirationDateArticle.hashCode ^
+      titleArticle.hashCode ^
+      abstractArticle.hashCode ^
+      ubicationArticle.hashCode ^
+      dateDeletedArticle.hashCode ^
+      dateCreatedArticle.hashCode ^
+      dateUpdatedArticle.hashCode ^
+      itemsArticle.hashCode;
 
   factory ArticleNotCover.clear() {
     return ArticleNotCover(

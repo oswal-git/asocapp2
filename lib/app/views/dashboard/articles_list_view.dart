@@ -7,7 +7,7 @@ import 'package:asocapp/app/services/services.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
 import 'package:asocapp/app/views/article/article_page.dart';
-import 'package:asocapp/app/views/article/new_article_page.dart';
+import 'package:asocapp/app/views/article/edit_article_page.dart';
 import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ class _ArticlesListViewState extends State<ArticlesListView> {
               ? articleController.getAllArticlesList()
               : articleController.getArticlesPublicatedList(), // getArticlesPublicatedList(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data.length > 0) {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
@@ -150,7 +150,7 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                               IArticleArguments args = IArticleArguments(
                                 article,
                               );
-                              Get.to(() => NewArticlePage(articleArguments: args));
+                              Get.to(() => EditArticlePage(articleArguments: args));
                             },
                           ),
                         ),
@@ -191,13 +191,31 @@ class _ArticlesListViewState extends State<ArticlesListView> {
                   '${snapshot.error}',
                 ),
               );
-            } else {
-              return const Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            } else if (snapshot.hasData && !session.thereIsInternetconnection) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(),
+                    const Text(
+                      'No hay conexxión a internet',
+                    ),
+                    EglRoundButton(
+                      onPress: () => articleController.getArticles(),
+                      title: 'Intentar de nuevo',
+                    )
                   ],
+                ),
+              );
+            } else {
+              return InkWell(
+                onTap: () => articleController.getArticles(),
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                    ],
+                  ),
                 ),
               );
             }

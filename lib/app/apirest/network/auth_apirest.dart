@@ -1,30 +1,36 @@
 import 'dart:convert';
 
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
+import 'package:asocapp/app/apirest/network/network.dart';
 import 'package:asocapp/app/apirest/response/response.dart';
 import 'package:asocapp/app/apirest/utils/utils.dart';
 import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:logger/logger.dart';
 
 class AuthApiRest {
   SessionService session = Get.put<SessionService>(SessionService());
+  final ApiClient apiClient = ApiClient();
 
   static String apiUser = 'users';
   static Logger logger = Logger();
 
   Future<HttpResult<UserAsocResponse>?> registerGenericUser(
-      String username, int asociationId, String password, String question, String answer) async {
+    String username,
+    int asociationId,
+    String password,
+    String question,
+    String answer,
+  ) async {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    // };
 
     final body = jsonEncode({
       'user_name_user': username,
@@ -39,7 +45,7 @@ class AuthApiRest {
     final url = await EglConfig.uri(apiUser, EglConfig.apiRegister);
 
     try {
-      final response = await http.post(url, headers: requestHeaders, body: body);
+      final response = await apiClient.post(url, body);
 
       statusCode = response.statusCode;
 
@@ -89,10 +95,10 @@ class AuthApiRest {
   }
 
   Future<UserAsocResponse?> login(String username, int asociationId, String password) async {
-    Map<String, String> requestHeaders = {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Charset': 'utf-8',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-Type': 'application/json;charset=UTF-8',
+    //   'Charset': 'utf-8',
+    // };
 
     final body = jsonEncode({
       'user_name_user': username,
@@ -104,14 +110,14 @@ class AuthApiRest {
 
     final url = await EglConfig.uri(apiUser, EglConfig.apiUserLogin);
 
-    final response = await http.post(url, headers: requestHeaders, body: body);
+    final response = await apiClient.post(url, body);
 
     // logger.i('Response status: ${response.statusCode}');
     // logger.i('Tamaño body: ${response.body.length}');
     // logger.i('Response body: ${response.body.substring(0, 500)}');
     // logger.i('Response body: ${response.body.substring(500, 1000)}');
     // logger.i('Response body: ${response.body.substring(1000, response.body.length)}');
-    final dynamic responseBody = await ApiResponse.retrunResponse(response);
+    final dynamic responseBody = await ApiResponse.returnResponse(response);
 
     if (response.statusCode == 200) {
       //   Helper.eglLogger('w', 'Response body: $responseBody');
@@ -126,10 +132,10 @@ class AuthApiRest {
   }
 
   Future<UserAsocResponse?> change(String username, int asociationId, String password, String newPassword) async {
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${session.getAuthToken}',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    //   'Authorization': 'Bearer ${session.getAuthToken}',
+    // };
 
     final body = jsonEncode({
       'user_name_user': username,
@@ -142,14 +148,14 @@ class AuthApiRest {
 
     final url = await EglConfig.uri(apiUser, EglConfig.apiChange);
 
-    final response = await http.post(url, headers: requestHeaders, body: body);
+    final response = await apiClient.post(url, body, token: '${session.getAuthToken}');
 
     // logger.i('Response status: ${response.statusCode}');
     // logger.i('Tamaño body: ${response.body.length}');
     // logger.i('Response body: ${response.body.substring(0, 500)}');
     // logger.i('Response body: ${response.body.substring(500, 1000)}');
     // logger.i('Response body: ${response.body.substring(1000, response.body.length)}');
-    final dynamic responseBody = await ApiResponse.retrunResponse(response);
+    final dynamic responseBody = await ApiResponse.returnResponse(response);
 
     if (response.statusCode == 200) {
       logger.i('Response body: $responseBody');
@@ -166,10 +172,6 @@ class AuthApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-    };
-
     final body = jsonEncode({
       'email_user': email,
     });
@@ -179,7 +181,7 @@ class AuthApiRest {
     final url = await EglConfig.uri(apiUser, EglConfig.apiReset);
 
     try {
-      final response = await http.post(url, headers: requestHeaders, body: body);
+      final response = await apiClient.post(url, body);
 
       statusCode = response.statusCode;
 

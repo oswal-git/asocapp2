@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:asocapp/app/apirest/network/network.dart';
 import 'package:asocapp/app/apirest/response/response.dart';
 import 'package:asocapp/app/apirest/utils/utils.dart';
 import 'package:asocapp/app/config/config.dart';
@@ -15,23 +16,24 @@ import '../api_models/api_models.dart';
 
 class UserApiRest {
   final SessionService session = Get.put<SessionService>(SessionService());
+  final ApiClient apiClient = ApiClient();
 
   final String apiUser = 'users';
   final Logger logger = Logger();
 
   Future<QuestionListUserResponse?> getAllQuestionByUsernameAndAsociationId(String username, int asociationId) async {
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    // };
 
     final url = await EglConfig.uri(apiUser, '${EglConfig.apiListAllQuestions}?user_name_user=$username&id_asociation_user=$asociationId');
 
-    final response = await http.get(url, headers: requestHeaders);
+    final response = await apiClient.get(url);
 
     // print('Response status: ${response.statusCode}');
     // print('Response body: ${response.body}');
     if (response.statusCode == 200) {
-      final QuestionListUserResponse questionListUserResponse = questionListUserResponseFromJson(await ApiResponse.retrunResponse(response));
+      final QuestionListUserResponse questionListUserResponse = questionListUserResponseFromJson(await ApiResponse.returnResponse(response));
 
       // print('Asociations Response body: ${asociationsResponse.result.records}');
       return questionListUserResponse;
@@ -44,9 +46,9 @@ class UserApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'lication/json',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'lication/json',
+    // };
 
     final body = jsonEncode({
       'user_name_user': username,
@@ -60,7 +62,7 @@ class UserApiRest {
     final url = await EglConfig.uri(apiUser, EglConfig.apiValidateKey);
 
     try {
-      final response = await http.post(url, headers: requestHeaders, body: body);
+      final response = await apiClient.post(url, body);
 
       statusCode = response.statusCode;
 
@@ -125,6 +127,10 @@ class UserApiRest {
 
   Future<HttpResult<UserAsocResponse>?> updateProfileAvatar(int idUser, String userName, int asociationId, int intervalNotifications,
       String languageUser, XFile imageAvatar, String dateUpdatedUser) async {
+    Map<String, String> requestHeaders;
+    Map<String, dynamic> fields;
+    List<http.MultipartFile> files = [];
+
     int? statusCode;
     dynamic data;
 
@@ -137,41 +143,46 @@ class UserApiRest {
 
     final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfileAvatar);
 
-    http.MultipartRequest request = http.MultipartRequest('POST', url);
+    //add headers
+    requestHeaders = {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer ${session.getAuthToken}',
+    };
 
-    request.fields['id_user'] = idUser.toString();
-    request.fields['user_name_user'] = userName;
-    request.fields['id_asociation_user'] = asociationId.toString();
-    request.fields['time_notifications_user'] = intervalNotifications.toString();
-    request.fields['language_user'] = languageUser;
-    request.fields['date_updated_user'] = dateUpdatedUser;
-
-    request.fields['action'] = 'profile';
-    request.fields['module'] = 'users';
-    request.fields['prefix'] = 'avatars/user-$idUser';
-    request.fields['date_updated'] = dateUpdatedUser;
-    request.fields['token'] = session.getAuthToken;
-    request.fields['user_name'] = userName;
-    request.fields['name'] = '$userName.png';
-    request.fields['cover'] = '';
+    fields = {
+      'id_user': idUser.toString(),
+      'user_name_user': userName,
+      'id_asociation_user': asociationId.toString(),
+      'time_notifications_user': intervalNotifications.toString(),
+      'language_user': languageUser,
+      'date_updated_user': dateUpdatedUser,
+      'action': 'profile',
+      'module': 'users',
+      'prefix': 'avatars/user-$idUser',
+      'date_updated': dateUpdatedUser,
+      'token': session.getAuthToken,
+      'user_name': userName,
+      'name': '$userName.png',
+      'cover': '',
+    };
 
     http.MultipartFile multiport = http.MultipartFile('file', stream, len, filename: '$userName.png');
 
-    request.files.add(multiport);
+    files.add(multiport);
 
     try {
-      final response = await request.send();
+      final response = await apiClient.sendMultipartRequest(
+        url: url,
+        endpoint: 'upload',
+        headers: requestHeaders,
+        fields: fields,
+        files: files,
+      );
 
       statusCode = response.statusCode;
 
       if (response.statusCode == 200) {
-        String body = await response.stream.bytesToString();
-        // Map body = jsonDecode(await response.stream.bytesToString());
-        // logger.i('response.stream.bytesToString($statusCode): $map');
-        // final body = await utf8.decodeStream(response.stream);
-        logger.i('body($statusCode): $body');
-
-        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(body));
+        final UserAsocResponse userAsocResponse = userAsocResponseFromJson(await EglHelper.parseApiUrlBody(response.body));
 
         // print('Asociations Response body: ${asociationsResponse.result.records}');
         // return userAsocResponse;
@@ -181,10 +192,7 @@ class UserApiRest {
           error: null,
         );
       } else if (statusCode > 400) {
-        Map map = jsonDecode(await response.stream.bytesToString());
-        logger.i('response.stream.bytesToString($statusCode): $map');
-        final body = await utf8.decodeStream(response.stream);
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<UserAsocResponse>(
           data: null,
           error: HttpError(
@@ -195,10 +203,7 @@ class UserApiRest {
           statusCode: statusCode,
         );
       } else {
-        Map map = jsonDecode(await response.stream.bytesToString());
-        logger.i('response.stream.bytesToString($statusCode): $map');
-        final body = await utf8.decodeStream(response.stream);
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<UserAsocResponse>(
           data: null,
@@ -238,11 +243,6 @@ class UserApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${session.getAuthToken}',
-    };
-
     final body = jsonEncode({
       'id_user': idUser,
       'user_name_user': userName,
@@ -255,7 +255,7 @@ class UserApiRest {
     final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfile);
 
     try {
-      final response = await http.post(url, headers: requestHeaders, body: body);
+      final response = await apiClient.post(url, body, token: '${session.getAuthToken}');
 
       EglHelper.eglLogger('i', 'Asociations Response body: ${response.body}');
       statusCode = response.statusCode;
@@ -320,11 +320,6 @@ class UserApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${session.getAuthToken}',
-    };
-
     final body = jsonEncode({
       'id_user': idUser,
       'profile_user': profileUser,
@@ -335,7 +330,7 @@ class UserApiRest {
     final url = await EglConfig.uri(apiUser, EglConfig.apiUserProfileStatus);
 
     try {
-      final response = await http.post(url, headers: requestHeaders, body: body);
+      final response = await apiClient.post(url, body, token: '${session.getAuthToken}');
 
       statusCode = response.statusCode;
 
@@ -400,14 +395,9 @@ class UserApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${session.getAuthToken}',
-    };
-
     final url = await EglConfig.uri(apiUser, EglConfig.apiListAll);
     try {
-      final response = await http.get(url, headers: requestHeaders);
+      final response = await apiClient.get(url, token: '${session.getAuthToken}');
 
       statusCode = response.statusCode;
 

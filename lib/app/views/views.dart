@@ -6,7 +6,7 @@ export 'article/article_page.dart';
 export 'article/edit_item_article.dart';
 export 'article/item_article_widget.dart';
 export 'article/items_article_list_widget.dart';
-export 'article/new_article_page.dart';
+export 'article/edit_article_page.dart';
 export 'auth/change/change_page.dart';
 export 'auth/login/login_page.dart';
 export 'auth/profile/profile_page.dart';

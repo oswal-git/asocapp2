@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:asocapp/app/apirest/api_models/api_models.dart';
 import 'package:asocapp/app/apirest/api_models/article_plain_api_model.dart';
 import 'package:asocapp/app/apirest/api_models/basic_response_model.dart';
+import 'package:asocapp/app/apirest/network/network.dart';
 import 'package:asocapp/app/apirest/response/api_response.dart';
 import 'package:asocapp/app/apirest/utils/utils.dart';
 import 'package:asocapp/app/config/config.dart';
@@ -16,27 +17,29 @@ import 'package:image_picker/image_picker.dart';
 
 class ArticlesApiRest {
   final SessionService _session = Get.put(SessionService());
+  final ApiClient apiClient = ApiClient();
 
   static String apiArticles = 'articles';
   static String apiNotifications = 'notifications';
 
   Future<ArticleResponse> getSingleArticle(int idarticle) async {
-    String authToken = _session.getAuthToken();
+    // String authToken = _session.getAuthToken();
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer $authToken',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    //   'Authorization': 'Bearer $authToken',
+    // };
 
     final url = await EglConfig.uri(apiArticles, '${EglConfig.apiSingleArticle}?id_article=$idarticle');
     // Helper.eglLogger('i', 'Response body: ${url.toString()}');
 
-    final response = await http.get(url, headers: requestHeaders);
+    // final response = await http.get(url, headers: requestHeaders);
+    final response = await apiClient.get(url, token: _session.getAuthToken);
 
     // print('Response status: ${response.statusCode}');
     // Helper.eglLogger('i','Response body: ${await Helper.parseApiUrlBody(response.body)}');
 
-    final ArticleResponse articleResponse = articleResponseFromJson(await ApiResponse.retrunResponse(response));
+    final ArticleResponse articleResponse = articleResponseFromJson(await ApiResponse.returnResponse(response));
 
     // print('Articlciations Response body: ${articlesList.result.records}');
 
@@ -44,20 +47,21 @@ class ArticlesApiRest {
   }
 
   Future<ArticleListResponse> getArticles() async {
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${_session.getAuthToken}',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    //   'Authorization': 'Bearer ${_session.getAuthToken}',
+    // };
 
     final url = await EglConfig.uri(apiArticles, EglConfig.apiListAll);
     // Helper.eglLogger('i', 'Response body: ${url.toString()}');
 
-    final response = await http.get(url, headers: requestHeaders);
+    // final response = await http.get(url, headers: requestHeaders);
+    final response = await apiClient.get(url, token: _session.getAuthToken);
 
     // print('Response status: ${response.statusCode}');
     // Helper.eglLogger('i', 'Response body: ${await Helper.parseApiUrlBody(response.body)}');
 
-    final ArticleListResponse articlesListResponse = articleListResponseFromJson(await ApiResponse.retrunResponse(response));
+    final ArticleListResponse articlesListResponse = articleListResponseFromJson(await ApiResponse.returnResponse(response));
 
     // print('Articlciations Response body: ${articlesList.result.records}');
 
@@ -68,22 +72,22 @@ class ArticlesApiRest {
     try {
       // String authToken = _session.getAuthToken();
 
-      Map<String, String> requestHeaders = {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer ${_session.getAuthToken}',
-      };
+      // Map<String, String> requestHeaders = {
+      //   'Content-type': 'application/json',
+      //   'Authorization': 'Bearer ${_session.getAuthToken}',
+      // };
 
       final Uri url = await EglConfig.uri(apiNotifications, EglConfig.apiListPending);
       // Helper.eglLogger('i', 'requestHeaders: ${requestHeaders.toString()}');
       // Helper.eglLogger('i', 'url: ${url.toString()}');
       // Helper.eglLogger('i', 'ArticlesApiRest: getPendingNotifyArticlesList -> getAuthToken -> tokenUser: $authToken');
 
-      final http.Response response = await http.get(url, headers: requestHeaders);
+      final http.Response response = await apiClient.get(url, token: _session.getAuthToken);
 
       // print('Response status: ${response.statusCode}');
       // Helper.eglLogger('i', 'Response body: ${Helper.parseApiUrlBody(response.body)}');
 
-      final decodeResponse = await ApiResponse.retrunResponse(response);
+      final decodeResponse = await ApiResponse.returnResponse(response);
       //   Helper.eglLogger('i', 'ArticlesApiRest: getPendingNotifyArticlesList -> decodeResponse: $decodeResponse');
       final NotificationArticleListResponse notificationArticleListResponse = notificationArticleListResponseFromJson(decodeResponse);
 
@@ -100,30 +104,37 @@ class ArticlesApiRest {
   }
 
   Future<HttpResult<ArticleUserResponse>?> createArticle(
-      ArticlePlain articlePlain, ImageArticle imageCoverArticle, List<ItemArticle> articleItems) async {
+    ArticlePlain articlePlain,
+    ImageArticle imageCoverArticle,
+    List<ItemArticle> articleItems,
+  ) async {
+    Map<String, String> requestHeaders;
+    Map<String, dynamic> fields;
+    List<http.MultipartFile> files = [];
+
     int? statusCode;
     dynamic data;
-
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${_session.getAuthToken}',
-    };
 
     // string to uri
     final url = await EglConfig.uri(apiArticles, EglConfig.apiCreateArticle);
 
     // create multipart request
-    http.MultipartRequest request = http.MultipartRequest('POST', url);
+    // http.MultipartRequest request = http.MultipartRequest('POST', url);
 
     //add headers
-    request.headers.addAll(requestHeaders);
+    requestHeaders = {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer ${_session.getAuthToken}',
+    };
 
     //adding params
-    request.fields['article'] = jsonEncode(articlePlain.toJson());
-    request.fields['action'] = 'create';
-    request.fields['module'] = 'articles';
-    request.fields['prefix'] = 'images/asociation-${articlePlain.idAsociationArticle.toString()}';
-    request.fields['user_name'] = _session.userConnected.nameUser;
+    fields = {
+      'article': jsonEncode(articlePlain.toJson()),
+      'action': 'create',
+      'module': 'articles',
+      'prefix': 'images/asociation-${articlePlain.idAsociationArticle.toString()}',
+      'user_name': _session.userConnected.nameUser,
+    };
 
     if (imageCoverArticle.isSelectedFile) {
       XFile image = imageCoverArticle.fileImage;
@@ -142,7 +153,7 @@ class ArticlesApiRest {
         filename: name,
       );
 
-      request.files.add(multiport);
+      files.add(multiport);
     }
 
     for (var i = 0; i < articleItems.length; i++) {
@@ -161,15 +172,22 @@ class ArticlesApiRest {
           filename: name,
         );
 
-        request.files.add(multiport);
+        files.add(multiport);
       }
     }
 
     try {
-      final response = await request.send();
+      // final response = await request.send();
+      final response = await apiClient.sendMultipartRequest(
+        url: url,
+        endpoint: 'upload',
+        headers: requestHeaders,
+        fields: fields,
+        files: files,
+      );
 
-      var res = await http.Response.fromStream(response);
-      EglHelper.eglLogger('i', 'res.body: ${res.body}');
+      // var res = await http.Response.fromStream(response);
+      EglHelper.eglLogger('i', 'response.body: ${response.body}');
       // statusCode = response.statusCode;
       // response.stream.transform(utf8.decoder).listen((value) {
       //   var body1 = value;
@@ -178,7 +196,7 @@ class ArticlesApiRest {
 
       if (response.statusCode == 200) {
         final ArticleUserResponse articleUserResponse = articleUserResponseFromJson(
-          await EglHelper.parseApiUrlBody(res.body),
+          await EglHelper.parseApiUrlBody(response.body),
         );
 
         return HttpResult<ArticleUserResponse>(
@@ -187,7 +205,7 @@ class ArticlesApiRest {
           error: null,
         );
       } else if (response.statusCode > 400) {
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(res.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<ArticleUserResponse>(
           data: null,
           error: HttpError(
@@ -198,7 +216,7 @@ class ArticlesApiRest {
           statusCode: response.statusCode,
         );
       } else {
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(res.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<ArticleUserResponse>(
           data: null,
@@ -232,23 +250,28 @@ class ArticlesApiRest {
   }
 
   Future<HttpResult<ArticleUserResponse>?> modifyArticle(
-      ArticlePlain articlePlain, ImageArticle imageCoverArticle, List<ItemArticle> articleItems) async {
+    ArticlePlain articlePlain,
+    ImageArticle imageCoverArticle,
+    List<ItemArticle> articleItems,
+  ) async {
+    Map<String, String> requestHeaders;
+    Map<String, dynamic> fields;
+    List<http.MultipartFile> files = [];
+
     int? statusCode;
     dynamic data;
-
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${_session.getAuthToken}',
-    };
 
     // string to uri
     final url = await EglConfig.uri(apiArticles, EglConfig.apiModifyArticle);
 
     // create multipart request
-    http.MultipartRequest request = http.MultipartRequest('POST', url);
+    // http.MultipartRequest request = http.MultipartRequest('POST', url);
 
     //add headers
-    request.headers.addAll(requestHeaders);
+    requestHeaders = {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer ${_session.getAuthToken}',
+    };
 
     if (imageCoverArticle.isSelectedFile) {
       XFile image = imageCoverArticle.fileImage;
@@ -267,7 +290,7 @@ class ArticlesApiRest {
         filename: name,
       );
 
-      request.files.add(multiport);
+      files.add(multiport);
     }
 
     for (var i = 0; i < articleItems.length; i++) {
@@ -288,7 +311,7 @@ class ArticlesApiRest {
           filename: name,
         );
 
-        request.files.add(multiport);
+        files.add(multiport);
       } else if (imageItem.idImage != 0 && imageItem.isDefault) {
         articlePlain.itemsArticlePlain[i].deleteImage = true;
         articlePlain.itemsArticlePlain[i].idDeleteImage = itemImageArticle.imagesIdItemArticle;
@@ -299,17 +322,24 @@ class ArticlesApiRest {
     }
 
     //adding params
-    request.fields['article'] = jsonEncode(articlePlain.toJson());
-    request.fields['action'] = 'modify';
-    request.fields['module'] = 'articles';
-    request.fields['prefix'] = 'images/asociation-${articlePlain.idAsociationArticle.toString()}';
-    request.fields['user_name'] = _session.userConnected.nameUser;
+    fields = {
+      'article': jsonEncode(articlePlain.toJson()),
+      'action': 'modify',
+      'module': 'articles',
+      'prefix': 'images/asociation-${articlePlain.idAsociationArticle.toString()}',
+      'user_name': _session.userConnected.nameUser,
+    };
 
     try {
-      final response = await request.send();
+      final response = await apiClient.sendMultipartRequest(
+        url: url,
+        endpoint: 'upload',
+        headers: requestHeaders,
+        fields: fields,
+        files: files,
+      );
 
-      var res = await http.Response.fromStream(response);
-      EglHelper.eglLogger('i', 'res.body: ${res.body}');
+      EglHelper.eglLogger('i', 'response.body: ${response.body}');
       // statusCode = response.statusCode;
       // response.stream.transform(utf8.decoder).listen((value) {
       //   var body1 = value;
@@ -318,7 +348,7 @@ class ArticlesApiRest {
 
       if (response.statusCode == 200) {
         final ArticleUserResponse articleUserResponse = articleUserResponseFromJson(
-          await EglHelper.parseApiUrlBody(res.body),
+          await EglHelper.parseApiUrlBody(response.body),
         );
 
         return HttpResult<ArticleUserResponse>(
@@ -327,7 +357,7 @@ class ArticlesApiRest {
           error: null,
         );
       } else if (response.statusCode > 400) {
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(res.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         return HttpResult<ArticleUserResponse>(
           data: null,
           error: HttpError(
@@ -338,7 +368,7 @@ class ArticlesApiRest {
           statusCode: response.statusCode,
         );
       } else {
-        data = parseResponseBody(await EglHelper.parseApiUrlBody(res.body));
+        data = parseResponseBody(await EglHelper.parseApiUrlBody(response.body));
         String message = data['message'];
         return HttpResult<ArticleUserResponse>(
           data: null,
@@ -375,14 +405,15 @@ class ArticlesApiRest {
     int? statusCode;
     dynamic data;
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ${_session.getAuthToken}',
-    };
+    // Map<String, String> requestHeaders = {
+    //   'Content-type': 'application/json',
+    //   'Authorization': 'Bearer ${_session.getAuthToken}',
+    // };
 
     final url = await EglConfig.uri(apiArticles, '${EglConfig.apiDeleteArticle}?id_article=$idArticle&date_updated_article=$dateUpdatedArticle');
     try {
-      final response = await http.get(url, headers: requestHeaders);
+      // final response = await http.get(url, headers: requestHeaders);
+      final response = await apiClient.get(url, token: _session.getAuthToken);
 
       statusCode = response.statusCode;
 

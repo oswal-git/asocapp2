@@ -120,7 +120,7 @@ class EglHelper {
     );
   }
 
-  static void showPopMessage(
+  static Future<void> showPopMessage(
     BuildContext context,
     String title,
     String message, {
@@ -169,13 +169,13 @@ class EglHelper {
       );
 
   // Para mostrar avisos
-  static popMessage(
+  static Future<void> popMessage(
     BuildContext context,
     MessageType messageType,
     String title,
     String message,
-  ) {
-    showDialog(
+  ) async {
+    await showDialog(
         context: context,
         builder: (context) {
           Color color = Colors.red;
@@ -741,6 +741,17 @@ class EglHelper {
       textValidate = '';
     }
     return textValidate;
+  }
+
+  static List<ItemArticle> copyListItems(List<ItemArticle> list1) {
+    List<ItemArticle> list2 = [];
+
+    if (list1.isNotEmpty) {
+      list2 = list1.map((ItemArticle item) => item.copyWith()).toList();
+      // Llamar al método 'myMethod' dinámicamente
+    }
+
+    return list2;
   }
 
   static bool listsAreEqual(List<dynamic> list1, List<dynamic> list2) {

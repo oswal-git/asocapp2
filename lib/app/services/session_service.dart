@@ -27,6 +27,10 @@ class SessionService extends GetxService {
 
   static const simplePeriodicTask = "simplePeriodicTask";
 
+  final _thereIsInternetconnection = false.obs;
+  bool get thereIsInternetconnection => _thereIsInternetconnection.value;
+  set thereIsInternetconnection(bool value) => _thereIsInternetconnection.value = value;
+
   final _isThereTask = false.obs;
   get isThereTask => _isThereTask.value;
   set isThereTask(value) => _isThereTask.value = value;
