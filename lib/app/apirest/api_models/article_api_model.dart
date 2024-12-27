@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:asocapp/app/models/article_model.dart';
 import 'package:asocapp/app/models/image_article_model.dart';
 import 'package:asocapp/app/models/item_article_model.dart';
+import 'package:asocapp/app/utils/utils.dart';
 
 import 'package:intl/intl.dart';
 
@@ -355,7 +356,7 @@ class ArticleUser extends Article {
       avatarUser: avatarUser ?? this.avatarUser,
       longNameAsociation: longNameAsociation ?? this.longNameAsociation,
       shortNameAsociation: shortNameAsociation ?? this.shortNameAsociation,
-      itemsArticle: itemsArticle ?? this.itemsArticle,
+      itemsArticle: itemsArticle != null ? EglHelper.copyListItems(itemsArticle) : EglHelper.copyListItems(this.itemsArticle),
     );
   }
 }

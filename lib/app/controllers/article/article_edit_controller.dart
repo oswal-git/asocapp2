@@ -31,47 +31,43 @@ class ArticleEditController extends GetxController {
   set newArticle(Article value) => _newArticle.value = value;
 
   final _articleItemsCount = 0.obs;
-  int get articleItemsCount => _newArticleItems.value.length;
+  int get articleItemsCount => _newArticle.value.itemsArticle.length;
 
-  final _oldArticleItems = Rx<List<ItemArticle>>([]);
-  List<ItemArticle> get oldArticleItems => _oldArticleItems.value;
-  set oldArticleItems(List<ItemArticle> value) {
-    _oldArticleItems.value = value;
-  }
-
-  final _newArticleItems = Rx<List<ItemArticle>>([]);
-  List<ItemArticle> get newArticleItems => _newArticleItems.value;
-  set newArticleItems(List<ItemArticle> value) {
-    _newArticleItems.value = value;
-    _articleItemsCount.value = _newArticleItems.value.length;
-  }
+  // final _newArticleItems = Rx<List<ItemArticle>>([]);
+  // List<ItemArticle> get newArticleItems => _newArticleItems.value;
+  // set newArticleItems(List<ItemArticle> value) {
+  //   _newArticleItems.value = value;
+  //   _articleItemsCount.value = _newArticleItems.value.length;
+  // }
 
   set addItemArticle(ItemArticle value) {
-    _newArticleItems.value.add(value);
-    _newArticle.value.itemsArticle = _newArticleItems.value;
-    _articleItemsCount.value = _newArticleItems.value.length;
+    // _newArticleItems.value.add(value);
+    _newArticle.value.itemsArticle.add(value);
+    // _newArticle.value.itemsArticle = _newArticleItems.value;
+    _articleItemsCount.value = _newArticle.value.itemsArticle.length;
     _newArticle.refresh();
   }
 
   void insertItemArticle(int index, ItemArticle item) {
-    _newArticleItems.value.insert(index, item);
+    // _newArticleItems.value.insert(index, item);
     _newArticle.value.itemsArticle.insert(index, item);
-    _articleItemsCount.value = _newArticleItems.value.length;
+    _articleItemsCount.value = _newArticle.value.itemsArticle.length;
     // _newArticle.value.itemsArticle = _newArticleItems.value;
     _newArticle.refresh();
   }
 
   ItemArticle deleteItemArticle(int value) {
-    final ItemArticle item = _newArticleItems.value.removeAt(value);
-    final ItemArticle item1 = _newArticle.value.itemsArticle.removeAt(value);
-    _articleItemsCount.value = _newArticleItems.value.length;
+    // final ItemArticle item = _newArticleItems.value.removeAt(value);
+    final ItemArticle item = _newArticle.value.itemsArticle.removeAt(value);
+    _articleItemsCount.value = _newArticle.value.itemsArticle.length;
     // _newArticle.value.itemsArticle = _newArticleItems.value;
     _newArticle.refresh();
     return item;
   }
 
   discardItemArticle(ItemArticle value) {
-    _newArticleItems.value.removeWhere((item) => item.idItemArticle == value.idItemArticle);
+    // _newArticleItems.value.removeWhere((item) => item.idItemArticle == value.idItemArticle);
+    _newArticle.value.itemsArticle.removeWhere((item) => item.idItemArticle == value.idItemArticle);
     _newArticle.refresh();
   }
 
@@ -159,14 +155,24 @@ class ArticleEditController extends GetxController {
   bool checkIsFormValid() {
     // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path}');
     // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path != ''}');
-    final bool valid = checkFields();
-    return _isFormValid.value = valid;
+    bool valid = checkFields();
+    _isFormValid.value = valid;
+    return _isFormValid.value;
   }
 
   bool checkFields() {
     // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path}');
     // Helper.eglLogger('i','checkIsFormValid: ${_imageCover.value!.path != ''}');
-    final bool valid = (titleOk && abstractOk && (_imageCoverChanged.value || !_newArticle.value.coverImageArticle.isDefault));
+    bool valid = (titleOk && abstractOk && (_imageCoverChanged.value || !_newArticle.value.coverImageArticle.isDefault));
+
+    if (valid && _newArticle.value.itemsArticle.isNotEmpty) {
+      valid = _newArticle.value.itemsArticle.every((ItemArticle item) {
+        bool value = (item.textItemArticle != '' || !item.imageItemArticle.isDefault);
+        return value;
+      });
+      // Llamar al método 'myMethod' dinámicamente
+    }
+
     _canSave.value = valid;
     return _canSave.value;
   }
@@ -178,7 +184,7 @@ class ArticleEditController extends GetxController {
 
     _appLogo.value = await EglImagesPath.getAppIconUserDefault();
     _iconUserDefaultProfile.value = _appLogo.value;
-    _articleItemsCount.value = _newArticleItems.value.length;
+    _articleItemsCount.value = _newArticle.value.itemsArticle.length;
     // // Escucha cambios en selectedDatePublication
     // ever(selectedDatePublication, (DateTime date) {
     // });

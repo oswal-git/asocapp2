@@ -4,7 +4,7 @@ import 'package:asocapp/app/config/config.dart';
 import 'package:asocapp/app/services/session_service.dart';
 import 'package:asocapp/app/utils/utils.dart';
 import 'package:asocapp/app/views/article/argument_article_interface.dart';
-import 'package:asocapp/app/views/article/new_article_page.dart';
+import 'package:asocapp/app/views/article/edit_article_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +70,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       hasArticle: false,
                       ArticleUser.clear(),
                     );
-                    Get.to(() => NewArticlePage(articleArguments: args));
+                    Get.to(() => EditArticlePage(articleArguments: args));
                   },
                 ),
               10.pw,

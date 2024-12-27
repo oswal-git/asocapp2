@@ -29,7 +29,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
 
   Color toolbarColor = Colors.grey.shade200;
   bool hasFocus = false;
-  String textItem = '';
+  // String textItem = '';
 
   int minLength = 0;
   int maxLength = 99999;
@@ -40,7 +40,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
     super.initState();
 
     // Accede a itemArticle y asigna su valor a textItem
-    textItem = widget.itemArticle.textItemArticle;
+    // textItem = widget.itemArticle.textItemArticle;
   }
 
   @override
@@ -88,8 +88,8 @@ class _EditItemArticleState extends State<EditItemArticle> {
                     onUpdate: (String txtSalida) {
                       if (widget.itemArticle.textItemArticle != txtSalida) {
                         widget.itemArticle.textItemArticle = txtSalida;
-                        textItem = widget.itemArticle.textItemArticle;
-                        articleEditController.newArticleItems.map((item) {
+                        // textItem = widget.itemArticle.textItemArticle;
+                        articleEditController.newArticle.itemsArticle.map((item) {
                           if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
                             item.textItemArticle = txtSalida;
                             return item;
@@ -108,7 +108,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
         ),
         // Text title
         Html(
-          data: '   $textItem',
+          data: '   ${widget.itemArticle.textItemArticle}',
           style: const {
             // 'p': Style(textAlign: TextAlign.justify, fontSize: FontSize(16), lineHeight: const LineHeight(1.5)),
           },
@@ -131,7 +131,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
             onChange: (ImageArticle image) {
               // Lógica para recuperar la imagen por defecto
               widget.itemArticle.imageItemArticle = image.copyWith();
-              articleEditController.newArticleItems.map((item) {
+              articleEditController.newArticle.itemsArticle.map((item) {
                 if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
                   item.imageItemArticle = image.copyWith();
                   return item;
@@ -144,7 +144,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
             onPressedDefault: (ImageArticle image) {
               // Lógica para recuperar la imagen por defecto
               widget.itemArticle.imageItemArticle = image.copyWith();
-              articleEditController.newArticleItems.map((item) {
+              articleEditController.newArticle.itemsArticle.map((item) {
                 if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
                   item.imageItemArticle = image.copyWith();
                   return item;
@@ -157,7 +157,7 @@ class _EditItemArticleState extends State<EditItemArticle> {
             onPressedRestore: (ImageArticle image) {
               // Lógica para restaurar la imagen inicial
               widget.itemArticle.imageItemArticle = image.copyWith();
-              articleEditController.newArticleItems.map((item) {
+              articleEditController.newArticle.itemsArticle.map((item) {
                 if (item.idItemArticle == widget.itemArticle.idArticleItemArticle) {
                   item.imageItemArticle = image.copyWith();
                   return item;

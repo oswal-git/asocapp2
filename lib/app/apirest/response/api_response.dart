@@ -1,7 +1,6 @@
 // import 'package:asociaciones/apirest/response/status.dart';
 import 'dart:convert';
 
-import 'package:asocapp/app/apirest/utils/app_exceptions.dart';
 import 'package:asocapp/app/utils/helper.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,7 +23,7 @@ class ApiResponse<T> {
     return 'Status : $status \n Massage: $message \n Data : $result';
   }
 
-  static Future<String> retrunResponse(http.Response response) async {
+  static Future<String> returnResponse(http.Response response) async {
     switch (response.statusCode) {
       case 200:
         // final AsociationsResponse asociationsResponse = asociationsResponseFromJson(response.body);
@@ -37,9 +36,11 @@ class ApiResponse<T> {
       // throw BadRequestException(response.body.toString());
       case 404:
       case 500:
-        throw UnauthorizedException(response.body.toString());
+        return response.body.toString() != '' ? response.body.toString() : 'Unauthorized  request';
+      case 503:
+        return response.body;
       default:
-        throw FetchDataException('Error occurred while communicating with server with statusCode: ${response.statusCode.toString()}');
+        return 'Error occurred while communicating with server with statusCode: ${response.statusCode.toString()}';
     }
   }
 }

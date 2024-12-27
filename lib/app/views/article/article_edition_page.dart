@@ -183,12 +183,12 @@ class _ArticleEditionPageState extends State<ArticleEditionPage> {
                 ),
               ),
               40.ph,
-              if (articleEditController.newArticleItems.isNotEmpty)
+              if (articleEditController.newArticle.itemsArticle.isNotEmpty)
                 ReorderableListView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    for (ItemArticle item in articleEditController.newArticleItems)
+                    for (ItemArticle item in articleEditController.newArticle.itemsArticle)
                       Dismissible(
                         key: UniqueKey(),
                         background: Container(

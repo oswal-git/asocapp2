@@ -14,8 +14,8 @@ import 'package:asocapp/app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NewArticlePage extends StatefulWidget {
-  NewArticlePage({
+class EditArticlePage extends StatefulWidget {
+  EditArticlePage({
     super.key,
     required this.articleArguments,
   }) {
@@ -24,8 +24,8 @@ class NewArticlePage extends StatefulWidget {
     // articleEditController.oldArticleItems = List<ItemArticle>.from(articleArguments.article.itemsArticle);
     // articleEditController.newArticleItems = List<ItemArticle>.from(articleArguments.article.itemsArticle);
 
-    articleEditController.oldArticleItems = articleArguments.article.itemsArticle.map((item) => item.copyWith()).toList();
-    articleEditController.newArticleItems = articleArguments.article.itemsArticle.map((item) => item.copyWith()).toList();
+    // articleEditController.oldArticleItems = articleArguments.article.itemsArticle.map((item) => item.copyWith()).toList();
+    // articleEditController.newArticleItems = articleArguments.article.itemsArticle.map((item) => item.copyWith()).toList();
 
     if (articleArguments.hasArticle) {
       articleEditController.isNew = false;
@@ -66,10 +66,10 @@ class NewArticlePage extends StatefulWidget {
   final SessionService session = Get.put(SessionService());
 
   @override
-  State<NewArticlePage> createState() => _NewArticlePageState();
+  State<EditArticlePage> createState() => _EditArticlePageState();
 }
 
-class _NewArticlePageState extends State<NewArticlePage> {
+class _EditArticlePageState extends State<EditArticlePage> {
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
@@ -77,7 +77,8 @@ class _NewArticlePageState extends State<NewArticlePage> {
 
     leadingOnPressed() {
       bool articleChanged = !(widget.articleEditController.newArticle == widget.articleEditController.oldArticle);
-      bool itemsChanged = !(EglHelper.listsAreEqual(widget.articleEditController.newArticleItems, widget.articleEditController.oldArticleItems));
+      bool itemsChanged =
+          !(EglHelper.listsAreEqual(widget.articleEditController.newArticle.itemsArticle, widget.articleEditController.oldArticle.itemsArticle));
       if (articleChanged || itemsChanged) {
         EglHelper.showConfirmationPopup(
           title: 'Descartar modificaciones del artículo',
@@ -87,9 +88,10 @@ class _NewArticlePageState extends State<NewArticlePage> {
           // Manejar el resultado aquí si es nec,esario
           if (value != null && value == true) {
             // Confirmado
-            articleChanged ? widget.articleEditController.newArticle = widget.articleEditController.oldArticle : null;
+            articleChanged ? widget.articleEditController.newArticle = widget.articleEditController.oldArticle.copyWith() : null;
             itemsChanged
-                ? widget.articleEditController.newArticleItems = widget.articleEditController.oldArticleItems.map((item) => item.copyWith()).toList()
+                ? widget.articleEditController.newArticle.itemsArticle = EglHelper.copyListItems(widget.articleEditController.oldArticle.itemsArticle)
+                // widget.articleEditController.oldArticle.itemsArticle.map((item) => item.copyWith()).toList()
                 : null;
             Get.back();
             return;
@@ -108,12 +110,12 @@ class _NewArticlePageState extends State<NewArticlePage> {
       ArticlePlain articlePlain = ArticlePlain.fromArticle(article: widget.articleEditController.newArticle);
       ImageArticle imageCoverArticle = widget.articleEditController.newArticle.coverImageArticle;
       EglHelper.eglLogger('i', widget.articleEditController.newArticle.toString());
-      EglHelper.eglLogger('i', widget.articleEditController.newArticleItems.toString());
+      EglHelper.eglLogger('i', widget.articleEditController.newArticle.itemsArticle.toString());
       HttpResult<ArticleUserResponse>? httpResult = await widget.articleEditController.createArticle(
         context,
         articlePlain,
         imageCoverArticle,
-        widget.articleEditController.newArticleItems,
+        widget.articleEditController.newArticle.itemsArticle,
       );
       if (httpResult!.statusCode == 200) {
         if (httpResult.data != null) {
@@ -158,15 +160,15 @@ class _NewArticlePageState extends State<NewArticlePage> {
         context,
         articlePlain,
         imageCoverArticle,
-        widget.articleEditController.newArticleItems,
+        widget.articleEditController.newArticle.itemsArticle,
       );
       if (httpResult!.statusCode == 200) {
         if (httpResult.data != null) {
           if (context.mounted) {
-            EglHelper.popMessage(context, MessageType.info, 'Article created', widget.articleEditController.newArticle.titleArticle);
+            await EglHelper.popMessage(context, MessageType.info, 'Article modified', widget.articleEditController.newArticle.titleArticle);
+            Get.back();
           }
           await widget.articleController.getArticles();
-          Get.back();
           Get.back();
           return;
         } else {
@@ -182,6 +184,18 @@ class _NewArticlePageState extends State<NewArticlePage> {
       } else if (httpResult.statusCode == 404) {
         if (context.mounted) {
           EglHelper.popMessage(context, MessageType.info, '${'mUnexpectedError'.tr}.', '${'mNoScriptAvailable'.tr}.');
+          EglHelper.eglLogger('e', httpResult.error?.data['message']);
+        }
+        return;
+      } else if (httpResult.statusCode == 503) {
+        if (context.mounted) {
+          EglHelper.popMessage(context, MessageType.info, 'Sin conexión.', '${'mNoScriptAvailable'.tr}.');
+          EglHelper.eglLogger('e', httpResult.error?.data['message']);
+        }
+        return;
+      } else if (httpResult.statusCode == 513) {
+        if (context.mounted) {
+          EglHelper.popMessage(context, MessageType.info, httpResult.data!.message, '${'mNoScriptAvailable'.tr}.');
           EglHelper.eglLogger('e', httpResult.error?.data['message']);
         }
         return;
@@ -222,7 +236,7 @@ class _NewArticlePageState extends State<NewArticlePage> {
                   enabled: widget.articleEditController.canSave,
                   onPressed: () async {
                     if (widget.articleEditController.newArticle == widget.articleEditController.oldArticle) {
-                      EglHelper.showPopMessage(context, 'No ha cambiado nada', '', withImage: false, onPressed: () {
+                      await EglHelper.showPopMessage(context, 'No ha cambiado nada', '', withImage: false, onPressed: () {
                         Get.back();
                       });
                       return;
